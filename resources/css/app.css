@@ -45,7 +45,7 @@ a {
     padding: 1px;
     background-size: cover !important;
     /*background: url(https://app.acibd.com/AMS/assets/images/creative-background.jpg) no-repeat top;*/
-    background: url("../../public/assets/images/creative-background.jpg");
+    background: url("creative-background2.jpg");
     height: 100vh;
 }
 
