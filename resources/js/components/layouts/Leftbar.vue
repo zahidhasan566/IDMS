@@ -1,5 +1,10 @@
 <template>
   <div class="left side-menu">
+      <div style="width: 200px;
+    position: fixed;
+    bottom: 0;
+    top: 70px;
+    margin-top: 0;">
     <div class="slimscroll-menu" id="remove-scroll">
       <!--- Sidemenu -->
       <div id="sidebar-menu">
@@ -33,6 +38,7 @@
       </div>
       <!-- Sidebar -->
       <div class="clearfix"></div>
+    </div>
     </div>
     <!-- Sidebar -left -->
   </div>

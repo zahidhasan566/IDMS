@@ -4,14 +4,14 @@
       <div class="login-card overflow-hidden account-card mx-3">
         <div class="bg-gradient p-4 text-white text-center position-relative">
           <h4 class="font-20 m-b-5">Welcome</h4>
-          <p class="text-white-50 mb-4" style="font-weight: 600">DMS PANEL</p>
+          <p class="text-white mb-4" style="font-weight: 600">DMS PANEL</p>
         </div>
         <div class="account-card-content">
           <ValidationObserver v-slot="{ handleSubmit }">
             <form class="form-horizontal m-t-30" @submit.prevent="handleSubmit(onSubmit)">
               <ValidationProvider name="User ID" mode="eager" rules="required" v-slot="{ errors }">
                 <div class="form-group">
-                  <label for="username">User ID</label>
+                  <label style="color: #FFFFFF" for="username">User ID</label>
                   <input type="text" class="form-control" :class="{'error-border': errors[0]}" id="username"
                          v-model="username" name="username" placeholder="User ID" autocomplete="off">
                   <span class="error-message"> {{ errors[0] }}</span>
@@ -19,7 +19,7 @@
               </ValidationProvider>
               <ValidationProvider name="Password" mode="eager" rules="required|min:4" v-slot="{ errors }">
                 <div class="form-group">
-                  <label for="user-password">Password</label>
+                  <label style="color: #FFFFFF" for="user-password">Password</label>
                   <input type="password" v-model="password" class="form-control" :class="{'error-border': errors[0]}"
                          id="user-password" placeholder="Password" autocomplete>
                   <span class="error-message">{{ errors[0] }}</span>
