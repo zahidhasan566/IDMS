@@ -101,7 +101,7 @@ Vue.component('add-edit-testrideagents', require('./components/testRide/TestRide
 Vue.component('add-edit-testrider', require('./components/testRide/TestRiderAddEditModal.vue').default);
 Vue.component('add-edit-notify', require('./components/transportNotification/NotificationAddEditModal.vue').default);
 Vue.component('add-edit-brta-registration', require('./components/logistics/BrtaRegistrationStatusAddEditModal.vue').default);
-
+Vue.component('add-edit-product', require('./components/product/ProductAddEditModal.vue').default);
 const app = new Vue({
     el: '#app',
     store: store,

@@ -6,6 +6,7 @@ import Dashboard from '../views/dashboard/Index.vue';
 import Users from '../views/users/Index';
 import AdjustmentsUnadjusted from "../views/reports/general/Unadjusted";
 import AdjustmentsAdjusted from "../views/reports/general/Adjusted";
+import ProductIndex from "../views/product/ProductIndex.vue";
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
 import WorkIndex from "../views/jobcard/WorkIndex.vue";
@@ -597,6 +598,12 @@ const routes = [
                 path: baseurl + 'logistics/receivereportsummery',
                 name: 'ReceiveSummaryReport',
                 component: ReceiveSummaryReport
+            },
+            //Product
+            {
+                path: baseurl + 'settings/product',
+                name: 'ProductIndex',
+                component: ProductIndex
             }
 
 

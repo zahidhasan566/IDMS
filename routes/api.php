@@ -316,6 +316,9 @@ Route::group(['middleware' => ['jwt:api']], function () {
 //        Route::post('service-4p-list',               [EvaluationForService4PController::class,'index']);
 
     });
+    Route::group(['prefix' => 'settings'],function () {
+        Route::post('product-list',                    [\App\Http\Controllers\Settings\ProductController::class,'index']);
+    });
 
 });
 
