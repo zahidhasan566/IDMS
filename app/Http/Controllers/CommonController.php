@@ -54,6 +54,7 @@ class CommonController extends Controller
             ->where('MRP','>','0')
             ->where('UnitPrice','>','10')
           ->orderBy('ProductCode','desc')->get();
+
         return  $products;
 
     }

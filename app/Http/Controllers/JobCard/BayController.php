@@ -72,7 +72,14 @@ class BayController extends Controller
             }
 
             $bayCode = TblBaySetup::select('BayCode')->where('ServiceCenterCode',$dealerCode)->orderbyRaw('convert(int,BayCode) desc')->first();
-            $updatedBayCode = intval($bayCode->BayCode) + 1;
+            if(!empty($bayCode->BayCode)){
+                $updatedBayCode = intval($bayCode->BayCode) + 1;
+            }
+            else{
+                $updatedBayCode =01;
+            }
+
+
 
             $bay = new TblBaySetup();
             $bay->ServiceCenterCode = $request->dealerCode;

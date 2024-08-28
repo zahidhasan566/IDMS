@@ -51,6 +51,11 @@ class ChallanController extends Controller
            'ChallanImage' => 'required',
         ]);
 
+//        $image = $request->input('ChallanImage');
+//        $imageExtension = $this->getBase64FileExtension($image);
+//        $name    = $request->ChallanNumber.'.' . $imageExtension;
+//        $image->move(public_path('assets/images/challan_image/'), $name);
+
         //FOR IMAGE
         if ($request->ChallanImage) {
             $image   = $request->ChallanImage;

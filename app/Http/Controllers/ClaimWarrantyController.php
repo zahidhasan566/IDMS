@@ -23,7 +23,8 @@ class ClaimWarrantyController extends Controller
         $Export      = $request->Export;
 
         $DateFrom = $request->DateFrom;
-        $DateTo   = $request->DateTo;
+        $DateTo   = $request->DateTo. ' 23:59:59.000';
+        $DateTo   = date('Y-m-d H:i:s',strtotime($DateTo));
 
         if ($Export == 'Y'){
             $CurrentPage = '%';

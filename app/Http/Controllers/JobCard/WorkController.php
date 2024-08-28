@@ -56,7 +56,15 @@ class WorkController extends Controller
             //Store Bay
             $userId = Auth::user()->UserId;
             $workCode = TblWorkSetup::select('WorkCode')->where('ServiceCenterCode',$userId)->orderbyRaw('convert(int,WorkCode) desc')->first();
-            $updatedWorkCode = intval($workCode->WorkCode) + 1;
+            if(!empty($workCode->WorkCode)){
+                $updatedWorkCode = intval($workCode->WorkCode) + 1;
+            }
+            else{
+                $updatedWorkCode=1;
+            }
+
+
+
 
             $work = new TblWorkSetup();
             $work->ServiceCenterCode = $userId;

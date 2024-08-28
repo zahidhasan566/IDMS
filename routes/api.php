@@ -316,6 +316,11 @@ Route::group(['middleware' => ['jwt:api']], function () {
 //        Route::post('service-4p-list',               [EvaluationForService4PController::class,'index']);
 
     });
+    Route::group(['prefix' => 'settings'],function () {
+        Route::get('product-supporting-data',                    [\App\Http\Controllers\Settings\ProductController::class,'supportingData']);
+        Route::post('product-list',                    [\App\Http\Controllers\Settings\ProductController::class,'index']);
+        Route::post('product-store',                    [\App\Http\Controllers\Settings\ProductController::class,'store']);
+    });
 
 });
 

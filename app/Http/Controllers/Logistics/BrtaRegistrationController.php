@@ -20,8 +20,11 @@ class BrtaRegistrationController extends Controller
     {
         $take = $request->take;
         $search = $request->search;
+        $chassisNo = $request->chassisNo;
+        $customer = $request->customer;
         $userId = Auth::user()->UserId;
         $roleId = Auth::user()->RoleId;
+
 
         $brtaRegistration = BrtaRegistrationStatus::select(
             'BRTA_RegistrationStatus.BRTA_RegistrationStatusID',
@@ -53,13 +56,18 @@ class BrtaRegistrationController extends Controller
             ->join('Customer', 'Customer.CustomerCode', 'BRTA_RegistrationStatus.EntryBy')
             ->join('DealarInvoiceDetails', 'DealarInvoiceDetails.ChassisNo', 'BRTA_RegistrationStatus.ChassisNo')
             ->join('DealarInvoiceMaster', 'DealarInvoiceMaster.InvoiceID', 'DealarInvoiceDetails.InvoiceID')
-            ->where('BRTA_RegistrationStatus.EntryBy', '=', $userId)
-            ->where(function ($q) use ($search) {
+            ->where('BRTA_RegistrationStatus.EntryBy', '=', $userId);
+        if ($chassisNo||$customer ){
+            $brtaRegistration->where('BRTA_RegistrationStatus.ChassisNO', '=' , $chassisNo );
+        }
+        //working on filter -25august2025
+        $brtaRegistration ->where(function ($q) use ($search) {
                 $q->where('BRTA_RegistrationStatus.ChassisNO', 'like', '%' . $search . '%');
                 $q->Orwhere('BRTA_RegistrationStatus.BRTA_RegistrationStatusID', 'like', '%' . $search . '%');
                 $q->Orwhere('BRTA_RegistrationStatus.BRTA_RegistrationNumber', 'like', '%' . $search . '%');
             })
             ->orderBy('BRTA_RegistrationStatus.BRTA_RegistrationStatusID', 'desc');
+
 
         if ($roleId !== 'admin') {
             $brtaRegistration->where('BRTA_RegistrationStatus.EntryBy', $userId);

@@ -119,32 +119,6 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
-
-        'foton' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB3_HOST', '192.168.100.60'),
-            'port' => env('DB3_PORT', '1433'),
-            'database' => env('DB3_DATABASE', 'dbFotonServiceCenter'),
-            'username' => env('DB3_USERNAME', 'sa'),
-            'password' => env('DB3_PASSWORD', 'dataport'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-        ],
-
-        'motor_service_auto' => [
-            'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB4_HOST', '192.168.100.63'),
-            'port' => env('DB4_PORT', '1433'),
-            'database' => env('DB4_DATABASE', 'MotorServiceAuto'),
-            'username' => env('DB4_USERNAME', 'sa'),
-            'password' => env('DB4_PASSWORD', 'dataport'),
-            'charset' => 'utf8',
-            'prefix' => '',
-            'prefix_indexes' => true,
-        ],
     ],
 
     /*
