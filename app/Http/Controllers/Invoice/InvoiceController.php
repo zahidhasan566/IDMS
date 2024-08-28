@@ -159,7 +159,7 @@ class InvoiceController extends Controller
             $invoice->ExchangeBrandCode         = $request->ExchangeBrand ? $request->ExchangeBrand : '';
             $invoice->ExchangeEngineNo          = $request->ExchangeEngineNo ? $request->ExchangeEngineNo : '';
             $invoice->ExchangeChassisNo         = $request->ExchangeChassisNo ? $request->ExchangeChassisNo : '';
-            //$invoice->OldBikeModel            = $request->OldBikeModel;
+            $invoice->OldBikeModel              = '';
             $invoice->ModelName                 = $request->ModelName;
             $invoice->BrandName                 = $request->BrandName;
             $invoice->OldBikePrice              = $request->OldBikePrice;

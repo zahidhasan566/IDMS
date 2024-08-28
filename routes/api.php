@@ -317,7 +317,9 @@ Route::group(['middleware' => ['jwt:api']], function () {
 
     });
     Route::group(['prefix' => 'settings'],function () {
+        Route::get('product-supporting-data',                    [\App\Http\Controllers\Settings\ProductController::class,'supportingData']);
         Route::post('product-list',                    [\App\Http\Controllers\Settings\ProductController::class,'index']);
+        Route::post('product-store',                    [\App\Http\Controllers\Settings\ProductController::class,'store']);
     });
 
 });

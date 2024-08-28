@@ -533,7 +533,7 @@ class JobCardController extends Controller
                         $dealerInvoiceDetails->Quantity = intval($singleParts['Quantity']);
                         $dealerInvoiceDetails->UnitPrice = intval($singleParts['UnitPrice']);
                         $dealerInvoiceDetails->VAT = 0;
-                        $dealerInvoiceDetails->Discount = 0;
+                        $dealerInvoiceDetails->Discount =intval($singleParts['Discount']);
                         $dealerInvoiceDetails->save();
 
                         //Stock Remove

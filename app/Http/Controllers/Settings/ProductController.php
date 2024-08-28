@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Models\Business;
+use App\Models\ProdBrand;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -44,5 +47,16 @@ class ProductController extends Controller
         } else {
             return $products->paginate($take);
         }
+    }
+
+    public function supportingData(){
+
+        $businesses = Business::select('Business as id',DB::raw("CONCAT(Business,'-',BusinessName) AS BusinessName"))->get();
+        $brand = ProdBrand::select('BrandCode as id',DB::raw("CONCAT(BrandCode,'-',BrandName) AS BrandName"))->get();
+        return response()->json([
+            'businesses' => $businesses,
+            'brand' => $brand,
+        ]);
+
     }
 }

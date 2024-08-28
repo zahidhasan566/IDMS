@@ -102,12 +102,23 @@ class InvoiceSparePartsAdjustmentController extends Controller
                         ->where('ProductCode', $singleData['Product_Code'])->first();
 
                     if ($existingDealerStock) {
-
                         DealerStock::where('MasterCode', $request->masterCode['CustomerCode'])
                             ->where('ProductCode', $singleData['Product_Code'])->update([
                                 'AdjustmentQuantity' => intval($existingDealerStock->AdjustmentQuantity) + intval($singleData['Adjustment_Stock']),
                                 'CurrentStock' => intval($existingDealerStock->CurrentStock) - intval($singleData['Adjustment_Stock'])
                             ]);
+                    }
+                    else{
+                        $newDealerStock = new DealerStock();
+                        $newDealerStock->MasterCode= $request->masterCode['CustomerCode'];
+                        $newDealerStock->ProductCode= $singleData['Product_Code'];
+                        $newDealerStock->ReceiveQuantity= 0;
+                        $newDealerStock->SalesQuantity= 0;
+                        $newDealerStock->ReturnQuantity= 0;
+                        $newDealerStock->AdjustmentQuantity= intval($singleData['Adjustment_Stock']);
+                        $newDealerStock->CurrentStock= intval($singleData['Adjustment_Stock'])<0 ? -1*intval($singleData['Adjustment_Stock']):0;
+                        $newDealerStock->save();
+
                     }
 
                 }

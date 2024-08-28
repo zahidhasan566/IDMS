@@ -15,41 +15,118 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <ValidationProvider name="Dealer" mode="eager" v-slot="{ errors }"   rules="required">
+                                        <ValidationProvider name="Business" mode="eager" v-slot="{ errors }"   rules="required">
                                             <div class="form-group">
-                                                <label>Dealer <span class="error">*</span></label>
-                                                <select name="dealerCode" class="form-control" v-model="dealerCode" style="margin: 0">
-                                                    <option :value="singleCustomer.CustomerCode" v-for="(singleCustomer , index) in customers"
-                                                            :key="index">{{ singleCustomer.CustomerName }}</option>
-                                                </select>
+                                                <label>Business <span class="error">*</span></label>
+                                                <v-select :filterable="false"
+                                                          :mutiselect="false"
+                                                          v-model="businessSelect"
+                                                          :options="businesses" label="BusinessName"
+                                                >
+
+                                                </v-select>
                                                 <span class="error-message"> {{ errors[0] }}</span>
                                             </div>
                                         </ValidationProvider>
                                     </div>
                                     <div class="col-12 col-md-3">
-                                        <ValidationProvider name="bayName" mode="eager" rules="required"
+                                        <ValidationProvider name="Brand Name" mode="eager" rules="required"
                                                             v-slot="{ errors }">
                                             <div class="form-group">
 
-                                                <label for="tagNo">Bay Name <span class="error">*</span></label>
+                                                <label for="tagNo">Product Brand<span class="error">*</span></label>
+                                                <v-select :filterable="false"
+                                                          :mutiselect="false"
+                                                          v-model="brandSelect"
+                                                          :options="brand" label="BrandName"
+                                                >
+
+                                                </v-select>
+                                                <span class="error-message"> {{ errors[0] }}</span>
+                                            </div>
+                                        </ValidationProvider>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <ValidationProvider name="Product Code" mode="eager" rules="required"
+                                                            v-slot="{ errors }">
+                                            <div class="form-group">
+
+                                                <label for="productCode">Product Code<span class="error">*</span></label>
                                                 <input type="text" class="form-control"
-                                                       id="bayName"
+                                                       id="productCode"
                                                        data-required="true"
-                                                       v-model="bayName" name="bayName" placeholder="Bay Name">
+                                                       v-model="productCode" name="Product Code" placeholder="Product Code">
+                                                <span class="error-message"> {{ errors[0] }}</span>
+                                            </div>
+                                        </ValidationProvider>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <ValidationProvider name="Product Name" mode="eager" rules="required"
+                                                            v-slot="{ errors }">
+                                            <div class="form-group">
+                                                <label for="productName">Product Name<span class="error">*</span></label>
+                                                <input type="text" class="form-control"
+                                                       id="productName"
+                                                       data-required="true"
+                                                       v-model="productName" name="productName" placeholder="Product Name">
                                                 <span class="error-message"> {{ errors[0] }}</span>
                                             </div>
                                         </ValidationProvider>
                                     </div>
                                     <div class="col-12 col-md-3">
                                             <div class="form-group">
-
-                                                <label for="tagNo">Comments</label>
+                                                <label for="tagNo">Pac Size</label>
                                                 <input type="text" class="form-control"
                                                        id="bayName"
                                                        data-required="true"
-                                                       v-model="comments" name="Comments" placeholder="Comments">
+                                                       v-model="pacSize" name="pacSize" placeholder="Pac Size">
                                                 <span class="error-message"> {{ errors[0] }}</span>
                                             </div>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <ValidationProvider name="Unit Price" mode="eager" rules="required"
+                                                            v-slot="{ errors }">
+                                            <div class="form-group">
+
+                                                <label for="productCode">Unit Price<span class="error">*</span></label>
+                                                <input type="number" class="form-control"
+                                                       step="any"
+                                                       id="unitPrice"
+                                                       data-required="true"
+                                                       v-model="unitPrice" name="unitPrice" placeholder="Unit Price">
+                                                <span class="error-message"> {{ errors[0] }}</span>
+                                            </div>
+                                        </ValidationProvider>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <ValidationProvider name="Vat" mode="eager" rules="required"
+                                                            v-slot="{ errors }">
+                                            <div class="form-group">
+
+                                                <label for="Vat">Vat<span class="error">*</span></label>
+                                                <input type="number" class="form-control"
+                                                       step="any"
+                                                       id="vat"
+                                                       data-required="true"
+                                                       v-model="vat" name="vat" placeholder="Vat">
+                                                <span class="error-message"> {{ errors[0] }}</span>
+                                            </div>
+                                        </ValidationProvider>
+                                    </div>
+                                    <div class="col-12 col-md-3">
+                                        <ValidationProvider name="MRP" mode="eager" rules="required"
+                                                            v-slot="{ errors }">
+                                            <div class="form-group">
+
+                                                <label for="MRP">MRP<span class="error">*</span></label>
+                                                <input type="number" class="form-control"
+                                                       id="mrp"
+                                                       step="any"
+                                                       data-required="true"
+                                                       v-model="mrp" name="mrp" placeholder="MRP">
+                                                <span class="error-message"> {{ errors[0] }}</span>
+                                            </div>
+                                        </ValidationProvider>
                                     </div>
                                     <div class="col-12 col-md-3">
                                         <ValidationProvider name="active" mode="eager" rules="required"
@@ -60,7 +137,7 @@
                                                 <option value="Y">Yes</option>
                                                 <option value="N">No</option>
                                             </select>
-
+                                            <span class="error-message"> {{ errors[0] }}</span>
                                         </ValidationProvider>
                                     </div>
                                 </div>
@@ -98,7 +175,17 @@ export default {
             active:'',
             bayCode:'',
             dealerCode:'',
-            customers:[]
+            customers:[],
+            businesses:[],
+            brand:[],
+            businessSelect:'',
+            brandSelect:'',
+            productCode:'',
+            pacSize:'',
+            productName:'',
+            unitPrice:'',
+            vat:'',
+            mrp:''
 
         }
     },
@@ -110,7 +197,7 @@ export default {
         $('#add-edit-dept').on('hidden.bs.modal', () => {
             this.$emit('changeStatus')
         });
-        bus.$on('add-edit-jobCard-bay', (row) => {
+        bus.$on('add-edit-product', (row) => {
             if (row) {
                 let instance = this;
                 this.axiosGet('jobCard/get/bay/modal/' + row.BayCode +'/'+ row.ServiceCenterCode, function (response) {
@@ -129,9 +216,8 @@ export default {
 
                 });
             } else {
-                this.title = 'Add Bay';
+                this.title = 'Add Product';
                 this.buttonText = "Add";
-                this.transferNo = '';
 
                 this.status = '';
                 this.buttonShow = true;
@@ -141,7 +227,7 @@ export default {
         })
     },
     destroyed() {
-        bus.$off('add-edit-jobCard-bay')
+        bus.$off('add-edit-product')
     },
     methods: {
         closeModal() {
@@ -149,8 +235,10 @@ export default {
         },
         getSupportingData(){
             let instance = this;
-            this.axiosGet('jobCard/bay-supporting-data', function (response) {
-               instance.customers =  response.customers
+            this.axiosGet('settings/product-supporting-data', function (response) {
+                instance.businesses  = response.businesses
+                instance.brand  = response.brand
+                console.log(response)
 
             }, function (error) {
             });
@@ -167,16 +255,21 @@ export default {
                     submitUrl = 'jobCard/bay-update';
                 }
                 this.axiosPost(submitUrl, {
-                    dealerCode: this.dealerCode,
-                    bayCode: this.bayCode,
-                    bayName: this.bayName,
-                    comments: this.comments,
+                    businessSelect: this.businessSelect,
+                    brandSelect: this.brandSelect,
+                    productCode: this.productCode,
+                    productName: this.productName,
+                    pacSize: this.pacSize,
+                    unitPrice: this.unitPrice,
+                    vat: this.vat,
+                    mrp: this.mrp,
                     active: this.active,
                 }, (response) => {
+                    this.$store.commit('submitButtonLoadingStatus', false);
                     this.successNoti(response.message);
                     $("#add-edit-dept").modal("toggle");
                     bus.$emit('refresh-datatable');
-                    this.$store.commit('submitButtonLoadingStatus', false);
+
                 }, (error) => {
                     this.errorNoti(error);
                     this.$store.commit('submitButtonLoadingStatus', false);

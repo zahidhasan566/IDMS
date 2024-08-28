@@ -104,63 +104,72 @@ class DealerDocumentController extends Controller
         $ipAddress    = \request()->ip();
         $customerdata = $this->allCustomer($customerCode);
         $mobileNo     = $customerdata[0]->Mobile ? $customerdata[0]->Mobile : $customerdata[0]->Phone;
+        try {
+            DB::beginTransaction();
+            if(!empty($allData)){
+                $message = "Dear Concern,%0D%0AMotorcycle registration document already has been sent. Please check and entry in YAMAHA-DMS after receiving from courier. %0D%0AThanks, %0D%0ALogistic Team(Yamaha)%0D%0AACI Motors Ltd.";
+                $smsStatus = $this->sendSmsQ(
+                    $mobileNo, 8809617614917, 'Yamaha-DMS', 'Logistics Document',
+                    'Yamaha',$userID, 'smsq', $message
+                );
+                $res =json_decode($smsStatus ,true);
+                foreach ($allData as $key){
+                    $invoiceNo  = $key["invoiceno"];
+                    $customerCode    = $key["customercode"];
+                    $chassisno       = $key["chassisno"];
+                    $engineno        = $key["engineno"];
+                    $productcode     = $key["productcode"];
+                    $entryby         = $userID;
 
-        if(!empty($allData)){
-            $message = "Dear Concern,%0D%0AMotorcycle registration document already has been sent. Please check and entry in YAMAHA-DMS after receiving from courier. %0D%0AThanks, %0D%0ALogistic Team(Yamaha)%0D%0AACI Motors Ltd.";
-           $smsStatus = $this->sendSmsQ(
-               $mobileNo, 8809617614917, 'Yamaha-DMS', 'Logistics Document',
-                'Yamaha',$userID, 'smsq', $message
-            );
-           $res =json_decode($smsStatus ,true);
-           foreach ($allData as $key){
-            $invoiceNo  = $key["invoiceno"];
-               $customerCode    = $key["customercode"];
-               $chassisno       = $key["chassisno"];
-               $engineno        = $key["engineno"];
-               $productcode     = $key["productcode"];
-               $entryby         = $userID;
+                    $document = DealearInvoiceDocument::where('ChassisNo',$chassisno)->first();
 
-               $document = DealearInvoiceDocument::where('Invoiceno',$invoiceNo)->where('ChassisNo',$chassisno)->first();
+                    if ($document){
+                        $document->EngineNo       =      $engineno;
+                        $document->EditDate       =      $sendDate;
+                        $document->EditBy         =      $entryby;
+                        $document->EditIPAddress  =      $ipAddress;
+                        $document->save();
 
-               if ($document){
-                   $document->EngineNo       =      $engineno;
-                   $document->EditDate       =      $sendDate;
-                   $document->EditBy         =      $userID;
-                   $document->EditIPAddress  =      $ipAddress;
-                   $document->EditIpAddress  =      $ipAddress;
-                   $document->save();
-               }else{
-                   $document =new DealearInvoiceDocument();
-                   $document->InvoiceNo      =      $invoiceNo;
-                   $document->CustomerCode   =      $customerCode;
-                   $document->ChassisNo      =      $chassisno;
-                   $document->EngineNo       =      $engineno;
-                   $document->ProductCode    =      $productcode;
-                   $document->SendDate       =      $sendDate;
-                   $document->SendBy         =      $userID;
-                   $document->SendIPAddress  =      $ipAddress;
-                   $document->save();
-               }
+                    }else{
+                        $document =new DealearInvoiceDocument();
+                        $document->InvoiceNo      =      $invoiceNo;
+                        $document->CustomerCode   =      $customerCode;
+                        $document->ChassisNo      =      $chassisno;
+                        $document->EngineNo       =      $engineno;
+                        $document->ProductCode    =      $productcode;
+                        $document->SendDate       =      $sendDate;
+                        $document->SendBy         =      $entryby;
+                        $document->SendIPAddress  =      $ipAddress;
 
-
-           }
-           foreach ($allData as $key){
-               $invoiceNo       =    $key["invoiceno"];
-               $chassisno       =    $key["chassisno"];
-               $document = DealearInvoiceDocument::where('Invoiceno',$invoiceNo)->where('ChassisNo',$chassisno)->first();
-               $document->InsertedSmsIds      =      $res['data']['apiStatusCode'];
-               $document->SMSMessage          =      $res['data']['status'];
-               $document->save();
-           }
+                        $document->save();
+                    }
+                }
+                foreach ($allData as $key){
+                    $chassisno       =    $key["chassisno"];
+                    $document = DealearInvoiceDocument::where('ChassisNo',$chassisno)->first();
+                    $document->InsertedSmsIds      =      $res['data']['apiStatusCode'];
+                    $document->SMSMessage          =      $res['data']['status'];
+                    $document->save();
+                }
+                DB::commit();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Successfully added your document',
+                ]);
+            }
             return response()->json([
-                'status' => 'success',
-                'message' => 'Successfully added your document',
+                'status' => 'error',
+                'message' => 'No document selected',
             ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update document'
+            ], 500);
         }
-        return response()->json([
-            'status' => 'error',
-            'message' => 'No document selected',
-        ]);
+
+
     }
 
 

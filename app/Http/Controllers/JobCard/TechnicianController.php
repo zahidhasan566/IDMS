@@ -135,7 +135,7 @@ class TechnicianController extends Controller
             $technician->TechnicianPhoto = $request->technicianPhoto? ImageBase64Service::imageResizeUpload($request->technicianPhoto, 'Technician', public_path('uploads/technicianPhoto/')):'';
             $technician->NetworkCategory = $request->networkCategory;
             $technician->DealerCategory = $request->dealerCategory;
-            $technician->TechnicianEmpCode = $request->staffId;
+            $technician->TechnicianEmpCode = $request->staffId?$request->staffId:null ;
             $technician->TechnicianName = $request->technicianName;
             $technician->ContactNo = $request->contactNo;
             $technician->JoiningDate = $request->joiningDate;

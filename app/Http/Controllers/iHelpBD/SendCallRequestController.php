@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\iHelpBD;
 
+use App\Models\JobCard\TblJobCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -79,6 +80,7 @@ class SendCallRequestController extends Controller
             $totalData = count($invoices);
             $chunkData = $invoices->chunk(20)->toArray();
             $result = $this->sendYamahaCallRequest($chunkData, $totalData, $requestType);
+            //dd($result);
  
             $statusCode = $result['status'] === 'success' ? 200 : 500;
             return response()->json(["message" => $result['message']], $statusCode);
@@ -93,44 +95,59 @@ class SendCallRequestController extends Controller
     public function sendYamahaCallRequest($chunkData, $totalData, $requestType)
     {
         $totalChunkCount = 0;
+        try{
+            foreach ($chunkData as $singleChunkData) {
+                $url = ($requestType === 'sales')
+                    ? 'http://103.143.148.66/API_V11/new_create.php'
+                    : 'http://103.143.148.66/API_V11/create.php';
 
-        foreach ($chunkData as $singleChunkData) {
-            $url = ($requestType === 'sales') 
-                ? 'http://103.143.148.66/API_V11/new_create.php' 
-                : 'http://103.143.148.66/API_V11/create.php';
+                // Send the HTTP POST request
+                $response = Http::withHeaders([
+                    'Authorization' => '@ACI-iHelp@',
+                    'Content-Type' => 'application/json',
+                ])->post($url, $singleChunkData);
 
-            // Send the HTTP POST request
-            $response = Http::withHeaders([
-                'Authorization' => '@ACI-iHelp@',
-                'Content-Type' => 'application/json',
-            ])->post($url, $singleChunkData);
+                $data = $response->json();
+                $successNumber = $data['data']['success'] ?? 0;
+                $apiStatus = $data['status'] ?? null;
 
-            $data = $response->json();
+                if ($apiStatus == 200 && $successNumber) {
+                    foreach ($singleChunkData as $singleData) {
+                        //dd($singleData);
+                        $totalChunkCount++;
 
-            $successNumber = $data['data']['success'] ?? 0;
-            $apiStatus = $data['status'] ?? null;
+                        if ($requestType === 'sales') {
+                            $invoice_id = intval($singleData->invoice_no);
+                            $sql = "update DealarInvoiceMaster set isSync =1 where InvoiceID=$invoice_id";
 
-            if ($apiStatus == 200 && $successNumber) {
-                foreach ($singleChunkData as $singleData) {
-                    $totalChunkCount++;
+                            $conn = DB::connection('sqlsrv');
+                            $pdo = $conn->getPdo()->prepare($sql);
+                            $pdo->execute();
 
-                    if ($requestType === 'sales') {
-                        $invoice_id = $singleData['invoice_no'];
-                        $updated = DB::table('DealarInvoiceMaster')
-                            ->where('InvoiceID', $invoice_id)
-                            ->update(['isSync' => 1]);
-                    } else {
-                        $jobCardNo = $singleData['job_card_no'];
-                        $updated = DB::table('tblJobCard')
-                            ->where('JobCardNo', $jobCardNo)
-                            ->update(['isSync' => 1]);
+//                            DB::table('DealarInvoiceMaster')
+//                                ->where('InvoiceID', $invoice_id)
+//                                ->update(['isSync' => 1]);
+                        } else {
+                            $jobCardNo = $singleData->job_card_no;
+                            $sql = "update tblJobCard set isSync =1 where JobCardNo='$jobCardNo'";
+                            $conn = DB::connection('sqlsrv');
+                            $pdo = $conn->getPdo()->prepare($sql);
+                            $pdo->execute();
+//                            $updateJobCard = TblJobCard::where('JobCardNo', $jobCardNo)->first();
+//                            $updateJobCard->isSync =  1;
+//                            $updateJobCard->save();
+                        }
+
+
                     }
-
-                    
                 }
             }
+            return $this->generateSuccessMessage($totalChunkCount, $totalData);
         }
-        return $this->generateSuccessMessage($totalChunkCount, $totalData);
+        catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+
     }
 
     public function sendFotonCall(Request $request) {
@@ -168,7 +185,6 @@ class SendCallRequestController extends Controller
                 ->where('techst.TechnicianName', '<>', '')
                 ->where('tj.TechnicianCode', '<>', '')
                 ->get();
-            
             if ($data->isNotEmpty()) {
                 $totalData = $data->count();
                 $chunkData = $data->chunk(20)->toArray();
@@ -205,12 +221,12 @@ class SendCallRequestController extends Controller
                         foreach ($singleChunkData as $singleData) {
                             $totalChunkCount++;
 
-                            $job_card_no = $singleData['job_card_no'];
+                            $job_card_no = $singleData->job_card_no;
 
-                            $updated = DB::connection('foton')
-                                ->table('tblJobCard')
-                                ->where('JobCardNo', $job_card_no)
-                                ->update(['isSync' => 1]);
+                            $sql = "update tblJobCard set isSync =1 where JobCardNo='$job_card_no'";
+                            $conn = DB::connection('foton');
+                            $pdo = $conn->getPdo()->prepare($sql); 
+                            $pdo->execute();
                         }
                     }
                 }
@@ -290,15 +306,16 @@ class SendCallRequestController extends Controller
             ])->post($url, $singleChunkData);
 
             $data = $response->json();
-
             if ($response->status() == 200 && $data['data']['success']) {
                 foreach ($singleChunkData as $singleData) {
                     $totalChunkCount++;
-                    $jobCardNo = $singleData['jobcard_no'];
-
-                    $update = DB::connection('motor_service_auto')->table('job_cards')
-                        ->where('job_card_no', $jobCardNo)
-                        ->update(['isSync' => 1]);
+                    $jobCardNo = $singleData->jobcard_no; 
+                   
+                    $sql = "update job_cards set isSync =1 where job_card_no='$jobCardNo'";
+                 
+                    $conn = DB::connection('motor_service_auto');
+                    $pdo = $conn->getPdo()->prepare($sql); 
+                    $pdo->execute();
                 }
             }
         } 

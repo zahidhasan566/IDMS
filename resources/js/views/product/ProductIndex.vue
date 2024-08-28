@@ -24,7 +24,7 @@
 
                     </template>
                 </advanced-datatable>
-            <add-edit-jobCard-bay @changeStatus="changeStatus" v-if="loading"/>
+            <add-edit-product @changeStatus="changeStatus" v-if="loading"/>
             </div>
     </div>
 </template>
@@ -69,7 +69,7 @@ export default {
         addModal(row = '') {
             this.loading = true;
             setTimeout(() => {
-                bus.$emit('add-edit-jobCard-bay', row);
+                bus.$emit('add-edit-product', row);
             })
         },
 
