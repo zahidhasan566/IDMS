@@ -119,6 +119,7 @@ import PromotionList from '../views/promotion/List.vue'
 import PromotionReport from '../views/promotion/Report.vue'
 import PromotionTopSheet from "../views/promotion/TopSheet.vue"
 import ChangePassword from "../views/settings/ChangePassword.vue"
+import Customer from "../views/settings/Customer/List.vue"
 
 import NotFound from '../views/404/Index';
 // import Profile from '../views/profile/Index';
@@ -427,6 +428,11 @@ const routes = [
                 path: baseurl + 'settings/change-password',
                 name: 'ChangePassword',
                 component: ChangePassword,
+            },
+            {
+                path: baseurl + 'settings/customer',
+                name: 'Customer',
+                component: Customer,
             },
             {
                 path: baseurl + 'dealer/users',
