@@ -63,23 +63,32 @@ class ProductController extends Controller
     public function store(Request $request){
 
         try{
-            $product = new Product();
-            $product->ProductCode = $request->productCode;
-            $product->ProductName = $request->productName;
-            $product->PackSize = $request->pacSize;
-            $product->BrandCode = $request->brandSelect['id'];
-            $product->UnitPrice = $request->unitPrice;
-            $product->VAT = $request->vat;
-            $product->MRP = $request->mrp;
-            $product->Business = $request->businessSelect['id'];
-            $product->Active = $request->active;
-            $product->save();
+            //Check Already Exist Or Not
+            $checkExisting =  Product::where('ProductCode',$request->productCode)->first();
+            if(!empty($checkExisting->ProductCode)){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Product Already Exist',
+                ], 409);
+            }
+            else{
+                $product = new Product();
+                $product->ProductCode = $request->productCode;
+                $product->ProductName = $request->productName;
+                $product->PackSize = $request->pacSize;
+                $product->BrandCode = $request->brandSelect['id'];
+                $product->UnitPrice = $request->unitPrice;
+                $product->VAT = $request->vat;
+                $product->MRP = $request->mrp;
+                $product->Business = $request->businessSelect['id'];
+                $product->Active = $request->active;
+                $product->save();
 
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'Product Added Successfully',
-            ],200);
-
+                return response()->json([
+                    'status' => 'Success',
+                    'message' => 'Product Added Successfully',
+                ],200);
+            }
 
         }
         catch (\Exception $exception) {
