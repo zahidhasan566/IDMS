@@ -180,6 +180,7 @@ export default {
             brand:[],
             businessSelect:'',
             brandSelect:'',
+            existingProductCode:'',
             productCode:'',
             pacSize:'',
             productName:'',
@@ -200,17 +201,29 @@ export default {
         bus.$on('add-edit-product', (row) => {
             if (row) {
                 let instance = this;
-                this.axiosGet('jobCard/get/bay/modal/' + row.BayCode +'/'+ row.ServiceCenterCode, function (response) {
-                    instance.title = 'Update Bay List';
+                this.axiosGet('settings/get/product/modal/' + row.ProductCode, function (response) {
+                    instance.title = 'Update Product';
                     instance.buttonText = "Update";
                     instance.buttonShow = true;
                     instance.actionType = 'edit';
-                    if(response.existingBayInfo){
-                        instance.dealerCode = response.existingBayInfo.ServiceCenterCode
-                        instance.bayCode= response.existingBayInfo.BayCode;
-                        instance.bayName = response.existingBayInfo.BayName;
-                        instance.comments = response.existingBayInfo.Comment;
-                        instance.active = response.existingBayInfo.Active;
+                    let existingProduct = response.existingProduct;
+                    if(existingProduct){
+                        instance.businessSelect = {
+                            'id':existingProduct.Business,
+                            'BusinessName':existingProduct.Business+'-'+existingProduct.BusinessName
+                        }
+                        instance.brandSelect = {
+                            'id':existingProduct.BrandCode,
+                            'BrandName':existingProduct.BrandCode+'-'+existingProduct.BrandName
+                        }
+                        instance.productCode= existingProduct.ProductCode;
+                        instance.existingProductCode = existingProduct.ProductCode;
+                        instance.productName = existingProduct.ProductName;
+                        instance.pacSize = existingProduct.PackSize;
+                        instance.unitPrice = existingProduct.UnitPrice;
+                        instance.vat = existingProduct.VAT;
+                        instance.mrp = existingProduct.MRP;
+                        instance.active = existingProduct.Active;
                     }
                 }, function (error) {
 
@@ -249,12 +262,13 @@ export default {
                 var returnData = $('#return').prop('checked');
                 var submitUrl = '';
                 if (this.actionType === 'add') {
-                    submitUrl = 'jobCard/bay-add';
+                    submitUrl = 'settings/product-store';
                 }
                 if (!returnData && this.actionType === 'edit') {
-                    submitUrl = 'jobCard/bay-update';
+                    submitUrl = 'settings/product-update';
                 }
                 this.axiosPost(submitUrl, {
+                    existingProductCode: this.existingProductCode,
                     businessSelect: this.businessSelect,
                     brandSelect: this.brandSelect,
                     productCode: this.productCode,

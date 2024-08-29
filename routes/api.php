@@ -320,6 +320,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::get('product-supporting-data',                    [\App\Http\Controllers\Settings\ProductController::class,'supportingData']);
         Route::post('product-list',                    [\App\Http\Controllers\Settings\ProductController::class,'index']);
         Route::post('product-store',                    [\App\Http\Controllers\Settings\ProductController::class,'store']);
+        Route::get('get/product/modal/{productCode}',[\App\Http\Controllers\Settings\ProductController::class,'getExistingProduct']);
+        Route::post('product-update',                    [\App\Http\Controllers\Settings\ProductController::class,'updateProduct']);
     });
 
 });
