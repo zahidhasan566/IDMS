@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\CustomerController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
 use \App\Http\Controllers\UserController;
@@ -309,8 +310,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('service-4p-list',                  [EvaluationForService4PController::class,'index']);
         Route::get('get-service-4p-supporting-data',    [EvaluationForService4PController::class,'getSupportingData']);
         Route::post('report',                           [EvaluationReportController::class,'index']);
-        Route::post('details-report',             [EvaluationReportController::class,'detailsReport']);
-        Route::post('service4p-store',                    [EvaluationForService4PController::class,'store4p']);
+        Route::post('details-report',                   [EvaluationReportController::class,'detailsReport']);
+        Route::post('service4p-store',                   [EvaluationForService4PController::class,'store4p']);
         Route::get('get-service-4p-part-2-supporting-data/{evaluationId}', [EvaluationForService4PController::class,'getSupportingDataPart2']);
         Route::post('service4p-store-part2',                    [EvaluationForService4PController::class,'store4pPart2']);
 //        Route::post('service-4p-list',               [EvaluationForService4PController::class,'index']);
@@ -320,8 +321,17 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::get('product-supporting-data',                    [\App\Http\Controllers\Settings\ProductController::class,'supportingData']);
         Route::post('product-list',                    [\App\Http\Controllers\Settings\ProductController::class,'index']);
         Route::post('product-store',                    [\App\Http\Controllers\Settings\ProductController::class,'store']);
+
+        //CUSTOMER
+        Route::post('get-all-customer',                  [CustomerController::class,'index']);
+        Route::post('customer-store',                    [CustomerController::class,'store']);
+        Route::post('customer-update',                    [CustomerController::class,'update']);
+        Route::get('customer-edit/{CustomerCode}',                     [CustomerController::class,'edit']);
+        Route::get('get-all-customer-type',              [CustomerController::class,'getAllCustomerType']);
+
         Route::get('get/product/modal/{productCode}',[\App\Http\Controllers\Settings\ProductController::class,'getExistingProduct']);
         Route::post('product-update',                    [\App\Http\Controllers\Settings\ProductController::class,'updateProduct']);
+
     });
 
 });
