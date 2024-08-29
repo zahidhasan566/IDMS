@@ -74,7 +74,7 @@ export default {
         },
 
         exportData() {
-            bus.$emit('export-data','bay-list-'+moment().format('YYYY-MM-DD'))
+            bus.$emit('export-data','product-list-'+moment().format('YYYY-MM-DD'))
         }
     }
 }

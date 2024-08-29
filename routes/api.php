@@ -328,6 +328,10 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('customer-update',                    [CustomerController::class,'update']);
         Route::get('customer-edit/{CustomerCode}',                     [CustomerController::class,'edit']);
         Route::get('get-all-customer-type',              [CustomerController::class,'getAllCustomerType']);
+
+        Route::get('get/product/modal/{productCode}',[\App\Http\Controllers\Settings\ProductController::class,'getExistingProduct']);
+        Route::post('product-update',                    [\App\Http\Controllers\Settings\ProductController::class,'updateProduct']);
+
     });
 
 });
