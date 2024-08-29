@@ -120,7 +120,9 @@ import PromotionList from '../views/promotion/List.vue'
 import PromotionReport from '../views/promotion/Report.vue'
 import PromotionTopSheet from "../views/promotion/TopSheet.vue"
 import ChangePassword from "../views/settings/ChangePassword.vue"
-import Customer from "../views/settings/Customer/List.vue"
+import CustomerList from "../views/settings/Customer/List.vue"
+import CustomerCreate from "../views/settings/Customer/Create.vue"
+import CustomerEdit from "../views/settings/Customer/Edit.vue"
 
 import NotFound from '../views/404/Index';
 // import Profile from '../views/profile/Index';
@@ -430,11 +432,9 @@ const routes = [
                 name: 'ChangePassword',
                 component: ChangePassword,
             },
-            {
-                path: baseurl + 'settings/customer',
-                name: 'Customer',
-                component: Customer,
-            },
+            {path: baseurl + 'settings/customer', name: 'CustomerList', component: CustomerList},
+            {path: baseurl + 'settings/customer-create', name: 'CustomerCreate', component: CustomerCreate},
+            {path: baseurl + 'settings/customer-edit/:CustomerCode', name: 'CustomerEdit', component: CustomerEdit},
             {
                 path: baseurl + 'dealer/users',
                 name: 'DealerUser',

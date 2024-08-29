@@ -9,54 +9,6 @@
         <div class="card">
           <div class="datatable" v-if="!isLoading">
             <div class="card-body">
-              <div class="d-flex">
-                <div class="flex-grow-1">
-                  <ValidationObserver v-slot="{ handleSubmit }">
-                    <form @submit.prevent="handleSubmit(getAllCustomer)" @keydown.enter="$event.preventDefault()">
-                      <div class="row">
-                        <div class="col-md-2">
-                          <ValidationProvider name="ChassisNo" mode="eager" v-slot="{ errors }" rules="">
-                            <div class="form-group">
-                              <label>Chassis No<span class="error">*</span></label>
-                              <input class="form-control" type="text" value="" v-model="form.ChassisNo" placeholder="Enter Chassis No">
-                              <span class="error-message"> {{ errors[0] }}</span>
-                            </div>
-                          </ValidationProvider>
-                        </div>
-                        <div class="col-md-2">
-                          <ValidationProvider name="DateFrom" mode="eager" v-slot="{ errors }" rules="">
-                            <div class="form-group">
-                              <label>Date From</label>
-                              <date-picker v-model="form.DateFrom" valueType="format"></date-picker>
-                              <span class="error-message"> {{ errors[0] }}</span>
-                            </div>
-                          </ValidationProvider>
-                        </div>
-                        <div class="col-md-2">
-                          <ValidationProvider name="DateTo" mode="eager" v-slot="{ errors }" rules="">
-                            <div class="form-group">
-                              <label>Date To</label>
-                              <date-picker v-model="form.DateTo" valueType="format"></date-picker>
-                              <span class="error-message"> {{ errors[0] }}</span>
-                            </div>
-                          </ValidationProvider>
-                        </div>
-                        <div class="col-md-2" style="margin-top: 30px">
-                          <button type="submit" class="btn btn-success"><i class="mdi mdi-filter"></i>Filter</button>
-                          <button type="button" class="btn btn-info" @click="loadInvoice"><i class="mdi mdi-reload"></i>Reload</button>
-                        </div>
-                      </div>
-                    </form>
-                  </ValidationObserver>
-                </div>
-                <div class="card-tools">
-                  <div class="row">
-                    <div class="col-md-12">
-<!--                      <input v-model="query" type="text" class="form-control" placeholder="Search">-->
-                    </div>
-                  </div>
-                </div>
-              </div>
               <div class="table-responsive">
                 <table class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm small">
                   <thead class="thead-dark">
@@ -64,7 +16,7 @@
                     <th v-for="(item, index) in headers">
                       {{formatHeading(item.toString())}}
                     </th>
-                    <th style="width: 12%">Action</th>
+                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -73,16 +25,9 @@
                         {{ item[item2] }}
                       </td>
                       <td>
-                        <router-link :to="`invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-primary btn-sm small">
-                          <i class="mdi mdi-printer"></i>
+                        <router-link :to="`customer-edit/${item.CustomerCode}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm">
+                          <i class="mdi mdi-account-edit"></i>
                         </router-link>
-                        <router-link :to="`invoice-show/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm">
-                          <i class="mdi mdi-eye"></i>
-                        </router-link>
-                        <router-link :to="`brta-invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm">
-                          <i class="mdi mdi-printer"></i> H Form(BRTA)
-                        </router-link>
-                        <button @click="destroy(item.InvoiceID)" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-danger btn-sm" v-if="isAdmin === '1'"><i class="fas fa-trash"></i></button>
                       </td>
                     </tr>
                   </tbody>
@@ -159,19 +104,16 @@ export default {
   },
   mounted() {
     document.title = 'Customer List | DMS';
-    this.getAllInvoice();
+    this.getAllCustomer();
   },
   methods: {
-    getAllInvoice(){
+    getAllCustomer(){
       this.isLoading = true
       this.form.Export = '';
-      this.form.post(baseurl + "api/get-all-customer", this.config()).then(response => {
-        console.log(response.data)
-       let invoice = response.data.invoice.original;
-        if (invoice.data.length > 0){
-          this.headers = Object.keys(invoice.data[0])
-          this.contents = invoice.data
-          this.isAdmin = response.data.isAdmin
+      this.form.post(baseurl + "api/settings/get-all-customer", this.config()).then(response => {
+        if (response.data.data.length > 0){
+          this.headers = Object.keys(response.data.data[0])
+          this.contents = response.data.data
           this.exportShow = false;
           this.isLoading = false
         }else {
@@ -179,22 +121,20 @@ export default {
           this.exportShow = true;
           this.isLoading = false
         }
-
-        this.form.pagination.current_page = invoice.paginationData[0].current_page;
-        this.form.pagination.from = invoice.paginationData[0].from;
-        this.form.pagination.to = invoice.paginationData[0].to;
-        this.form.pagination.total = invoice.paginationData[0].total;
-        this.form.pagination.last_page = invoice.paginationData[0].last_page;
+        this.form.pagination.current_page = response.data.paginationData[0].current_page;
+        this.form.pagination.from = response.data.paginationData[0].from;
+        this.form.pagination.to = response.data.paginationData[0].to;
+        this.form.pagination.total = response.data.paginationData[0].total;
+        this.form.pagination.last_page = response.data.paginationData[0].last_page;
       }).catch(e => {
         //
       });
     },
-    exportInvoice(){
+    exportCustomer(){
       this.form.Export = 'Y';
-      this.form.post(baseurl + "api/get-all-invoice", this.config())
+      this.form.post(baseurl + "api/settings/get-all-customer", this.config())
           .then((response)=>{
-            let invoice = response.data.invoice.original;
-            let dataSets = invoice.data;
+            let dataSets = response.data.data;
             if (dataSets.length > 0) {
               let columns = Object.keys(dataSets[0]);
               columns = columns.filter((item) => item !== 'row_num');
@@ -203,35 +143,9 @@ export default {
                 let title = item.replace(rex, '$1$4 $2$3$5')
                 return {title, key: item}
               });
-              bus.$emit('data-table-import', dataSets, columns, 'Invoice Export')
+              bus.$emit('data-table-import', dataSets, columns, 'Customer Export')
             }
           }).catch((error)=>{
-      })
-    },
-    loadInvoice(){
-      this.form.ChassisNo = '';
-      this.getAllInvoice();
-    },
-    destroy(id){
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios.get(baseurl + 'api/invoice-delete/'+ id, this.config()).then((response)=>{
-            this.getAllInvoice();
-            Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-            )
-          })
-        }
       })
     },
     formatHeading(item) {
