@@ -78,7 +78,8 @@ class InvoiceController extends Controller
             $invoiceDate  = date('Y-m-d', strtotime("now"));
             $invoiceTime  = date('Y-m-d H:i:s', strtotime("now"));
 
-            $invoiceNo  = $this->generateInvoiceNo($MasterCode, $invoiceDate);
+//            $invoiceNo  = $this->generateInvoiceNo($MasterCode, $invoiceDate);
+            $invoiceNo = $this->generateJobCardInvoiceNo();
             $VerifyCode = $this->generateVerifyCode();
 
             //FOR IMAGE
@@ -459,7 +460,6 @@ class InvoiceController extends Controller
         $res = array();
         do {
             $rows = $pdo->fetchAll(\PDO::FETCH_ASSOC);
-            dd($rows);
             $res[] = $rows;
         } while ($pdo->nextRowset());
         return $res;

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\CustomerType;
+use App\Models\User;
 use App\Traits\CodeGeneration;
 use App\Traits\CommonTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -51,6 +53,7 @@ class CustomerController extends Controller
         }
 
         try {
+            DB::beginTransaction();
             $customer = new Customer();
             $customer->CustomerCode     = $request->CustomerCode;
             $customer->CustomerName     = $request->CustomerName;
@@ -91,6 +94,19 @@ class CustomerController extends Controller
             $customer->OwnerType        = '';
             $customer->SubBusinessCode  = '';
             $customer->save();
+
+
+            $user = new User();
+            $user->UserId = $request->CustomerCode;
+            $user->UserName = $request->CustomerName;
+            $user->Designation = 'Dealer';
+            $passwordData = DB::select("select dbo.ufn_PasswordEncode('$request->CustomerCode') as RawPass");
+            $user->Password = $passwordData[0]->RawPass;;
+            $user->RoleId = 'customer';
+            $user->Active = 0;
+            $user->save();
+
+            Db::commit();
 
             return response()->json([
                 'status'    => 'success',

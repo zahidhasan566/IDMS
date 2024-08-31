@@ -1,0 +1,2 @@
+{"CustomerCode":"testJn1","CustomerName":"test1Name","DistrictCode":"125c2","Gender":"Male","Add1":"test","Add2":"test","Email":"test@gmaiul.com","ContactPerson":null,"Mobile":"01774601166","Thana":"C","NID":"C","Business":"B","CustomerType":"C","PaymentMode":"B"}
+{"CustomerCode":"testJn1","CustomerName":"test1Name","DistrictCode":"125c2","Gender":"Male","Add1":"test","Add2":"test","Email":"test@gmaiul.com","ContactPerson":null,"Mobile":"01774601166","Thana":"C","NID":"C","Business":"B","CustomerType":"C","PaymentMode":"B"}

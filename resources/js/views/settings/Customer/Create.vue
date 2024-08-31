@@ -59,6 +59,7 @@
                                   <option value="Female">Female</option>
                                   <option value="Other">Other</option>
                                 </select>
+                                  <span class="error-message"> {{ errors[0] }}</span>
                               </div>
                             </div>
                             </ValidationProvider>
@@ -74,7 +75,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="Add2" mode="eager" rules="" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-4 col-form-label text-right">Address 2<span style="color: red">*</span></label>
+                                <label class="col-lg-4 col-form-label text-right">Address 2</label>
                                 <div class="col-lg-8">
                                   <input name="Add2" type="text" class="form-control" v-model="form.Add2" />
                                   <div class="error" v-if="form.errors.has('Add2')" v-html="form.errors.get('Add2')" />
@@ -82,9 +83,9 @@
                                 </div>
                               </div>
                             </ValidationProvider>
-                            <ValidationProvider name="Email" mode="eager" rules="" v-slot="{ errors }">
+                            <ValidationProvider name="Email" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-4 col-form-label text-right">Email</label>
+                                <label class="col-lg-4 col-form-label text-right">Email <span style="color: red">*</span></label>
                                 <div class="col-lg-8">
                                   <input name="Email" type="text" class="form-control" v-model="form.Email" />
                                   <div class="error" v-if="form.errors.has('Email')" v-html="form.errors.get('Email')" />
@@ -95,7 +96,7 @@
                           </div>
 
                           <div class="col-md-7">
-                            <ValidationProvider name="ContactPerson" mode="eager" rules="" v-slot="{ errors }">
+                            <ValidationProvider name="ContactPerson" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
                                 <label class="col-lg-4 col-form-label text-right">Contact Person</label>
                                 <div class="col-lg-8">
@@ -149,7 +150,7 @@
                                 </div>
                               </div>
                             </ValidationProvider>
-                            <ValidationProvider name="PaymentMode" mode="eager" rules="" v-slot="{ errors }">
+                            <ValidationProvider name="PaymentMode" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
                                 <label class="col-lg-4 col-form-label text-right">Payment Mode<span style="color: red">*</span></label>
                                 <div class="col-lg-8">
@@ -244,6 +245,7 @@ export default {
       this.form.post(baseurl + "api/settings/customer-store", this.config()).then(response => {
         this.$toaster.success(response.data.message);
         this.PreLoader = false;
+        this.$router.go(0)
       }).catch(e => {
         this.PreLoader = false;
         this.$toaster.error(e.data.message);

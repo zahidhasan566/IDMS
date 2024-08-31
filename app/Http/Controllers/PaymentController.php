@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\CustomerMapping;
 use App\Models\OrderInvoiceDetails;
 use App\Models\Payment;
@@ -89,7 +90,8 @@ class PaymentController extends Controller
         ]);
     }
     public function getCustomerCode(){
-        $customers= $this->customerInfo();
+        //$customers= $this->customerInfo();
+        $customers= $this->loadCustomer();
         return response([
             'data'=>$customers
         ]);
@@ -141,12 +143,14 @@ class PaymentController extends Controller
                     'message' =>'Cheque No. is required'],500);
             }
         }
+        $customer = Customer::where('CustomerCode',Auth::user()->UserId)->first();
 
-        $depotCode = $request->customer['DepotCode'];
-        $business = $request->customer['Business'];
-        $SalesType = $request->customer['PaymentMode'];
-        $CustomerCode = $request->customer['CustomerCode'];
-        $CustomerMasterCode = $request->customer['CustomerMasterCode'];
+
+        $depotCode = $customer['DepotCode'];
+        $business = $customer['Business'];
+        $SalesType = $customer['PaymentMode'];
+        $CustomerCode = $customer['CustomerCode'];
+        $CustomerMasterCode = $customer['CustomerCode'];
         $PreparedDate =Carbon::now()->format('Y-m-d');
         $bankCode =$request->bankCode['BankCode'];
         $paymentAmount = $request->payment;

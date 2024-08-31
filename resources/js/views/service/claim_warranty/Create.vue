@@ -593,11 +593,18 @@ export default {
     jobCardWiseInfo(){
       this.PreLoader = true;
       axios.get(baseurl + "api/job-card-wise-info?JobCardNo=" + this.form.JobCardNo, this.config()).then(response => {
-        console.log(response.data.data)
-        this.form.fill(response.data.data);
-        this.calculateAllPartsInfo()
-        this.jobCardInfoEnable = true;
-        this.PreLoader = false;
+          if(response.data.status === 'success'){
+              console.log(response.data.data)
+              this.form.fill(response.data.data);
+              this.calculateAllPartsInfo()
+              this.jobCardInfoEnable = true;
+              this.PreLoader = false;
+          }
+          else{
+              console.log(response)
+              this.$toaster.error(response.data.message);
+          }
+
       }).catch(e => {
         this.$toaster.error(response.data.message);
       });

@@ -53,7 +53,7 @@ class CommonSapController extends Controller
                     file_put_contents('public/log/sap/sap_product_file_not_acceptable_create.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Not Acceptable ! Check Format Or Empty Value',
+                        'message' => 'Not Acceptable ! Check Format Or Empty Or Existing  Value',
                         'ErrorProduct'=>$singleProduct
                     ], 406);
                 }
@@ -66,7 +66,7 @@ class CommonSapController extends Controller
         }
         catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap/sap_product_error.txt', $exception->getMessage() . "\n", FILE_APPEND);
+            file_put_contents('public/log/sap/sap_product_error.txt', $exception->getMessage().'-'.$exception->getLine() . "\n", FILE_APPEND);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!' . $exception->getMessage().'-'.$exception->getLine()
@@ -75,48 +75,48 @@ class CommonSapController extends Controller
     }
     public function storeSapCustomer(Request $request)
     {
-        dd($request);
         try {
             $requestCustomers = $request->all();
             $customerCount = 0;
             foreach ($requestCustomers as $singleCustomer) {
-                if (!empty($singleCustomer['ProductCode']) && !empty($singleProduct['ProductName']) && !empty($singleProduct['BrandCode'])
-                    && !empty($singleCustomer['UnitPrice']) && !empty($singleProduct['VAT']) && !empty($singleProduct['MRP'])
-                    && !empty($singleCustomer['Business']) && !empty($singleProduct['Active'])) {
-
+                if (!empty($singleCustomer['CustomerCode']) && !empty($singleCustomer['CustomerName']) && !empty($singleCustomer['DistrictCode'])
+                    && !empty($singleCustomer['Gender']) && !empty($singleCustomer['Add1']) && !empty($singleCustomer['Email'])
+                    && !empty($singleCustomer['Mobile']) && !empty($singleCustomer['Thana'])
+                    && !empty($singleCustomer['NID']) && !empty($singleCustomer['CustomerType']) && !empty($singleCustomer['PaymentMode']))
+                {
                     //Check Already Exist Or Not
-                    $checkExisting =  Product::where('ProductCode',$singleProduct['ProductCode'])->first();
-                    if(!empty($checkExisting->ProductCode)){
-                        file_put_contents('public/log/sap/sap_product_file_already_exist.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+                    $existCustomerCheck = Customer::query()->where('CustomerCode',$singleCustomer['CustomerCode'])->exists();
+                    if ($existCustomerCheck){
+                        file_put_contents('public/log/sap/sap_customer_file_already_exist.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                         return response()->json([
-                            'status' => 'error',
-                            'message' => 'Already Exist',
-                            'ErrorProduct'=>$singleProduct
-                        ], 409);
+                            'status'    => 'error',
+                            'message'   => 'Customer Already Exist',
+                            'ErrorCustomer'=>$singleCustomer
+                        ],409);
                     }
                     else{
                         $customerCount +=1;
                         DB::beginTransaction();
 
-                        //Product Create
+                        //Customer Create
                         $customer = new Customer();
-                        $customer->CustomerCode     = $request->CustomerCode;
-                        $customer->CustomerName     = $request->CustomerName;
-                        $customer->Gender           = $request->Gender;
-                        $customer->Add1             = $request->Add1;
-                        $customer->Add2             = $request->Add2 ? $request->Add2 : '';
-                        $customer->DistrictCode     = $request->DistrictCode;
-                        $customer->ThanaCode        = $request->ThanaCode;
-                        $customer->Email            = $request->Email;
-                        $customer->ContactPerson    = $request->ContactPerson ? $request->ContactPerson : '';
+                        $customer->CustomerCode     = $singleCustomer['CustomerCode'];
+                        $customer->CustomerName     = $singleCustomer['CustomerName'];
+                        $customer->Gender           = $singleCustomer['Gender'];
+                        $customer->Add1             = $singleCustomer['Add1'];
+                        $customer->Add2             = $singleCustomer['Add2'];
+                        $customer->DistrictCode     = $singleCustomer['DistrictCode'];
+                        $customer->ThanaCode        = $singleCustomer['Thana'];
+                        $customer->Email            = $singleCustomer['Email'];
+                        $customer->ContactPerson    = $singleCustomer['ContactPerson'];
                         $customer->Phone            = '';
-                        $customer->Mobile           = $request->Mobile;
-                        $customer->ThanaCode        = $request->ThanaCode;
-                        $customer->NID              = $request->NID;
-                        $customer->Business         = $request->Business ? $request->Business : '';
-                        $customer->DepotCode        = $request->DepotCode ? $request->DepotCode : '';
-                        $customer->CustomerType     = $request->CustomerType;
-                        $customer->PaymentMode      = $request->PaymentMode;
+                        $customer->Mobile           = $singleCustomer['Mobile'];
+                        $customer->ThanaCode        = $singleCustomer['Thana'];
+                        $customer->NID              = $singleCustomer['NID'];
+                        $customer->Business         = $singleCustomer['Business'];
+                        $customer->DepotCode        = '';
+                        $customer->CustomerType     = $singleCustomer['CustomerType'];
+                        $customer->PaymentMode      = $singleCustomer['PaymentMode'];
                         $customer->CreditDays       = '';
                         $customer->CreditLimit      = '';
                         $customer->Metro            = '';
@@ -135,7 +135,7 @@ class CommonSapController extends Controller
                         $customer->RegistrationAdd1 = '';
                         $customer->RegistrationAdd2 = '';
                         $customer->FathersName      = '';
-                        $customer->DOB              = null;
+                        $customer->DOB              = '';
                         $customer->OwnerType        = '';
                         $customer->SubBusinessCode  = '';
                         $customer->save();
@@ -143,23 +143,23 @@ class CommonSapController extends Controller
                     }
                 } else {
                     DB::rollBack();
-                    file_put_contents('public/log/sap/sap_product_file_not_acceptable_create.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+                    file_put_contents('public/log/sap/sap_customer_file_not_acceptable_create.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Not Acceptable ! Check Format Or Empty Value',
-                        'ErrorProduct'=>$singleProduct
+                        'message' => 'Not Acceptable ! Check Format Or Empty Or Existing Value',
+                        'ErrorProduct'=>$singleCustomer
                     ], 406);
                 }
             }
             return response()->json([
                 'status' => 'Success',
-                'message' => 'Product Added Successfully',
-                'ProductCount'=>$customerCount
+                'message' => 'Customer Added Successfully',
+                'CustomerCount'=>$customerCount
             ], 200);
         }
         catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap/sap_product_error.txt', $exception->getMessage() . "\n", FILE_APPEND);
+            file_put_contents('public/log/sap/sap_customer_error.txt', $exception->getMessage().'-'.$exception->getLine() . "\n", FILE_APPEND);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!' . $exception->getMessage().'-'.$exception->getLine()

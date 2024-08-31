@@ -500,3 +500,39 @@ SQLSTATE[23000]: [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Cannot in
 SQLSTATE[23000]: [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Cannot insert the value NULL into column 'Discount', table 'MotorMC.dbo.DealarInvoiceDetails'; column does not allow nulls. INSERT fails. (SQL: insert into [DealarInvoiceDetails] ([InvoiceID], [ProductCode], [ProductName], [Quantity], [UnitPrice], [VAT], [Discount], [ChassisNo], [EngineNo], [Color], [FuelUsed], [HorsePower], [RPM], [CubicCapacity], [WheelBase], [Weight], [TireSizeFront], [Seats], [NoofTyre], [NoofAxel], [ClassOfVehicle], [MakerName], [MakerCountry], [EngineType], [NumberofCylinders], [ImportYear], [SalesType], [CreditAmount], [CreditTenureMonth]) values (2100062, C202, FZ-X (BYJ1) Matt Titan MFG, 1, 309000.0000, 0, ?, PS2RG93100A003349, G3N5E0439027, BLACK/GREY, OCTANE, 12.4 PS, 7250, 150, 1330 MM, 139 KG, 100/80-17M/C 52P, Two, Two, Two, Motorcycle, MS. ACI MOTORS LTD. BANGLADESH, INDIA, 4 Stroke, One, 2024, cash, 0, 0))
 SQLSTATE[23000]: [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Cannot insert the value NULL into column 'Discount', table 'MotorMC.dbo.DealarInvoiceDetails'; column does not allow nulls. INSERT fails. (SQL: insert into [DealarInvoiceDetails] ([InvoiceID], [ProductCode], [ProductName], [Quantity], [UnitPrice], [VAT], [Discount], [ChassisNo], [EngineNo], [Color], [FuelUsed], [HorsePower], [RPM], [CubicCapacity], [WheelBase], [Weight], [TireSizeFront], [Seats], [NoofTyre], [NoofAxel], [ClassOfVehicle], [MakerName], [MakerCountry], [EngineType], [NumberofCylinders], [ImportYear], [SalesType], [CreditAmount], [CreditTenureMonth]) values (2100064, C202, FZ-X (BYJ1) Matt Titan MFG, 1, 309000.0000, 0, ?, PS2RG93100A003349, G3N5E0439027, BLACK/GREY, OCTANE, 12.4 PS, 7250, 150, 1330 MM, 139 KG, 100/80-17M/C 52P, Two, Two, Two, Motorcycle, MS. ACI MOTORS LTD. BANGLADESH, INDIA, 4 Stroke, One, 2024, cash, 0, 0))
 SQLSTATE[23000]: [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Cannot insert the value NULL into column 'Discount', table 'MotorMC.dbo.DealarInvoiceDetails'; column does not allow nulls. INSERT fails. (SQL: insert into [DealarInvoiceDetails] ([InvoiceID], [ProductCode], [ProductName], [Quantity], [UnitPrice], [VAT], [Discount], [ChassisNo], [EngineNo], [Color], [FuelUsed], [HorsePower], [RPM], [CubicCapacity], [WheelBase], [Weight], [TireSizeFront], [Seats], [NoofTyre], [NoofAxel], [ClassOfVehicle], [MakerName], [MakerCountry], [EngineType], [NumberofCylinders], [ImportYear], [SalesType], [CreditAmount], [CreditTenureMonth]) values (2100070, C202, FZ-X (BYJ1) Matt Titan MFG, 1, 309000.0000, 0, ?, PS2RG93100A003349, G3N5E0439027, BLACK/GREY, OCTANE, 12.4 PS, 7250, 150, 1330 MM, 139 KG, 100/80-17M/C 52P, Two, Two, Two, Motorcycle, MS. ACI MOTORS LTD. BANGLADESH, INDIA, 4 Stroke, One, 2024, cash, 0, 0))
+SQLSTATE[42000]: [Microsoft][ODBC Driver 13 for SQL Server][SQL Server]Invalid length parameter passed to the substring function. (SQL: SELECT CASE WHEN '' IS NULL OR '' = '' THEN 1
+                            ELSE CAST(
+                                SUBSTRING(
+                                  '', 
+                                  LEN('HC001'+'/'+'24')+1, 
+                                LEN('') - LEN('HC001'+'/'+ '24')) AS NUMERIC(18, 0)) + 1
+                            END as invoiceSerial)
+SQLSTATE[42000]: [Microsoft][ODBC Driver 13 for SQL Server][SQL Server]Invalid length parameter passed to the substring function. (SQL: SELECT CASE WHEN '' IS NULL OR '' = '' THEN 1
+                            ELSE CAST(
+                                SUBSTRING(
+                                  '', 
+                                  LEN('HC001'+'/'+'24')+1, 
+                                LEN('') - LEN('HC001'+'/'+ '24')) AS NUMERIC(18, 0)) + 1
+                            END as invoiceSerial)
+SQLSTATE[42000]: [Microsoft][ODBC Driver 13 for SQL Server][SQL Server]Invalid length parameter passed to the substring function. (SQL: SELECT CASE WHEN '' IS NULL OR '' = '' THEN 1
+                            ELSE CAST(
+                                SUBSTRING(
+                                  '', 
+                                  LEN('HC001'+'/'+'24')+1, 
+                                LEN('') - LEN('HC001'+'/'+ '24')) AS NUMERIC(18, 0)) + 1
+                            END as invoiceSerial)
+SQLSTATE[42000]: [Microsoft][ODBC Driver 13 for SQL Server][SQL Server]Invalid length parameter passed to the substring function. (SQL: SELECT CASE WHEN '' IS NULL OR '' = '' THEN 1
+                            ELSE CAST(
+                                SUBSTRING(
+                                  '', 
+                                  LEN('HC0001'+'/'+'24')+1, 
+                                LEN('') - LEN('HC0001'+'/'+ '24')) AS NUMERIC(18, 0)) + 1
+                            END as invoiceSerial)
+SQLSTATE[42000]: [Microsoft][ODBC Driver 13 for SQL Server][SQL Server]Invalid length parameter passed to the substring function. (SQL: SELECT CASE WHEN '' IS NULL OR '' = '' THEN 1
+                            ELSE CAST(
+                                SUBSTRING(
+                                  '', 
+                                  LEN('HC0001'+'/'+'24')+1, 
+                                LEN('') - LEN('HC0001'+'/'+ '24')) AS NUMERIC(18, 0)) + 1
+                            END as invoiceSerial)
+SQLSTATE[42S02]: [Microsoft][ODBC Driver 13 for SQL Server][SQL Server]Invalid object name 'MotorMC.dbo.DealarInvoiceDetails'. (SQL: EXEC usp_FreeServiceScheduleInsert 'PS2RG82100A031507' )
