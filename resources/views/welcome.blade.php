@@ -11,7 +11,7 @@
 {{--    <link rel="preconnect" href="https://fonts.googleapis.com">--}}
 {{--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>--}}
 {{--    <link href="https://fonts.googleapis.com/css2?family=Mulish&display=swap" rel="stylesheet">--}}
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+{{--    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">--}}
     <link rel="stylesheet" href="{{ asset('plugins/chartist/css/chartist.min.css') }}"/>
     <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset('assets/css/metismenu.min.css')}}" rel="stylesheet" type="text/css">
