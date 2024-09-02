@@ -60,7 +60,7 @@ trait DashboardTrait
 
     public function doStoreReceivable($userId, $invoiceNo)
     {
-        $sql = "exec usp_DealarReceiveInsert '$userId', '$invoiceNo'";
+        $sql = "exec usp_DealarReceiveInsert_idms '$userId', '$invoiceNo'";
         return DB::select($sql);
     }
 

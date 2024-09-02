@@ -123,3 +123,8 @@ a {
     display: none;
   }
 }
+@media (max-width: 1200px) {
+  .wrapper-page {
+    left: 0;
+  }
+}

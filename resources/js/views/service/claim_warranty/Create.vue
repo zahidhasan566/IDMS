@@ -603,9 +603,11 @@ export default {
           else{
               console.log(response)
               this.$toaster.error(response.data.message);
+              this.PreLoader = false;
           }
 
       }).catch(e => {
+          this.PreLoader = false;
         this.$toaster.error(response.data.message);
       });
     },
