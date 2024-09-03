@@ -1689,6 +1689,7 @@ export default {
             // console.log('finalError', this.errors.length)
             // console.log('finalError2', this.duplicateErrors.length)
             this.$store.commit('submitButtonLoadingStatus', true);
+            this.buttonShow = false;
 
             if (this.duplicateErrors.length === 0 && this.errors.length === 0) {
                 let url = '';
