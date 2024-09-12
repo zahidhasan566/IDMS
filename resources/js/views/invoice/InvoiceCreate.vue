@@ -224,11 +224,11 @@
                                 </div>
                               </div>
                             </ValidationProvider>
-                            <ValidationProvider name="YRCisKnown" mode="eager" rules="required" v-slot="{ errors }">
+                            <ValidationProvider name="IFADisKnown" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-4 col-form-label text-right">Do you know YRC?<span style="color: red">*</span></label>
+                                <label class="col-lg-4 col-form-label text-right">Do you know IFAD Group ?<span style="color: red">*</span></label>
                                 <div class="col-lg-8">
-                                  <select name="YRCisKnown" class="form-control" v-model="form.YRCisKnown" style="margin: 0">
+                                  <select name="IFADisKnown" class="form-control" v-model="form.YRCisKnown" style="margin: 0">
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </select>
@@ -341,7 +341,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="ProductIntroducingMedia" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">How did you come to know about this model of Yamaha?<span style="color: red">*</span></label>
+                                <label class="col-lg-7 col-form-label text-right">How did you come to know about this model of IFAD?<span style="color: red">*</span></label>
                                 <div class="col-lg-5 text-left">
                                   <multiselect
                                       v-model="form.ProductIntroducingMedia"
@@ -360,7 +360,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="interestInProduct" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">Which features of this model of Yamaha made you interested in this product?<span style="color: red">*</span></label>
+                                <label class="col-lg-7 col-form-label text-right">Which features of this model of IFAD made you interested in this product?<span style="color: red">*</span></label>
                                 <div class="col-lg-5 text-left">
                                   <multiselect
                                       v-model="form.interestInProduct"
@@ -441,7 +441,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="wantJoinYRC" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">Will you join YRC<span style="color: red">*</span>.</label>
+                                <label class="col-lg-7 col-form-label text-right">Will you join IFAD<span style="color: red">*</span>.</label>
                                 <div class="col-lg-5 text-left">
                                   <select name="wantJoinYRC" class="form-control" v-model="form.wantJoinYRC" style="margin: 0">
                                     <option value="Present Member">Present Member</option>

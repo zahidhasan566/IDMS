@@ -270,7 +270,7 @@ class InvoiceController extends Controller
                 $encodedInfo        = base64_encode($invoice->InvoiceID . '.' . $request->Mobile . '.' . $VerifyCode . '.' . $invoice->InvoiceID);
                 $feedbackBaseUrl    = 'http://feedback.yamahabd.com/';
                 $feedbackLink       = $feedbackBaseUrl . '?i=' . $encodedInfo;
-                $smsText            = "Dear Customer: Thanks for buying from Yamaha. You can give your valuable feedback through the link bellow." . "\n" . $feedbackLink;
+                $smsText            = "Dear Customer: Thanks for buying from IFAD. You can give your valuable feedback through the link bellow." . "\n" . $feedbackLink;
                 $this->sendSms($request->Mobile, $smsText);
 
                 DB::commit();

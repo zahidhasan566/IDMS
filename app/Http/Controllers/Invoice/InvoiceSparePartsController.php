@@ -32,15 +32,19 @@ class InvoiceSparePartsController extends Controller
         if ($user->RoleId === 'customer') {
             $query->where('DealarInvoiceMaster.MasterCode',$user->UserId);
         }
-        return $query->select('DealarInvoiceMaster.InvoiceID','DealarInvoiceMaster.InvoiceNo','InvoiceTime','CustomerName','MobileNo as CustomerMobile',
-                DB::raw("SUM(DealarInvoiceDetails.Quantity) as Quantity"),
-                DB::raw("SUM(DealarInvoiceDetails.UnitPrice) as TotalUnitPrice"),
-                DB::raw("SUM(DealarInvoiceDetails.VAT) as TotalVAT"),
-                DB::raw("SUM(DealarInvoiceDetails.Discount) as TotalDiscountPercentage"),
+        $invoices = $query->select('DealarInvoiceMaster.InvoiceID','DealarInvoiceMaster.InvoiceNo','InvoiceTime','CustomerName','MobileNo as CustomerMobile',
+            DB::raw("SUM(DealarInvoiceDetails.Quantity) as Quantity"),
+            DB::raw("SUM(DealarInvoiceDetails.UnitPrice) as TotalUnitPrice"),
+            DB::raw("SUM(DealarInvoiceDetails.VAT) as TotalVAT"),
+            DB::raw("SUM(DealarInvoiceDetails.Discount) as TotalDiscountPercentage"),
             DB::raw("SUM(((DealarInvoiceDetails.UnitPrice + DealarInvoiceDetails.VAT) * DealarInvoiceDetails.Quantity) - ((DealarInvoiceDetails.UnitPrice + DealarInvoiceDetails.VAT) * DealarInvoiceDetails.Quantity) * (1/100)) as TotalPrice"))
             ->groupBy('DealarInvoiceMaster.InvoiceID','DealarInvoiceMaster.InvoiceNo','InvoiceTime','CustomerName','MobileNo')
-            ->orderBy('InvoiceTime','desc')
-            ->paginate($take);
+            ->orderBy('InvoiceTime','desc');
+
+        //dd($invoices->toSql());
+        return $invoices->paginate($take);
+
+
     }
 
     public function getSparePartsSupportingData()

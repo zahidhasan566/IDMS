@@ -35,7 +35,7 @@ class FreeServiceFollowUpController extends Controller
       return response()->json([
           'data'=>$list
       ]);
-      return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
+     // return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
 
   }
     public function update(Request $request){

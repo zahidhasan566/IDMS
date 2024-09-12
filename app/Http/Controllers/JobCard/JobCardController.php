@@ -313,7 +313,14 @@ class JobCardController extends Controller
             $tblJobCard->ACIEmployeeId = $request->staffId;
             $tblJobCard->DiscountPercent = $request->discount;
             $tblJobCard->ReservationNo = null;
-            $tblJobCard->JobStartTime = Carbon::now();
+            if($request->jobStatus['StatusCode']==='Ongoing'){
+                $tblJobCard->JobStartTime =  Carbon::now();
+            }
+            else{
+                $tblJobCard->JobStartTime =  null;
+            }
+
+
             $tblJobCard->JobEndTime = null;
             $tblJobCard->LocalMechanicsCode = !empty($request->reference) ? $request->reference['MechanicsCode'] : '';
             $tblJobCard->IUser = $userId;
@@ -548,6 +555,8 @@ class JobCardController extends Controller
 
                 //Job Status Close
                 $existingJobCard->JobStatus = 'Close';
+                $existingJobCard->JobEndTime = Carbon::now();
+                $existingJobCard->TimeTaken =  $existingJobCard->JobEndTime->diffInMinutes($existingJobCard->JobStartTime);
                 $existingJobCard->save();
                 DB::commit();
 
@@ -636,9 +645,14 @@ class JobCardController extends Controller
             }
 
             //For Ydt File
-            $ydtFile = TblJobCard::where('JobCardNo', $request->jobCardNo)->first();
-            if (!empty($ydtFile->YTD_File) && file_exists(public_path('uploads/JobCardYdt/' . $ydtFile->YTD_File))) {
-                unlink(public_path('uploads/JobCardYdt/' . $ydtFile->YTD_File));
+            $jobFile = TblJobCard::where('JobCardNo', $request->jobCardNo)->first();
+            if (!empty($jobFile->YTD_File) && file_exists(public_path('uploads/JobCardYdt/' . $jobFile->YTD_File))) {
+                unlink(public_path('uploads/JobCardYdt/' . $jobFile->YTD_File));
+            }
+            if($jobFile->JobStartTime===null && $jobStatus =='OnGoing'){
+                $jobStartTime = Carbon::now();
+            }else{
+                $jobStartTime =  $jobFile->JobStartTime;
             }
 
             TblJobCard::where('JobCardNo', $request->jobCardNo)->update([
@@ -670,7 +684,8 @@ class JobCardController extends Controller
                 'DiscountType' => $request->discountType,
                 'ACIEmployeeId' => $request->staffId,
                 'DiscountPercent' => $request->discount,
-                'JobEndTime' => Carbon::now(),
+                'JobStartTime' => $jobStartTime,
+                'JobEndTime' => null,
                 'LocalMechanicsCode' => !empty($request->reference['MechanicsCode']) ? $request->reference['MechanicsCode'] : '',
                 'IUser' => $userId,
                 'IDate' => Carbon::now(),
@@ -744,7 +759,7 @@ class JobCardController extends Controller
         $url = 'http://aci.yamahabd.com/customer/index/' . base64_encode($jobCardNo);
 
         $smsContent = "Dear " . $request->customerName . ",\n" .
-            "Thanks for visiting our dealership.\n Please find your Vehicle Service Status using the Link.\n" . $url . "\n Let’s keep our environment Green & have a safe ride.\n ACI Motors-Yamaha Bangladesh";
+            "Thanks for visiting our dealership.\n Please find your Vehicle Service Status using the Link.\n" . $url . "\n Let’s keep our environment Green & have a safe ride.\n IFAD Bangladesh";
 
         $this->sendSmsQ($request->mobileNo, '8809617615000', 'Dms_V2', 'jobCard', '', $userId, 'smsq', $smsContent);
     }

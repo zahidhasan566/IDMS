@@ -95,7 +95,7 @@
                                     <th class="text-center">Schedule Title</th>
                                     <th class="text-center">Mileage</th>
                                     <th class="text-center">Print</th>
-                                    <th class="text-center">YTD File</th>
+                                    <th class="text-center">Diagnosis File</th>
                                     <th class="text-center" v-if="me.RoleId==='sa'">Action</th>
                                 </tr>
                                 </thead>

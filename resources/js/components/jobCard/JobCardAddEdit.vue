@@ -373,10 +373,10 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <ValidationProvider name="YDT status" mode="eager" rules="required"
+                                                    <ValidationProvider name="Diagnosis status" mode="eager" rules="required"
                                                                         v-slot="{ errors }">
                                                         <div class="form-group row">
-                                                            <label for="ytdStatus" class="col-lg-3 col-form-label">YDT
+                                                            <label for="ytdStatus" class="col-lg-3 col-form-label">Diagnosis
                                                                 status <span class="error">*</span></label>
                                                             <div class="col-lg-9">
                                                                 <select class="form-control" name="ytdStatus"
@@ -393,7 +393,7 @@
                                                 </div>
                                                 <div class="col-md-4" v-if="!ytdNoTag">
                                                     <div class="form-group row">
-                                                        <label for="ydTFile" class="col-lg-3 col-form-label">YDT
+                                                        <label for="ydTFile" class="col-lg-3 col-form-label">Diagnosis
                                                             File</label>
                                                         <div class="col-lg-9">
                                                             <input type="file" class="form-control"
@@ -406,7 +406,7 @@
                                                 <div class="col-md-4" v-if="ytdNoTag">
                                                     <div class="form-group row">
                                                         <label for="failureAnalysis" class="col-lg-3 col-form-label">
-                                                            Reason of YDT <span class="error">*</span> </label>
+                                                            Reason of Diagnosis <span class="error">*</span> </label>
                                                         <div class="col-lg-9">
                                                             <multiselect v-model="reasonOfYDT" :options="ytdNoReason"
                                                                          :multiple="false"
@@ -1683,6 +1683,8 @@ export default {
                 this.duplicateErrors = []
             }
         },
+
+
         onSubmit() {
             this.checkPartsFieldValue()
             this.checkServiceFieldValue()
