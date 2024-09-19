@@ -90,7 +90,8 @@ class JobCardController extends Controller
             'BayCode',
             'BayName',
             DB::raw("CONCAT(BayCode,'-',BayName) AS Details")
-        )->where('ServiceCenterCode', $userId)->where('Active', 'Y')->get();
+        )->where('Active', 'Y')->get();
+
         $allTechnician = TblTechnicianSetup::select(
             'TblTechnicianSetup.DefaultBay',
             'TblBaySetup.BayName',
@@ -102,10 +103,10 @@ class JobCardController extends Controller
             ->leftjoin("TblBaySetup", function ($join) use ($userId) {
                 $join->on("TblBaySetup.BayCode", "=", "TblTechnicianSetup.DefaultBay")
                     //->on("TblBaySetup.ServiceCenterCode", "=", "TblTechnicianSetup.ServiceCenterCode")
-                    ->where('TblBaySetup.ServiceCenterCode', $userId)
+                    //->where('TblBaySetup.ServiceCenterCode', $userId)
                     ->where('TblTechnicianSetup.Active', 'Y');
             })
-            ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
+           // ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
             ->get();
 
 
@@ -366,7 +367,7 @@ class JobCardController extends Controller
                 }
             }
             //Send Sms To The User
-            $this->SendJobCardSms($request,$jobCardNo);
+            //$this->SendJobCardSms($request,$jobCardNo);
 
             return response()->json([
                 'status' => 'Success',

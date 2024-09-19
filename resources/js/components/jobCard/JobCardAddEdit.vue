@@ -413,8 +413,8 @@
                                                                          :close-on-select="true"
                                                                          :clear-on-select="false"
                                                                          :preserve-search="false"
-                                                                         placeholder="Reason Of Ytd"
-                                                                         label="Ytd_Stauts_Reason" track-by="Id">
+                                                                         placeholder="Reason Of Diagnosis"
+                                                                         label="Diagnosis" track-by="Id">
 
                                                             </multiselect>
                                                         </div>
@@ -935,6 +935,10 @@
                     </div>
                 </div>
             </div>
+
+            <div>
+                <loader v-if="PreLoader" object="#ff9633" color1="#ffffff" color2="#17fd3d" size="5" speed="2" bg="#343a40" objectbg="#999793" opacity="80" name="circular"></loader>
+            </div>
         </div>
         <!-- container-fluid -->
     </div>
@@ -1008,6 +1012,7 @@ export default {
             fiNoTag: false,
             reasonOfYDT: '',
             reasonOfFI: '',
+            PreLoader:false,
 
 
             read: true,
@@ -1141,12 +1146,17 @@ export default {
                         StatusName: existingJobCardInfo.JobStatus,
                         StatusCode: existingJobCardInfo.JobStatus
                     }
-                    setTimeout(() => {
-                        instance.jobType = {
-                            JobTypeName: existingJobCardInfo.JobTypeName,
-                            Id: existingJobCardInfo.JobTypeId
-                        }
-                    }, 500)
+                    // setTimeout(() => {
+                    //     instance.jobType = {
+                    //         JobTypeName: existingJobCardInfo.JobTypeName,
+                    //         Id: existingJobCardInfo.JobTypeId
+                    //     }
+                    // }, 500)
+
+                    instance.jobType = {
+                        JobTypeName: existingJobCardInfo.JobTypeName,
+                        Id: existingJobCardInfo.JobTypeId
+                    }
 
 
                     let updateJobCardServiceName = ''
@@ -1154,19 +1164,25 @@ export default {
                     if (existingJobCardInfo.ScheduleTitle != null && parseInt(existingJobCardInfo.FreeSScheduleID) !== 0) {
                         updateJobCardServiceName = existingJobCardInfo.ScheduleTitle
                         updateJobCardServiceId = existingJobCardInfo.FreeSScheduleID
-                        instance.checkLastServiceHistory(existingJobCardInfo.ChassisNo);
+                        //instance.checkLastServiceHistory(existingJobCardInfo.ChassisNo);
                         instance.childJobTypeStatusReadOnly = false
                     } else {
                         updateJobCardServiceName = existingJobCardInfo.JobTypeName
                         updateJobCardServiceId = existingJobCardInfo.JobTypeId
                         instance.childJobTypeStatusReadOnly = true
                     }
-                    setTimeout(() => {
-                        instance.ServiceNo = {
-                            JobTypeName: updateJobCardServiceName,
-                            Id: updateJobCardServiceId
-                        }
-                    }, 500)
+                    // setTimeout(() => {
+                    //     instance.ServiceNo = {
+                    //         JobTypeName: updateJobCardServiceName,
+                    //         Id: updateJobCardServiceId
+                    //     }
+                    // }, 500)
+
+
+                    instance.ServiceNo = {
+                        JobTypeName: updateJobCardServiceName,
+                        Id: updateJobCardServiceId
+                    }
 
                     instance.ytdStatus = existingJobCardInfo.YTD_status
                     if (existingJobCardInfo.YTD_status === 'N') {
@@ -1683,15 +1699,17 @@ export default {
                 this.duplicateErrors = []
             }
         },
-
-
         onSubmit() {
-            this.checkPartsFieldValue()
-            this.checkServiceFieldValue()
-            // console.log('finalError', this.errors.length)
-            // console.log('finalError2', this.duplicateErrors.length)
+            this.PreLoader = true;
             this.$store.commit('submitButtonLoadingStatus', true);
             this.buttonShow = false;
+
+            this.checkPartsFieldValue()
+            this.checkServiceFieldValue()
+
+            // console.log('finalError', this.errors.length)
+            // console.log('finalError2', this.duplicateErrors.length)
+
 
             if (this.duplicateErrors.length === 0 && this.errors.length === 0) {
                 let url = '';
@@ -1744,7 +1762,9 @@ export default {
                     serviceFields: this.serviceFields,
                     reference: this.reference
                 }, (response) => {
+                    this.PreLoader = false;
                     this.successNoti(response.message);
+                    this.buttonShow = true;
                     bus.$emit('refresh-datatable');
                     this.$store.commit('submitButtonLoadingStatus', false);
                     if (this.actionType === 'edit') {
@@ -1756,10 +1776,12 @@ export default {
                         location.reload();
                     }
                 }, (error) => {
+                    this.PreLoader = false;
                     this.errorNoti(error);
                     this.$store.commit('submitButtonLoadingStatus', false);
                 })
             } else {
+                this.PreLoader = false;
                 location.reload();
                 this.$store.commit('submitButtonLoadingStatus', false);
                 this.errorNoti('Check Stock And Mandatory Field');

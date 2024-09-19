@@ -233,7 +233,8 @@ const routes = [
             {
                 path: baseurl + 'jobcard/display',
                 name: 'JobCardDisplay',
-                component: JobCardDisplay
+                component: JobCardDisplay,
+                meta: { hideTopBar: true, hideSideMenu: true }
             },
             {
                 path: baseurl + 'jobcard/report',
