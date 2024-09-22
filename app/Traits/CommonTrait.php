@@ -9,6 +9,7 @@ use App\Models\CustomerMapping;
 use App\Models\JobCard\TblWorkSetup;
 use App\Models\Menu;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\TestRide\TestRideAgents;
 use App\Services\BusinessService;
 use App\Services\DepartmentService;
@@ -30,7 +31,10 @@ trait CommonTrait
             'allSubMenus' => Menu::whereNotIn('MenuID',['Dashboard','Users'])->with('allSubMenus')->orderBy('MenuOrder','asc')->get()
         ]);
     }
-
+    public function roleList(){
+        $list = Role::Select('RoleId','RoleName')->get();
+        return  $list;
+    }
     public function searchProduct(Request $request){
         $ProductCode = $request->ProductCode;
         $products= Product::select('ProductCode','ProductName')->where('Business','C')->where('Active','Y')->where('MRP','>','0')->where('UnitPrice','>','10')

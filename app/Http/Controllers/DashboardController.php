@@ -6,6 +6,7 @@ use App\Models\DealerReceiveInvoiceDetails;
 use App\Models\Invoice;
 use App\Models\InvoiceReceiveSurvey;
 use App\Models\InvoiceReceiveSurveyAnswers;
+use App\Models\OrderInvoiceMaster;
 use App\Traits\CommonTrait;
 use App\Traits\DashboardTrait;
 use Carbon\Carbon;
@@ -161,7 +162,75 @@ class DashboardController extends Controller
         return response()->json([
            'data' => $sql
         ]);
+    }
+    public function pendingOrders(Request $request){
+        $UserId = Auth::user()->UserId;
+        $RoleId = Auth::user()->RoleId;
+        $sql = $this->doLoadPendingOrders($RoleId,$UserId);
+        return response()->json([
+            'data' => $sql
+        ]);
+    }
+    public function storeApproved(Request $request)
+    {
+        $request->validate([
+            'orderNo' => 'required'
+        ]);
+        try {
+            $orderNo = $request->orderNo;
+            $userId = Auth::user()->UserId;
+            $roleId = Auth::user()->RoleId;
+            $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
+            if ($roleId=='tm' ||$roleId=='se' ){
+                $approval->Level1Approved='Y';
+                $approval->Level1ApprovedBy=$userId;
+                $approval->Level1ApprovedDate=Carbon::now();
 
+            }elseif($roleId=='hos' ||$roleId=='hose'){
+                $approval->Level2Approved='Y';
+                $approval->Level2ApprovedBy=$userId;
+                $approval->Level2ApprovedDate=Carbon::now();
+            }else{
+                $approval->Level3Approved='Y';
+                $approval->Level3ApprovedBy=$userId;
+                $approval->Level3ApprovedDate=Carbon::now();
+            }
+                $approval->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Approved Successful'
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!',
+                'error' => $exception->getMessage()
+            ],500);
+        }
+    }
+    public function editApproved(Request $request)
+    {
+        $request->validate([
+            'orderNo' => 'required'
+        ]);
+        try {
+            $orderNo = $request->orderNo;
+            $list = DB::table('OrderInvoiceMaster as m')
+                ->select('m.OrderNo','d.ProductCode','p.ProductName','d.Quantity','d.UnitPrice','d.VAT')
+                ->join('OrderInvoiceDetails as d','d.OrderNo','=','m.OrderNo')
+                ->join('Product as p','p.ProductCode','=','d.ProductCode')
+                ->where('m.OrderNo',$orderNo)
+                ->get();
 
+            return response()->json([
+                'data' => $list
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!',
+                'error' => $exception->getMessage()
+            ],500);
+        }
     }
 }

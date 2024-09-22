@@ -224,6 +224,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('user-customer',[UserCustomerController::class,'index']);
         Route::post('user-customer/store',[UserCustomerController::class,'store']);
         Route::post('user-customer/delete',[UserCustomerController::class,'delete']);
+        Route::get('get-all-roles',[UserCustomerController::class,'getAllRole']);
     });
 
     Route::group(['prefix' => 'logistics'],function () {

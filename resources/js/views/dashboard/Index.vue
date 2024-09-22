@@ -16,7 +16,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#receivable" role="tab" @click="openTab('receivable')">
-              <span> <i class="ti-hand-drag"></i> Receivable</span>
+              <span> <i class="ti-layout-list-thumb"></i> Receivable</span>
             </a>
           </li>
           <li class="nav-item">
@@ -27,6 +27,11 @@
           <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#currentBalance" role="tab" @click="openTab('currentBalance')">
               <span> <i class="ti-money"></i> Current Balance</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#pendingOrders" role="tab" @click="openTab('pendingOrders')">
+              <span> <i class="ti-more-alt"></i> Pending Orders</span>
             </a>
           </li>
         </ul>
@@ -67,6 +72,9 @@
                   </table>
               </div>
           </div>
+          <div class="tab-pane p-3" id="pendingOrders" role="tabpanel">
+            <PendingOrders v-if="tabProps.pendingOrders"/>
+          </div>
         </div>
       </div>
     </div>
@@ -79,7 +87,7 @@ import Orders from "../../components/dashboard/Orders.vue"
 import Receivable from "../../components/dashboard/Receivable.vue"
 import Sales from "../../components/dashboard/Sales.vue"
 import Services from "../../components/dashboard/Services.vue"
-import WarrantyClaimed from "../../components/dashboard/WarrantyClaimed.vue"
+import PendingOrders from "../../components/dashboard/PendingOrders.vue"
 import Logistics from "../../components/dashboard/Logistics.vue"
 import CurrentBalance from "../../components/dashboard/CurrentBalance.vue"
 import {bus} from "../../app";
@@ -87,7 +95,7 @@ import moment from "moment/moment";
 
 export default {
   mixins: [Common],
-  components: {Orders, Receivable, Sales, Services, WarrantyClaimed, Logistics, CurrentBalance},
+  components: {Orders, Receivable, PendingOrders, Logistics, CurrentBalance},
   data() {
     return {
       tabProps: {
@@ -99,6 +107,7 @@ export default {
         warranty: false,
         logistics: false,
         currentBalance: false,
+        pendingOrders: false,
       },
         prevBalance:0,
         bikeTotalBalance:0,
@@ -126,6 +135,7 @@ export default {
         warranty: false,
         logistics: false,
         currentBalance: false,
+        pendingOrders: false,
         bikeLedgerBalance:[],
         sparePartsBalance:[],
         totalBalance:0
@@ -191,6 +201,7 @@ export default {
       if (page === 'orders') this.tabProps.orders = true
       if (page === 'receivable') this.tabProps.receivable = true
       if (page === 'logistics') this.tabProps.logistics = true
+      if (page === 'pendingOrders') this.tabProps.pendingOrders = true
       if (page === 'currentBalance') {
         this.getCurrentBalance()
         this.tabProps.currentBalance = true

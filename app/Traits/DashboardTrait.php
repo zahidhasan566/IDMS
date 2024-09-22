@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\DealerStock;
+use http\Env\Request;
 use Illuminate\Support\Facades\DB;
 
 trait DashboardTrait
@@ -104,6 +105,13 @@ trait DashboardTrait
 
     public function doLoadMyOrders($Order){
         $sql = "exec usp_LoadMyOrdersNew '$Order'";
+        $list = DB::select($sql);
+        return $list;
+
+    }
+
+    public function doLoadPendingOrders($userId,$roleId){
+        $sql = "exec SP_OrderMasterPendingList '$roleId','$userId'";
         $list = DB::select($sql);
         return $list;
 
