@@ -5,6 +5,7 @@ namespace App\Http\Controllers\JobCard;
 use App\Http\Controllers\Controller;
 use App\Models\TestRide\TestRideAgents;
 use App\Models\UserCustomer;
+use App\Traits\CommonTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use Ramsey\Uuid\Exception\UnableToBuildUuidException;
 
 class UserCustomerController extends Controller
 {
+    use CommonTrait;
     public function index(Request $request){
         $take = $request->take;
         $search = $request->search;
@@ -69,6 +71,7 @@ class UserCustomerController extends Controller
         $region = $request->region;
         $active = $request->active;
         $userType = $request->userType;
+
         try{
             //Store USER CUSTOMER
             $exist = UserCustomer::where('UserId','=',$userId)->where('CustomerCode','=',$customerCode)->where('RegionName','=',$region)->first();
@@ -106,5 +109,13 @@ class UserCustomerController extends Controller
             $id = $request->row['UserCustomerId'];
             UserCustomer::where('UserCustomerId', $id)->delete();
             return response()->json(['message' => "User Customer deleted successfully"]);
+    }
+
+    public function getAllRole()
+    {
+        $roles = $this->roleList();
+        return response()->json([
+            'data'=>$roles
+        ]);
     }
 }
