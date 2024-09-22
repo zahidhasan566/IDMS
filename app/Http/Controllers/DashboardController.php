@@ -71,18 +71,23 @@ class DashboardController extends Controller
     public function storeReceivable(Request $request)
     {
         $request->validate([
+            'details' => 'required',
             'invoiceNo' => 'required'
         ]);
         try {
             $invoiceNo = $request->invoiceNo;
             $userId = Auth::user()->UserId;
-            $data = $this->doStoreReceivable($userId,$invoiceNo);
+            $orderDetails = $request->details;
+            $data = $this->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
             if (isset($data[0]->rcount) && intval($data[0]->rcount) > 0) {
                 $receiveId = $data[0]->ReceiveID;
                 $receiveDetails = DealerReceiveInvoiceDetails::where('ReceiveID',$receiveId)->get();
-                if (!empty($receiveDetails)) {
-                    foreach ($receiveDetails as $detail) {
-                        $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
+                $invoice = Invoice::where('InvoiceNo',$invoiceNo)->where('Business','P')->first();
+                if ($invoice) {
+                    if (!empty($receiveDetails)) {
+                        foreach ($receiveDetails as $detail) {
+                            $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
+                        }
                     }
                 }
             }

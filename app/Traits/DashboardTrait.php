@@ -54,7 +54,7 @@ trait DashboardTrait
             ->where('i.Returned', 'N')
             ->where('i.InvoiceNo', $invoiceNo)
             ->where('DRIM.InvoiceNo', NULL)
-            ->where('SB.DepotCode', 'H')
+            ->where('invd.SalesQTY','>',0)
             ->select('i.InvoiceNo', 'p.ProductName', 'SB.BatchNo as ChassisNo', 'SB.EngineNo', 'invd.SalesQTY as Quantity', DB::raw("invd.SalesTP+invd.SalesVat as UnitPrice"));
     }
 
@@ -62,6 +62,21 @@ trait DashboardTrait
     {
         $sql = "exec usp_DealarReceiveInsert_idms '$userId', '$invoiceNo'";
         return DB::select($sql);
+    }
+
+    public function doStorePartialReceivable($userId, $invoiceNo, $orderDetails)
+    {
+        try {
+            if (count($orderDetails)) {
+                foreach ($orderDetails as $order) {
+
+                }
+            }
+            return false;
+        } catch (\Exception $exception) {
+            dd($exception->getMessage());
+            return false;
+        }
     }
 
     public function doUpdateStock($userId, $productCode, $quantity)
