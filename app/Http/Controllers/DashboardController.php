@@ -199,6 +199,22 @@ class DashboardController extends Controller
                     $approval->Level3ApprovedBy=$userId;
                     $approval->Level3ApprovedDate=Carbon::now();
                 }
+            }elseif ($actionType=='reject'){
+                $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
+                if ($roleId==='tm' ||$roleId==='se' ){
+                    $approval->Level1Approved='C';
+                    $approval->Level1ApprovedBy=$userId;
+                    $approval->Level1ApprovedDate=Carbon::now();
+
+                }elseif($roleId==='hos' ||$roleId==='hose'){
+                    $approval->Level2Approved='C';
+                    $approval->Level2ApprovedBy=$userId;
+                    $approval->Level2ApprovedDate=Carbon::now();
+                }else{
+                    $approval->Level3Approved='C';
+                    $approval->Level3ApprovedBy=$userId;
+                    $approval->Level3ApprovedDate=Carbon::now();
+                }
             }else{
                 DB::beginTransaction();
                 $preparedArray = $request->products;
@@ -266,7 +282,7 @@ class DashboardController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Approved Successful'
+                'message' => 'Successful'
             ]);
         } catch (\Exception $exception) {
             DB::rollBack();

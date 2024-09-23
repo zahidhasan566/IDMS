@@ -6,6 +6,11 @@
             <a href="javascript:" @click="doApproved(row.item.OrderNo)"><i class="ti-check"></i></a>
         </span>
       </template>
+      <template slot="reject" slot-scope="row">
+        <span>
+            <a href="javascript:" @click="doReject(row.item.OrderNo)"><i class="ti-close" style="color: red "></i></a>
+        </span>
+      </template>
       <template slot="action" slot-scope="row">
         <span>
              <router-link class="btn btn-primary" :to="{path:'dashboard/edit-approve?orderNo='+row.item.OrderNo}">
@@ -27,14 +32,14 @@ export default {
       tableOptions: {
         source: 'dashboard/pending-orders',
         search: true,
-        slots: [6,7],
+        slots: [6,7,8],
         hideColumn: [],
-        slotsName: ['approved','action'],
+        slotsName: ['approved','reject','action'],
         sortable: [],
         pages: [20, 50, 100],
-        addHeader: ['Approved','Action']
+        addHeader: ['Approved','Reject','Action']
       },
-      actionType :'approved'
+      actionType :''
     }
   },
   mounted() {
@@ -45,7 +50,22 @@ export default {
       this.loading = false
     },
     doApproved(orderNo) {
+      this.actionType='approved'
       this.approveAlert(() => {
+        this.axiosPost('dashboard/pending-orders/store',{
+          orderNo: orderNo,
+          actionType:this.actionType
+        },(response) => {
+          this.infoSuccess('Success',response.message)
+          bus.$emit('refresh-datatable');
+        },(error) => {
+          this.infoFailed('Failed!',error.data.response.message)
+        })
+      })
+    },
+    doReject(orderNo) {
+      this.actionType='reject'
+      this.deleteAlert(() => {
         this.axiosPost('dashboard/pending-orders/store',{
           orderNo: orderNo,
           actionType:this.actionType
