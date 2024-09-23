@@ -6,6 +6,7 @@ use App\Models\DealerReceiveInvoiceDetails;
 use App\Models\Invoice;
 use App\Models\InvoiceReceiveSurvey;
 use App\Models\InvoiceReceiveSurveyAnswers;
+use App\Models\OrderInvoiceDetails;
 use App\Models\OrderInvoiceMaster;
 use App\Traits\CommonTrait;
 use App\Traits\DashboardTrait;
@@ -173,34 +174,102 @@ class DashboardController extends Controller
     }
     public function storeApproved(Request $request)
     {
-        $request->validate([
-            'orderNo' => 'required'
-        ]);
         try {
+
             $orderNo = $request->orderNo;
+            $actionType = $request->actionType;
             $userId = Auth::user()->UserId;
             $roleId = Auth::user()->RoleId;
-            $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
-            if ($roleId=='tm' ||$roleId=='se' ){
-                $approval->Level1Approved='Y';
-                $approval->Level1ApprovedBy=$userId;
-                $approval->Level1ApprovedDate=Carbon::now();
 
-            }elseif($roleId=='hos' ||$roleId=='hose'){
-                $approval->Level2Approved='Y';
-                $approval->Level2ApprovedBy=$userId;
-                $approval->Level2ApprovedDate=Carbon::now();
+            $sql = DB::statement("exec usp_OrderInvoiceDetailsLogInsert '$userId', '$orderNo'");
+
+            if ($actionType=='approved'){
+                $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
+                if ($roleId==='tm' ||$roleId==='se' ){
+                    $approval->Level1Approved='Y';
+                    $approval->Level1ApprovedBy=$userId;
+                    $approval->Level1ApprovedDate=Carbon::now();
+
+                }elseif($roleId==='hos' ||$roleId==='hose'){
+                    $approval->Level2Approved='Y';
+                    $approval->Level2ApprovedBy=$userId;
+                    $approval->Level2ApprovedDate=Carbon::now();
+                }else{
+                    $approval->Level3Approved='Y';
+                    $approval->Level3ApprovedBy=$userId;
+                    $approval->Level3ApprovedDate=Carbon::now();
+                }
             }else{
-                $approval->Level3Approved='Y';
-                $approval->Level3ApprovedBy=$userId;
-                $approval->Level3ApprovedDate=Carbon::now();
+                DB::beginTransaction();
+                $preparedArray = $request->products;
+                $unique_check = collect($preparedArray);
+                $unique_check = $unique_check->pluck('ProductCode');
+                $productCodes = [];
+                foreach ($unique_check as $each) {
+                    $productCodes[] = $each;
+                }
+                $unique = array_unique($productCodes);
+
+                $unique_check = $unique_check->toArray();
+
+                $result = array_values(array_diff_key($unique_check, $unique));
+
+                if ($result) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You have added '.$result[0].' multiple times!'
+                    ]);
+                }
+                $no =$preparedArray[0]['OrderNo'];
+                $approval = OrderInvoiceMaster::where('OrderNo',$no)->first();
+                $sql = DB::statement("exec usp_OrderInvoiceDetailsLogInsert '$userId', '$no'");
+                if (!empty($approval)){
+                    if ($roleId==='tm' ||$roleId==='se' ){
+                        $approval->Level1Approved='Y';
+                        $approval->Level1ApprovedBy=$userId;
+                        $approval->Level1ApprovedDate=Carbon::now();
+                    }elseif($roleId==='hos' ||$roleId==='hose'){
+                        $approval->Level2Approved='Y';
+                        $approval->Level2ApprovedBy=$userId;
+                        $approval->Level2ApprovedDate=Carbon::now();
+                    }else{
+                        $approval->Level3Approved='Y';
+                        $approval->Level3ApprovedBy=$userId;
+                        $approval->Level3ApprovedDate=Carbon::now();
+                    }
+                }
+                foreach ($preparedArray as $key){
+
+                    $details = OrderInvoiceDetails::where('OrderNo',$key['OrderNo'])->where('ProductCode',$key['ProductCode'])->first();
+
+                    if(!empty($details)){
+                        OrderInvoiceDetails::where('OrderNo',$key['OrderNo'])->where('ProductCode',$key['ProductCode'])->update([
+                            'Quantity'=>$key['Quantity']
+                        ]);
+                    }else{
+                        if ( $key['Quantity'] >0 ){
+                            $details = new OrderInvoiceDetails();
+                            $details->OrderNo = $key['OrderNo'];
+                            $details->ProductCode = $key['ProductCode'];
+                            $details->Quantity = $key['Quantity'];
+                            $details->UnitPrice = $key['UnitPrice'];
+                            $details->Vat = $key['VAT'];
+                            $details->save();
+                        }
+                    }
+
+                }
+
+
             }
-                $approval->save();
+            $approval->save();
+            DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Approved Successful'
             ]);
         } catch (\Exception $exception) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!',

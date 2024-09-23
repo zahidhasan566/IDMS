@@ -14,13 +14,11 @@
         </span>
       </template>
     </advanced-datatable>
-    <add-survey-modal @changeStatus="changeStatus" v-if="loading"/>
   </div>
 </template>
 <script>
 import {Common} from "../../mixins/common";
 import {bus} from '../../app'
-import {baseurl} from "../../base_url";
 export default {
   mixins: [Common],
   data() {
@@ -35,13 +33,12 @@ export default {
         sortable: [],
         pages: [20, 50, 100],
         addHeader: ['Approved','Action']
-      }
+      },
+      actionType :'approved'
     }
   },
   mounted() {
-    bus.$on('open-receivable-tab', () => {
-      console.log('this is receivable component')
-    })
+
   },
   methods: {
     changeStatus() {
@@ -50,31 +47,19 @@ export default {
     doApproved(orderNo) {
       this.approveAlert(() => {
         this.axiosPost('dashboard/pending-orders/store',{
-          orderNo: orderNo
+          orderNo: orderNo,
+          actionType:this.actionType
         },(response) => {
           this.infoSuccess('Success',response.message)
           bus.$emit('refresh-datatable');
         },(error) => {
-          console.log(error)
           this.infoFailed('Failed!',error.data.response.message)
         })
       })
     },
-    doSurvey(orderNo) {
-      this.loading = true;
-      setTimeout(() => {
-        bus.$emit('survey-event', orderNo);
-      })
-    },
-    viewDetails(orderNo) {
-      this.loading = true;
-      setTimeout(() => {
-        bus.$emit('details-event', orderNo);
-      })
-    },
+
   },
   destroyed() {
-    bus.$off('open-receivable-tab')
   }
 }
 </script>

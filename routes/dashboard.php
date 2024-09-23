@@ -21,5 +21,5 @@ Route::group(['middleware' => 'jwt:api','prefix' => 'dashboard'], function () {
     //pendingOrders
     Route::post('pending-orders', [DashboardController::class,'pendingOrders']);
     Route::post('pending-orders/store',[DashboardController::class,'storeApproved']);
-    Route::post('edit-approve',[DashboardController::class,'editApproved']);
+    Route::get('edit-approve',[DashboardController::class,'editApproved']);
 });
