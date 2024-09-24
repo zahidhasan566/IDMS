@@ -6,8 +6,10 @@ use App\Models\JobCard\DealarInvoiceDetails;
 use App\Models\JobCard\DealarInvoiceMaster;
 use App\Models\JobCard\ReturnDealarInvoiceLog;
 use App\Models\Product;
+use App\Models\ReturnScrappedProduct;
 use App\Services\StockService;
 use App\Traits\CodeGeneration;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -140,6 +142,31 @@ class InvoiceSparePartsService
         }
         return [];
     }
+    public static function getScrapInvoiceDetails($invoiceNo,$userId)
+    {
+        $invoiceMaster = DB::table('DealarReceiveInvoiceMaster','dim')
+            ->join('Customer as c','c.CustomerCode','dim.MasterCode')
+            ->where('dim.InvoiceNo',$invoiceNo)->where('MasterCode',$userId)
+            ->select('dim.ReceiveID','dim.invoiceno as InvoiceNo', 'dim.InvoiceDate as InvoiceDate', 'dim.DeliveryDate as DeliveryDate',
+              'C.CustomerCode as CustomerCode', 'C.CustomerName as CustomerName',)
+            ->first();
+        if ($invoiceMaster) {
+            $invoiceDetails = DB::table('DealarReceiveInvoiceDetails','did')
+                ->join('Product as p','p.ProductCode','did.ProductCode')
+                ->where('did.ReceiveID',$invoiceMaster->ReceiveID)
+                ->select('did.ReceiveDetailsId', 'did.ReceiveID', 'did.ProductCode', 'p.ProductName',
+                    'did.ReceivedQnty as Quantity',
+                    'did.UnitPrice',
+                    'did.VAT',
+                    DB::raw("(did.UnitPrice * did.ReceivedQnty)+(did.VAT) as TotalAmount"))
+                ->get();
+            return [
+                'invoiceMaster' => $invoiceMaster,
+                'invoiceDetails' => $invoiceDetails
+            ];
+        }
+        return [];
+    }
 
     public static function return($detail,$invoiceNo)
     {
@@ -173,6 +200,33 @@ class InvoiceSparePartsService
                 Log::error("Failed to commit.");
                 return false;
             }
+            return true;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error($exception->getMessage());
+            return false;
+        }
+    }
+    public static function returnScrap($detail,$invoiceNo)
+    {
+        try {
+            DB::beginTransaction();
+            $scrapProducts = new ReturnScrappedProduct();
+            $scrapProducts->ReceiveID = $detail['ReceiveID'];
+            $scrapProducts->InvoiceNo = $invoiceNo;
+            $scrapProducts->ProductCode = $detail['ProductCode'];
+            $scrapProducts->ReceivedQnty = $detail['Quantity'];
+            $scrapProducts->RequestToReturnQnty = $detail['rQuantity'];
+            $scrapProducts->Reason = $detail['Reason'];
+            $scrapProducts->ApproveStatus = 'Pending';
+            $scrapProducts->UnitPrice = $detail['UnitPrice'];
+            $scrapProducts->Vat = $detail['VAT'];
+            $scrapProducts->Total = floatval($detail['TotalAmount']);
+            $scrapProducts->RequestedBy = Auth::user()->UserId;
+            $scrapProducts->RequestedDate = Carbon::now();
+            $scrapProducts->save();
+
+            DB::commit();
             return true;
         } catch (\Exception $exception) {
             DB::rollBack();

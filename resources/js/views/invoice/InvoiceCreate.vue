@@ -226,13 +226,13 @@
                             </ValidationProvider>
                             <ValidationProvider name="IFADisKnown" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-4 col-form-label text-right">Do you know IFAD Group ?<span style="color: red">*</span></label>
+                                <label class="col-lg-4 col-form-label text-right">Do you know Royal Enfield ?<span style="color: red">*</span></label>
                                 <div class="col-lg-8">
-                                  <select name="IFADisKnown" class="form-control" v-model="form.YRCisKnown" style="margin: 0">
+                                  <select name="IFADisKnown" class="form-control" v-model="form.REisKnown" style="margin: 0">
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </select>
-                                  <div class="error" v-if="form.errors.has('YRCisKnown')" v-html="form.errors.get('YRCisKnown')" />
+                                  <div class="error" v-if="form.errors.has('REisKnown')" v-html="form.errors.get('REisKnown')" />
                                   <span class="error-message"> {{ errors[0] }}</span>
                                 </div>
                               </div>
@@ -311,7 +311,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="NID" mode="eager" rules="" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">N.I.D/Passport No./Birth Certificate<span style="color: red">*</span></label>
+                                <label class="col-lg-7 col-form-label text-right">N.I.D/Passport No./Birth Certificate/Driving License<span style="color: red">*</span></label>
                                 <div class="col-lg-5 text-left">
                                   <input name="NID" type="text" class="form-control" v-model="form.NID" />
                                   <div class="error" v-if="form.errors.has('NID')" v-html="form.errors.get('NID')" />
@@ -341,7 +341,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="ProductIntroducingMedia" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">How did you come to know about this model of IFAD?<span style="color: red">*</span></label>
+                                <label class="col-lg-7 col-form-label text-right">How did you come to know about this model of Royal Enfield?<span style="color: red">*</span></label>
                                 <div class="col-lg-5 text-left">
                                   <multiselect
                                       v-model="form.ProductIntroducingMedia"
@@ -360,7 +360,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="interestInProduct" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">Which features of this model of IFAD made you interested in this product?<span style="color: red">*</span></label>
+                                <label class="col-lg-7 col-form-label text-right">Which features of this model of Royal Enfield made you interested in this product?<span style="color: red">*</span></label>
                                 <div class="col-lg-5 text-left">
                                   <multiselect
                                       v-model="form.interestInProduct"
@@ -439,16 +439,16 @@
                                 </div>
                               </div>
                             </ValidationProvider>
-                            <ValidationProvider name="wantJoinYRC" mode="eager" rules="required" v-slot="{ errors }">
+                            <ValidationProvider name="wantJoinRE" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-7 col-form-label text-right">Will you join IFAD<span style="color: red">*</span>.</label>
+                                <label class="col-lg-7 col-form-label text-right">Will you join Royal Enfield Club<span style="color: red">*</span>.</label>
                                 <div class="col-lg-5 text-left">
-                                  <select name="wantJoinYRC" class="form-control" v-model="form.wantJoinYRC" style="margin: 0">
+                                  <select name="wantJoinRE" class="form-control" v-model="form.wantJoinRE" style="margin: 0">
                                     <option value="Present Member">Present Member</option>
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </select>
-                                  <div class="error" v-if="form.errors.has('wantJoinYRC')" v-html="form.errors.get('wantJoinYRC')" />
+                                  <div class="error" v-if="form.errors.has('wantJoinRE')" v-html="form.errors.get('wantJoinRE')" />
                                   <span class="error-message"> {{ errors[0] }}</span>
                                 </div>
                               </div>
@@ -903,7 +903,7 @@ export default {
         DistrictCode : '',
         Email : '',
         InquirySale : '0',
-        YRCisKnown : 'yes',
+        REisKnown : 'yes',
         DateOfBirth : moment().format('yyyy-MM-DD'),
         CustomerOccupation : '',
         OwnerTyp : 'Private',
@@ -919,7 +919,7 @@ export default {
         previousBikeCC : '',
         previousBikeUsage : '',
         causeForBuyingNewBike : '',
-        wantJoinYRC : '',
+        wantJoinRE : '',
         MarriageDay : '',
         IsEmi : 0,
         InstallmentSize : 0,

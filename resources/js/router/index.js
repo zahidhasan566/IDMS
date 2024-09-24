@@ -37,6 +37,9 @@ import ReportDetails from "../views/evaluation/detailsReport.vue";
 import service4pDetailsPart2 from "../views/evaluation/Service4pDetailsPart2.vue";
 import ReceiveReport from "../views/logistics/ReceiveReport.vue";
 import ReceiveSummaryReport from "../views/logistics/ReceiveSummaryReport.vue";
+import InvoiceScrapReturn from "../views/invoice/InvoiceScrapReturn.vue";
+import InvoiceApproveScrapProduct from "../views/invoice/InvoiceApproveScrapProduct.vue";
+import ReportScrapProducts from "../views/reports/reportScrapProducts.vue";
 
 //logistics
 import DealerDocumentAdd from "../views/logistics/DealerDocumentStore.vue";
@@ -326,6 +329,16 @@ const routes = [
                 name: 'InvoiceSparePartsReturn',
                 component: InvoiceSparePartsReturn
             },
+            {
+                path: baseurl + 'invoice/return-scrap-products',
+                name: 'InvoiceScrapReturn',
+                component: InvoiceScrapReturn
+            },
+            {
+                path: baseurl + 'invoice/approve-scrap-products',
+                name: 'InvoiceApproveScrapProduct',
+                component: InvoiceApproveScrapProduct
+            },
             //ORDERS | BIKE
             {
                 path: baseurl + 'orders/bike',
@@ -478,6 +491,7 @@ const routes = [
             { path: baseurl + 'report/customer-bike-sales-feedBack', name: 'reportCustomerBikeSalesFeedBack', component: reportCustomerBikeSalesFeedBack },
             { path: baseurl + 'report/claim-warranty-summary', name: 'ClaimWarrantySummary', component: ClaimWarrantySummary },
             { path: baseurl + 'report/service-summary', name: 'reportServiceSummary', component: reportServiceSummary },
+            { path: baseurl + 'report/scrap-product', name: 'ReportScrapProducts', component: ReportScrapProducts },
 
             // SDMS REPORT
             {

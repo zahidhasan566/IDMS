@@ -61,15 +61,14 @@ class InquiryProgressAndFollowUpController extends Controller
             ->join('InquiryMaster','InquiryMaster.InquiryId','InquiryStatus.InquiryId')
             ->join('InquiryOccupation','InquiryOccupation.OccupationId','InquiryMaster.OccupationId')
             ->join('InquiryCustomerCategory','InquiryCustomerCategory.CustomerCategoryId','InquiryMaster.CustomerCategoryId')
-            ->join('InquiryMainUser','InquiryMainUser.InquiryMainUserId','InquiryMaster.InquiryMainUserId')
-            ->join('Product','Product.ProductCode','InquiryStatus.ProductCode')
+            //->join('InquiryMainUser','InquiryMainUser.InquiryMainUserId','InquiryMaster.InquiryMainUserId')
+            ->leftJoin('Product','Product.ProductCode','InquiryStatus.ProductCode')
             ->where(function ($q) use ($search) {
                 $q->where('InquiryStatus.InquiryId', '=', $search);
                 $q->Orwhere('InquiryMaster.CustomerName', 'like', '%' . $search . '%');
             })
             //->where('InquiryStatus.NextDelivery','>', $currentDate)
             ->orderBy( 'InquiryStatus.InquiryId','desc');
-
 
         if ($request->type === 'export') {
             return response()->json([

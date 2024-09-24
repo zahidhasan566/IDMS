@@ -146,6 +146,22 @@ class InvoiceSparePartsController extends Controller
             ],500);
         }
     }
+    public function getScrappedInvoiceData(Request $request)
+    {
+        $request->validate([
+            'invoiceNo' => 'required'
+        ]);
+        try {
+            $invoiceNo = $request->invoiceNo;
+            $userId = Auth::user()->UserId;
+            return response()->json(InvoiceSparePartsService::getScrapInvoiceDetails($invoiceNo,$userId));
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!' .$exception->getMessage().$exception->getLine()
+            ],500);
+        }
+    }
 
     public function returnInvoice(Request $request)
     {
@@ -175,7 +191,34 @@ class InvoiceSparePartsController extends Controller
             ]);
         }
     }
-
+    public function returnScrapedInvoice(Request $request)
+    {
+        $request->validate([
+            'invoiceNo' => 'required',
+            'invoiceDetails' => 'required'
+        ]);
+        $error = 0;
+        if (count($request->invoiceDetails)) {
+            foreach ($request->invoiceDetails as $detail) {
+                if (intval($detail['rQuantity']) > 0) {
+                    if (!InvoiceSparePartsService::returnScrap($detail,$request->invoiceNo)) {
+                        $error += 1;
+                    }
+                }
+            }
+        }
+        if ($error > 0) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Something went wrong!'
+            ],500);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Scraped Invoice has been returned successfully'
+            ]);
+        }
+    }
     public function sparePartsInvoicePrint($invoiceId)
     {
         $invoice = DealarInvoiceMaster::leftJoin('Customer','Customer.CustomerCode','DealarInvoiceMaster.MasterCode')
