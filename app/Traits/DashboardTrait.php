@@ -2,9 +2,14 @@
 
 namespace App\Traits;
 
+use App\Models\DealarReceiveInvoiceDetails;
+use App\Models\DealarReceiveInvoiceMaster;
 use App\Models\DealerStock;
+use App\Models\Invoice;
+use Carbon\Carbon;
 use http\Env\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait DashboardTrait
 {
@@ -56,51 +61,13 @@ trait DashboardTrait
             ->where('i.InvoiceNo', $invoiceNo)
             ->where('DRIM.InvoiceNo', NULL)
             ->where('invd.SalesQTY','>',0)
-            ->select('i.InvoiceNo', 'p.ProductName', 'SB.BatchNo as ChassisNo', 'SB.EngineNo', 'invd.SalesQTY as Quantity', DB::raw("invd.SalesTP+invd.SalesVat as UnitPrice"));
+            ->select('i.InvoiceNo', 'p.ProductCode','p.ProductName', 'SB.BatchNo as ChassisNo', 'SB.EngineNo', 'invd.SalesQTY as Quantity', DB::raw("invd.SalesTP+invd.SalesVat as UnitPrice"));
     }
 
     public function doStoreReceivable($userId, $invoiceNo)
     {
         $sql = "exec usp_DealarReceiveInsert_idms '$userId', '$invoiceNo'";
         return DB::select($sql);
-    }
-
-    public function doStorePartialReceivable($userId, $invoiceNo, $orderDetails)
-    {
-        try {
-            if (count($orderDetails)) {
-                foreach ($orderDetails as $order) {
-
-                }
-            }
-            return false;
-        } catch (\Exception $exception) {
-            dd($exception->getMessage());
-            return false;
-        }
-    }
-
-    public function doUpdateStock($userId, $productCode, $quantity)
-    {
-        $dealerStock = DealerStock::where('MasterCode', $userId)->where('ProductCode', $productCode)->first();
-        if ($dealerStock) {
-            DealerStock::where('MasterCode', $userId)
-                ->where('ProductCode', $productCode)
-                ->update([
-                    'ReceiveQuantity' => $dealerStock->Quantity + $quantity,
-                    'CurrentStock' => $dealerStock->CurrentStock + $quantity
-                ]);
-        } else {
-            DealerStock::create([
-                'MasterCode' => $userId,
-                'ProductCode' => $productCode,
-                'ReceiveQuantity' => $quantity,
-                'SalesQuantity' => 0,
-                'ReturnQuantity' => 0,
-                'AdjustmentQuantity' => 0,
-                'CurrentStock' => $quantity,
-            ]);
-        }
     }
 
     public function doLoadMyOrders($Order){

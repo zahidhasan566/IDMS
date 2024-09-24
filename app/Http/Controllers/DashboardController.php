@@ -8,6 +8,7 @@ use App\Models\InvoiceReceiveSurvey;
 use App\Models\InvoiceReceiveSurveyAnswers;
 use App\Models\OrderInvoiceDetails;
 use App\Models\OrderInvoiceMaster;
+use App\Services\DealerReceiveInvoice;
 use App\Traits\CommonTrait;
 use App\Traits\DashboardTrait;
 use Carbon\Carbon;
@@ -80,19 +81,26 @@ class DashboardController extends Controller
             $invoiceNo = $request->invoiceNo;
             $userId = Auth::user()->UserId;
             $orderDetails = $request->details;
-            $data = $this->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
-            if (isset($data[0]->rcount) && intval($data[0]->rcount) > 0) {
-                $receiveId = $data[0]->ReceiveID;
-                $receiveDetails = DealerReceiveInvoiceDetails::where('ReceiveID',$receiveId)->get();
-                $invoice = Invoice::where('InvoiceNo',$invoiceNo)->where('Business','P')->first();
-                if ($invoice) {
-                    if (!empty($receiveDetails)) {
-                        foreach ($receiveDetails as $detail) {
-                            $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
-                        }
-                    }
-                }
+            $dealerReceiveInvoice = new DealerReceiveInvoice($userId,$invoiceNo,$orderDetails);
+            $data = $dealerReceiveInvoice->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
+            if (!$data) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Receiving failed! Something went wrong!'
+                ],500);
             }
+//            if (isset($data[0]->rcount) && intval($data[0]->rcount) > 0) {
+//                $receiveId = $data[0]->ReceiveID;
+//                $receiveDetails = DealerReceiveInvoiceDetails::where('ReceiveID',$receiveId)->get();
+//                $invoice = Invoice::where('InvoiceNo',$invoiceNo)->where('Business','P')->first();
+//                if ($invoice) {
+//                    if (!empty($receiveDetails)) {
+//                        foreach ($receiveDetails as $detail) {
+//                            $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
+//                        }
+//                    }
+//                }
+//            }
             return response()->json([
                 'status' => 'success',
                 'message' => 'Receive Successful',
