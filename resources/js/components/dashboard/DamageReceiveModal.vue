@@ -31,8 +31,8 @@
                       <td>{{ row.EngineNo }}</td>
                       <td>{{ Number(row.Quantity) }}</td>
                       <td>
-                        <ValidationProvider :name="`Receive Quantity-${i}th row` " mode="eager"
-                                            :rules="`required|max_value:${Math.abs(row.Quantity - row.DamagedQty)}`"
+                        <ValidationProvider :name="`Receive Quantity-${i}th row`" mode="eager"
+                                            :rules="`required|max_value:${Math.abs(row.Quantity)}`"
                                             v-slot="{ errors }">
                           <input type="text" class="form-control" v-model="row.ReceiveQty">
                           <span class="error-message"> {{ errors[0] }}</span>
@@ -40,7 +40,7 @@
                       </td>
                       <td>
                         <ValidationProvider :name="`Damage Quantity-${i}th row`" mode="eager"
-                                            :rules="`required|max_value:${Math.abs(row.Quantity - row.ReceiveQty)}`"
+                                            :rules="`required|max_value:${Math.abs(row.Quantity)}`"
                                             v-slot="{ errors }">
                           <input type="text" class="form-control" v-model="row.DamagedQty">
                           <span class="error-message"> {{ errors[0] }}</span>
@@ -48,13 +48,15 @@
                       </td>
                       <td>
                         <template v-if="row.DamagedQty > 0">
-                          <ValidationProvider :name="`Image-${i}th row`" mode="eager"
-                                              rules="required"
-                                              v-slot="{ errors }">
-                            <input type="file" @change="fileUpload($event,i)">
-                            <br>
-                            <span class="error-message"> {{ errors[0] }}</span>
-                          </ValidationProvider>
+<!--                          <ValidationProvider :name="`Image-${i}th row`" mode="eager"-->
+<!--                                              rules="required"-->
+<!--                                              v-slot="{ errors }">-->
+<!--                            <input type="file" @change="fileUpload($event,i)">-->
+<!--                            <br>-->
+<!--                            <span class="error-message"> {{ errors[0] }}</span>-->
+<!--                          </ValidationProvider>-->
+                          <input type="file" @change="fileUpload($event,i)">
+                          <br>
                         </template>
                         <template v-else>
                           <p>Attach Damage Product's Image</p>
@@ -120,19 +122,32 @@ export default {
   },
   methods: {
     onSubmit() {
-      this.$store.commit('submitButtonLoadingStatus', true);
-      this.axiosPost('dashboard/receivables/store', {
-        details: this.details,
-        invoiceNo: this.invoiceNo
-      }, (response) => {
-        this.successNoti(response.message);
-        $("#damage-modal").modal("toggle");
-        bus.$emit('refresh-datatable');
-        this.$store.commit('submitButtonLoadingStatus', false);
-      }, (error) => {
-        this.$store.commit('submitButtonLoadingStatus', false);
-        this.infoFailed('Failed!', error.data.response.message)
-      })
+      if (this.checkValue(this.details)) {
+        this.$store.commit('submitButtonLoadingStatus', true);
+        this.axiosPost('dashboard/receivables/store', {
+          details: this.details,
+          invoiceNo: this.invoiceNo
+        }, (response) => {
+          this.successNoti(response.message);
+          $("#damage-modal").modal("toggle");
+          bus.$emit('refresh-datatable');
+          this.$store.commit('submitButtonLoadingStatus', false);
+        }, (error) => {
+          this.$store.commit('submitButtonLoadingStatus', false);
+          this.infoFailed('Failed!', error.data.response.message)
+        })
+      } else {
+        this.errorNoti('No value found!')
+      }
+    },
+    checkValue(details) {
+      let value = 0
+      if (details.length > 0) {
+        details.forEach((item) => {
+          value  = value + Number(item.ReceiveQty) + Number(item.DamagedQty)
+        })
+      }
+      return value > 0;
     },
     fileUpload(e,i) {
       let input = e.target
