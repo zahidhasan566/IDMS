@@ -6,6 +6,11 @@
             <a href="javascript:" @click="doApproved(row.item.OrderNo)"><i class="ti-check"></i></a>
         </span>
       </template>
+      <template slot="reject" slot-scope="row">
+        <span>
+            <a href="javascript:" @click="doReject(row.item.OrderNo)"><i class="ti-close" style="color: red "></i></a>
+        </span>
+      </template>
       <template slot="action" slot-scope="row">
         <span>
              <router-link class="btn btn-primary" :to="{path:'dashboard/edit-approve?orderNo='+row.item.OrderNo}">
@@ -14,13 +19,11 @@
         </span>
       </template>
     </advanced-datatable>
-    <add-survey-modal @changeStatus="changeStatus" v-if="loading"/>
   </div>
 </template>
 <script>
 import {Common} from "../../mixins/common";
 import {bus} from '../../app'
-import {baseurl} from "../../base_url";
 export default {
   mixins: [Common],
   data() {
@@ -29,52 +32,54 @@ export default {
       tableOptions: {
         source: 'dashboard/pending-orders',
         search: true,
-        slots: [6,7],
+        slots: [6,7,8],
         hideColumn: [],
-        slotsName: ['approved','action'],
+        slotsName: ['approved','reject','action'],
         sortable: [],
         pages: [20, 50, 100],
-        addHeader: ['Approved','Action']
-      }
+        addHeader: ['Approved','Reject','Action']
+      },
+      actionType :''
     }
   },
   mounted() {
-    bus.$on('open-receivable-tab', () => {
-      console.log('this is receivable component')
-    })
+
   },
   methods: {
     changeStatus() {
       this.loading = false
     },
     doApproved(orderNo) {
+      this.actionType='approved'
       this.approveAlert(() => {
         this.axiosPost('dashboard/pending-orders/store',{
-          orderNo: orderNo
+          orderNo: orderNo,
+          actionType:this.actionType
         },(response) => {
           this.infoSuccess('Success',response.message)
           bus.$emit('refresh-datatable');
         },(error) => {
-          console.log(error)
           this.infoFailed('Failed!',error.data.response.message)
         })
       })
     },
-    doSurvey(orderNo) {
-      this.loading = true;
-      setTimeout(() => {
-        bus.$emit('survey-event', orderNo);
+    doReject(orderNo) {
+      this.actionType='reject'
+      this.deleteAlert(() => {
+        this.axiosPost('dashboard/pending-orders/store',{
+          orderNo: orderNo,
+          actionType:this.actionType
+        },(response) => {
+          this.infoSuccess('Success',response.message)
+          bus.$emit('refresh-datatable');
+        },(error) => {
+          this.infoFailed('Failed!',error.data.response.message)
+        })
       })
     },
-    viewDetails(orderNo) {
-      this.loading = true;
-      setTimeout(() => {
-        bus.$emit('details-event', orderNo);
-      })
-    },
+
   },
   destroyed() {
-    bus.$off('open-receivable-tab')
   }
 }
 </script>

@@ -124,7 +124,7 @@ class PaymentController extends Controller
             'reference' => 'required',
             'bankCode' => 'required',
             'chequeDate' => 'required',
-            'chequeImage' => 'required',
+            'chequeImage' => 'required|image|mimes:jpg,jpeg,png|max:300',
             'payment' => 'required',
             'paymentMode' => 'required',
         ]);
