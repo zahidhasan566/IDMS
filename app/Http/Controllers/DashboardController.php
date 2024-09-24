@@ -189,15 +189,18 @@ class DashboardController extends Controller
                     $approval->Level1Approved='Y';
                     $approval->Level1ApprovedBy=$userId;
                     $approval->Level1ApprovedDate=Carbon::now();
+                    $approval->Level1ApprovedIP=\request()->ip();
 
                 }elseif($roleId==='hos' ||$roleId==='hose'){
                     $approval->Level2Approved='Y';
                     $approval->Level2ApprovedBy=$userId;
                     $approval->Level2ApprovedDate=Carbon::now();
+                    $approval->Level2ApprovedIP=\request()->ip();
                 }else{
                     $approval->Level3Approved='Y';
                     $approval->Level3ApprovedBy=$userId;
                     $approval->Level3ApprovedDate=Carbon::now();
+                    $approval->Level3ApprovedIP=\request()->ip();
                 }
             }elseif ($actionType=='reject'){
                 $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
@@ -205,15 +208,18 @@ class DashboardController extends Controller
                     $approval->Level1Approved='C';
                     $approval->Level1ApprovedBy=$userId;
                     $approval->Level1ApprovedDate=Carbon::now();
+                    $approval->Level1ApprovedIP=\request()->ip();
 
                 }elseif($roleId==='hos' ||$roleId==='hose'){
                     $approval->Level2Approved='C';
                     $approval->Level2ApprovedBy=$userId;
                     $approval->Level2ApprovedDate=Carbon::now();
+                    $approval->Level2ApprovedIP=\request()->ip();
                 }else{
                     $approval->Level3Approved='C';
                     $approval->Level3ApprovedBy=$userId;
                     $approval->Level3ApprovedDate=Carbon::now();
+                    $approval->Level3ApprovedIP=\request()->ip();
                 }
             }else{
                 DB::beginTransaction();
@@ -244,14 +250,17 @@ class DashboardController extends Controller
                         $approval->Level1Approved='Y';
                         $approval->Level1ApprovedBy=$userId;
                         $approval->Level1ApprovedDate=Carbon::now();
+                        $approval->Level1ApprovedIP=\request()->ip();
                     }elseif($roleId==='hos' ||$roleId==='hose'){
                         $approval->Level2Approved='Y';
                         $approval->Level2ApprovedBy=$userId;
                         $approval->Level2ApprovedDate=Carbon::now();
+                        $approval->Level2ApprovedIP=\request()->ip();
                     }else{
                         $approval->Level3Approved='Y';
                         $approval->Level3ApprovedBy=$userId;
                         $approval->Level3ApprovedDate=Carbon::now();
+                        $approval->Level3ApprovedIP=\request()->ip();
                     }
                 }
                 foreach ($preparedArray as $key){
