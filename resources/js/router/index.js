@@ -7,6 +7,7 @@ import Users from '../views/users/Index';
 import AdjustmentsUnadjusted from "../views/reports/general/Unadjusted";
 import AdjustmentsAdjusted from "../views/reports/general/Adjusted";
 import ProductIndex from "../views/product/ProductIndex.vue";
+import EditApproved from "../components/dashboard/pendingOrderEditApproved.vue";
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
 import WorkIndex from "../views/jobcard/WorkIndex.vue";
@@ -184,6 +185,8 @@ const routes = [
                 name: 'Dashboard',
                 component: Dashboard
             },
+
+
             //ADMIN ROUTE | SHOW USER LIST
             {
                 path: baseurl + 'users/list',
@@ -625,7 +628,13 @@ const routes = [
                 path: baseurl + 'settings/product',
                 name: 'ProductIndex',
                 component: ProductIndex
-            }
+            },
+            //pending order
+            {
+                path: baseurl + 'dashboard/edit-approve',
+                name: 'EditApproved',
+                component: EditApproved
+            },
 
 
 

@@ -36,6 +36,7 @@
     </advanced-datatable>
     <add-survey-modal @changeStatus="changeStatus" v-if="loading"/>
     <receive-details-modal @changeStatus="changeStatus" v-if="loading"/>
+    <damage-receive-modal @changeStatus="changeStatus" v-if="loading"/>
   </div>
 </template>
 <script>
@@ -69,16 +70,20 @@ export default {
       this.loading = false
     },
     doReceive(invoiceNo) {
-      this.approveAlert(() => {
-        this.axiosPost('dashboard/receivables/store',{
-          invoiceNo: invoiceNo
-        },(response) => {
-          this.infoSuccess('Success',response.message)
-          bus.$emit('refresh-datatable');
-        },(error) => {
-          console.log(error)
-          this.infoFailed('Failed!',error.data.response.message)
-        })
+      // this.approveAlert(() => {
+      //   this.axiosPost('dashboard/receivables/store',{
+      //     invoiceNo: invoiceNo
+      //   },(response) => {
+      //     this.infoSuccess('Success',response.message)
+      //     bus.$emit('refresh-datatable');
+      //   },(error) => {
+      //     console.log(error)
+      //     this.infoFailed('Failed!',error.data.response.message)
+      //   })
+      // })
+      this.loading = true;
+      setTimeout(() => {
+        bus.$emit('damage-event', invoiceNo);
       })
     },
     doSurvey(invoiceNo) {

@@ -6,6 +6,8 @@ use App\Models\DealerReceiveInvoiceDetails;
 use App\Models\Invoice;
 use App\Models\InvoiceReceiveSurvey;
 use App\Models\InvoiceReceiveSurveyAnswers;
+use App\Models\OrderInvoiceDetails;
+use App\Models\OrderInvoiceMaster;
 use App\Traits\CommonTrait;
 use App\Traits\DashboardTrait;
 use Carbon\Carbon;
@@ -71,18 +73,23 @@ class DashboardController extends Controller
     public function storeReceivable(Request $request)
     {
         $request->validate([
+            'details' => 'required',
             'invoiceNo' => 'required'
         ]);
         try {
             $invoiceNo = $request->invoiceNo;
             $userId = Auth::user()->UserId;
-            $data = $this->doStoreReceivable($userId,$invoiceNo);
+            $orderDetails = $request->details;
+            $data = $this->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
             if (isset($data[0]->rcount) && intval($data[0]->rcount) > 0) {
                 $receiveId = $data[0]->ReceiveID;
                 $receiveDetails = DealerReceiveInvoiceDetails::where('ReceiveID',$receiveId)->get();
-                if (!empty($receiveDetails)) {
-                    foreach ($receiveDetails as $detail) {
-                        $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
+                $invoice = Invoice::where('InvoiceNo',$invoiceNo)->where('Business','P')->first();
+                if ($invoice) {
+                    if (!empty($receiveDetails)) {
+                        foreach ($receiveDetails as $detail) {
+                            $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
+                        }
                     }
                 }
             }
@@ -156,7 +163,159 @@ class DashboardController extends Controller
         return response()->json([
            'data' => $sql
         ]);
+    }
+    public function pendingOrders(Request $request){
+        $UserId = Auth::user()->UserId;
+        $RoleId = Auth::user()->RoleId;
+        $sql = $this->doLoadPendingOrders($RoleId,$UserId);
+        return response()->json([
+            'data' => $sql
+        ]);
+    }
+    public function storeApproved(Request $request)
+    {
+        try {
+
+            $orderNo = $request->orderNo;
+            $actionType = $request->actionType;
+            $userId = Auth::user()->UserId;
+            $roleId = Auth::user()->RoleId;
+
+            $sql = DB::statement("exec usp_OrderInvoiceDetailsLogInsert '$userId', '$orderNo'");
+
+            if ($actionType=='approved'){
+                $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
+                if ($roleId==='tm' ||$roleId==='se' ){
+                    $approval->Level1Approved='Y';
+                    $approval->Level1ApprovedBy=$userId;
+                    $approval->Level1ApprovedDate=Carbon::now();
+
+                }elseif($roleId==='hos' ||$roleId==='hose'){
+                    $approval->Level2Approved='Y';
+                    $approval->Level2ApprovedBy=$userId;
+                    $approval->Level2ApprovedDate=Carbon::now();
+                }else{
+                    $approval->Level3Approved='Y';
+                    $approval->Level3ApprovedBy=$userId;
+                    $approval->Level3ApprovedDate=Carbon::now();
+                }
+            }elseif ($actionType=='reject'){
+                $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
+                if ($roleId==='tm' ||$roleId==='se' ){
+                    $approval->Level1Approved='C';
+                    $approval->Level1ApprovedBy=$userId;
+                    $approval->Level1ApprovedDate=Carbon::now();
+
+                }elseif($roleId==='hos' ||$roleId==='hose'){
+                    $approval->Level2Approved='C';
+                    $approval->Level2ApprovedBy=$userId;
+                    $approval->Level2ApprovedDate=Carbon::now();
+                }else{
+                    $approval->Level3Approved='C';
+                    $approval->Level3ApprovedBy=$userId;
+                    $approval->Level3ApprovedDate=Carbon::now();
+                }
+            }else{
+                DB::beginTransaction();
+                $preparedArray = $request->products;
+                $unique_check = collect($preparedArray);
+                $unique_check = $unique_check->pluck('ProductCode');
+                $productCodes = [];
+                foreach ($unique_check as $each) {
+                    $productCodes[] = $each;
+                }
+                $unique = array_unique($productCodes);
+
+                $unique_check = $unique_check->toArray();
+
+                $result = array_values(array_diff_key($unique_check, $unique));
+
+                if ($result) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You have added '.$result[0].' multiple times!'
+                    ]);
+                }
+                $no =$preparedArray[0]['OrderNo'];
+                $approval = OrderInvoiceMaster::where('OrderNo',$no)->first();
+                $sql = DB::statement("exec usp_OrderInvoiceDetailsLogInsert '$userId', '$no'");
+                if (!empty($approval)){
+                    if ($roleId==='tm' ||$roleId==='se' ){
+                        $approval->Level1Approved='Y';
+                        $approval->Level1ApprovedBy=$userId;
+                        $approval->Level1ApprovedDate=Carbon::now();
+                    }elseif($roleId==='hos' ||$roleId==='hose'){
+                        $approval->Level2Approved='Y';
+                        $approval->Level2ApprovedBy=$userId;
+                        $approval->Level2ApprovedDate=Carbon::now();
+                    }else{
+                        $approval->Level3Approved='Y';
+                        $approval->Level3ApprovedBy=$userId;
+                        $approval->Level3ApprovedDate=Carbon::now();
+                    }
+                }
+                foreach ($preparedArray as $key){
+
+                    $details = OrderInvoiceDetails::where('OrderNo',$key['OrderNo'])->where('ProductCode',$key['ProductCode'])->first();
+
+                    if(!empty($details)){
+                        OrderInvoiceDetails::where('OrderNo',$key['OrderNo'])->where('ProductCode',$key['ProductCode'])->update([
+                            'Quantity'=>$key['Quantity']
+                        ]);
+                    }else{
+                        if ( $key['Quantity'] >0 ){
+                            $details = new OrderInvoiceDetails();
+                            $details->OrderNo = $key['OrderNo'];
+                            $details->ProductCode = $key['ProductCode'];
+                            $details->Quantity = $key['Quantity'];
+                            $details->UnitPrice = $key['UnitPrice'];
+                            $details->Vat = $key['VAT'];
+                            $details->save();
+                        }
+                    }
+
+                }
 
 
+            }
+            $approval->save();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successful'
+            ]);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!',
+                'error' => $exception->getMessage()
+            ],500);
+        }
+    }
+    public function editApproved(Request $request)
+    {
+        $request->validate([
+            'orderNo' => 'required'
+        ]);
+        try {
+            $orderNo = $request->orderNo;
+            $list = DB::table('OrderInvoiceMaster as m')
+                ->select('m.OrderNo','d.ProductCode','p.ProductName','d.Quantity','d.UnitPrice','d.VAT')
+                ->join('OrderInvoiceDetails as d','d.OrderNo','=','m.OrderNo')
+                ->join('Product as p','p.ProductCode','=','d.ProductCode')
+                ->where('m.OrderNo',$orderNo)
+                ->get();
+
+            return response()->json([
+                'data' => $list
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!',
+                'error' => $exception->getMessage()
+            ],500);
+        }
     }
 }

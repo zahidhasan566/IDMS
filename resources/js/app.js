@@ -73,6 +73,7 @@ Vue.component('add-edit-user',require('./components/users/AddEditModal').default
 Vue.component('add-edit-dealer-user',require('./components/dealerusers/AddEditModal.vue').default)
 Vue.component('add-survey-modal',require('./components/dashboard/SurveyModal.vue').default)
 Vue.component('receive-details-modal',require('./components/dashboard/ReceiveDetailsModal.vue').default)
+Vue.component('damage-receive-modal',require('./components/dashboard/DamageReceiveModal.vue').default)
 Vue.component('order-details-modal',require('./components/dashboard/OrderDetailsModal.vue').default)
 Vue.component('reset-password',require('./components/users/Editpassword').default)
 //Job Card
