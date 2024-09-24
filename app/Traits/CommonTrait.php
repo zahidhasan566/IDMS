@@ -128,11 +128,12 @@ trait CommonTrait
 
     public function customerInfo(){
         $business = 'C';
-        $customers = CustomerMapping::select('CustomerMapping.*','c.CustomerName','c.DepotCode','c.PaymentMode','b.BusinessName')
+        $customers = DB::table('CustomerMapping')->select('CustomerMapping.*','c.CustomerName','c.DepotCode','c.PaymentMode','b.BusinessName')
             ->join('Customer as c ','c.CustomerCode','CustomerMapping.CustomerCode')
             ->join('Business as b','b.Business','CustomerMapping.Business')
             ->where('CustomerMapping.CustomerMasterCode', Auth::user()->UserId)
             ->where('c.Business',$business)->orderBy('CustomerMapping.CustomerCode','ASC')->get();
+
         return $customers;
 
     }
@@ -145,10 +146,12 @@ trait CommonTrait
     }
 
     public function allCustomer($customerId){
+
 //        $sql ="SELECT * FROM Customer WHERE CustomerCode LIKE '$customerId' AND CustomerType IN ('E','D','R') AND LEFT(CustomerCode,2)='HC'";
         $customerList = Customer::where('CustomerCode','like',$customerId)
             ->whereIn('CustomerType',['E','D','R'])
             ->where('CustomerCode','like','%'.'HC'.'%')->get();
+//        dd($customerList);
         return $customerList;
     }
 

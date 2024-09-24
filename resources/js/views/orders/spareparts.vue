@@ -32,6 +32,9 @@
                       <th>Unit Price</th>
                       <th>Vat</th>
                       <th>Total Price</th>
+                      <th>Level1 Approved</th>
+                      <th>Level2 Approved</th>
+                      <th>Level3 Approved</th>
 
                     </tr>
                     </thead>
@@ -45,6 +48,9 @@
                       <td class="text-right">{{ order.UnitPrice }}</td>
                       <td class="text-right">{{ order.VAT }}</td>
                       <td class="text-right">{{ order.TotalPrice }}</td>
+                      <td class="text-right">{{ order.Level1Approved }}</td>
+                      <td class="text-right">{{ order.Level2Approved }}</td>
+                      <td class="text-right">{{ order.Level3Approved }}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -508,9 +514,6 @@ export default {
           if (response.products.length > 0) {
             this.form.products.splice(0, 1)
             this.form.products = data.concat(response.products)
-
-            // this.importStatus =true
-            // this.changeProductPriceCommon(response.data.products)
             this.grandTotal();
           }
         });

@@ -280,9 +280,7 @@ export default {
     fileUpload(e) {
       var input = e.target
       var file = input.files[0]
-      if (file.size > 5000000) {
-        this.errorNoti('Maximum file size 5 MB for Event')
-      } else {
+      if (file.size) {
         this.processImage(file)
       }
     },
@@ -322,8 +320,8 @@ export default {
         active: this.active,
       }, (response) => {
         this.successNoti(response.message);
-        // $("#add-credit-modal").modal("toggle");
-        // bus.$emit('refreshDatatable');
+        $("#add-credit-modal").modal("toggle");
+        bus.$emit('refreshDatatable');
         this.$store.commit('submitButtonLoadingStatus', false);
       }, (error) => {
         this.errorNoti(error);
