@@ -34,66 +34,64 @@ class DealerReceiveInvoice
                         'DeliveryDate' => $invoice->DeliveryDate,
                         'DeliveryTime' => $invoice->DeliveryTime
                     ]);
-//                    $receiveInvoiceMaster = true;
+                } else {
+                    $receiveInvoiceMaster = $dealerReceiveInvoiceMaster;
+                }
 
-                    if ($receiveInvoiceMaster) {
-                        $invoiceDetails = DB::table('InvoiceDetails','invd')
-                            ->join('Product as p','p.ProductCode','invd.ProductCode')
-                            ->join('InvoiceDetailsBatch as idb',function($q) {
-                                $q->on('idb.Invoiceno','invd.Invoiceno')
-                                    ->on('invd.ProductCode','idb.ProductCode');
-                            })
-                            ->join('StockBatch as sb',function ($q) use ($invoice){
-                                $q->on('sb.BatchNo','idb.BatchNo')
-                                    ->on('idb.ProductCode','sb.ProductCode')
-                                    ->where('sb.DepotCode',$invoice->DepotCode);
-                            })
-                            ->where('invd.Invoiceno',$invoiceNo)
-                            ->where('idb.quantity','>',0)
-                            ->select('p.ProductCode','idb.Quantity','invd.SalesTP','invd.SalesVat','sb.BatchNo','sb.EngineNo','p.Color','p.FuelUsed',
-                                'p.HorsePower','p.RPM','p.CubicCapacity','p.WheelBase','p.Weight','p.TireSizeFront','p.TireSizeRear','P.Manufacturer','P.Origin',
-                                'idb.Quantity','sb.DepotCode')
-                            ->get();
-                        if (count($invoiceDetails) > 0) {
-                            foreach ($invoiceDetails as $row) {
-                                $receiving = array_filter($orderDetails,function ($item) use ($row) {
-                                    return $item['ChassisNo'] === $row->BatchNo;
-                                });
-                                if (count($receiving)) {
-                                    $receiving = array_values($receiving);
-                                    $receiving = $receiving[0];
-                                    if (intval($receiving['ReceiveQty']) > 0) {
-                                        if ($this->insertIntoDealerReceiveInvoiceDetails($receiveInvoiceMaster,$row,$receiving['ReceiveQty'])) {
-                                            if ($invoice->Business === 'P') {
-                                                $this->doUpdateStock($userId,$row->ProductCode,$receiving['ReceiveQty']);
-                                            }
-                                        } else {
-                                            DB::rollBack();
-                                            return false;
+                if ($receiveInvoiceMaster) {
+                    $invoiceDetails = DB::table('InvoiceDetails','invd')
+                        ->join('Product as p','p.ProductCode','invd.ProductCode')
+                        ->join('InvoiceDetailsBatch as idb',function($q) {
+                            $q->on('idb.Invoiceno','invd.Invoiceno')
+                                ->on('invd.ProductCode','idb.ProductCode');
+                        })
+                        ->join('StockBatch as sb',function ($q) use ($invoice){
+                            $q->on('sb.BatchNo','idb.BatchNo')
+                                ->on('idb.ProductCode','sb.ProductCode')
+                                ->where('sb.DepotCode',$invoice->DepotCode);
+                        })
+                        ->where('invd.Invoiceno',$invoiceNo)
+                        ->where('idb.quantity','>',0)
+                        ->select('p.ProductCode','idb.Quantity','invd.SalesTP','invd.SalesVat','sb.BatchNo','sb.EngineNo','p.Color','p.FuelUsed',
+                            'p.HorsePower','p.RPM','p.CubicCapacity','p.WheelBase','p.Weight','p.TireSizeFront','p.TireSizeRear','P.Manufacturer','P.Origin',
+                            'idb.Quantity','sb.DepotCode')
+                        ->get();
+                    if (count($invoiceDetails) > 0) {
+                        foreach ($invoiceDetails as $row) {
+                            $receiving = array_filter($orderDetails,function ($item) use ($row) {
+                                return $item['ChassisNo'] === $row->BatchNo;
+                            });
+                            if (count($receiving)) {
+                                $receiving = array_values($receiving);
+                                $receiving = $receiving[0];
+                                if (intval($receiving['ReceiveQty']) > 0) {
+                                    if ($this->insertIntoDealerReceiveInvoiceDetails($receiveInvoiceMaster,$row,$receiving['ReceiveQty'])) {
+                                        if ($invoice->Business === 'P') {
+                                            $this->doUpdateStock($userId,$row->ProductCode,$receiving['ReceiveQty']);
                                         }
+                                    } else {
+                                        DB::rollBack();
+                                        return false;
                                     }
-                                    if (intval($receiving['DamagedQty']) > 0) {
-                                        if (!$this->insertIntoDamagedReceiveInvoiceDetails($invoiceNo,$row,$receiving['DamagedQty'],$receiving['DamagedImage'])) {
-                                            DB::rollBack();
-                                            return false;
-                                        }
+                                }
+                                if (intval($receiving['DamagedQty']) > 0) {
+                                    if (!$this->insertIntoDamagedReceiveInvoiceDetails($invoiceNo,$row,$receiving['DamagedQty'],$receiving['DamagedImage'])) {
+                                        DB::rollBack();
+                                        return false;
                                     }
                                 }
                             }
-                        } else {
-                            DB::rollBack();
-                            Log::error('No details found! : ' . $userId . ' InvoiceNo: ' . $invoiceNo);
-                            return false;
                         }
-                        DB::commit();
-                        return $receiveInvoiceMaster;
                     } else {
                         DB::rollBack();
-                        Log::error('Creation Failed! UserId: ' . $userId . ' InvoiceNo: ' . $invoiceNo);
+                        Log::error('No details found! : ' . $userId . ' InvoiceNo: ' . $invoiceNo);
                         return false;
                     }
+                    DB::commit();
+                    return $receiveInvoiceMaster;
                 } else {
-                    Log::error('Already exists. UserId: ' . $userId . ' InvoiceNo: ' . $invoiceNo);
+                    DB::rollBack();
+                    Log::error('Creation Failed! UserId: ' . $userId . ' InvoiceNo: ' . $invoiceNo);
                     return false;
                 }
             }

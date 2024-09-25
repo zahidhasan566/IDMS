@@ -26,7 +26,7 @@ class SpPaginationService
     public static function paginate2($sp,$take='',$offset='')
     {
         $dataSet = SpPaginationService::getPdoResult($sp);
-        $countData = count($dataSet[0]) > 0 ? $dataSet[1][0]['CountData']:0;
+        $countData = count($dataSet[0]) > 0 ? $dataSet[0][0]['CountData']:0;
         $dataSet[] = count($dataSet[0]) > 0 ? [['CountData' => intval($countData)]]:[['CountData' => 0]];
         if ($take !== '' && $offset !== '') {
             $from = $offset + 1;
