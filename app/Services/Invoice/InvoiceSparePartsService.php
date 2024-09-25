@@ -69,7 +69,7 @@ class InvoiceSparePartsService
                         $invoiceDetails->UnitPrice = $product->MRP;
                         $invoiceDetails->VAT = 0;
                         $invoiceDetails->Discount = $row['discount'];
-                        $invoiceDetails->ChassisNo = '';
+                        $invoiceDetails->ChassisNo = !empty($row['chassis']) ? $row['chassis'] : '';
                         $invoiceDetails->EngineNo = '';
                         $invoiceDetails->Color = '';
                         $invoiceDetails->FuelUsed = '';

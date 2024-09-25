@@ -118,7 +118,7 @@ export default {
     })
   },
   destroyed() {
-    bus.$off('details-event')
+    bus.$off('damage-event')
   },
   methods: {
     onSubmit() {
