@@ -200,8 +200,10 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('jobCard-update', [\App\Http\Controllers\JobCard\JobCardController::class,'updateTechnician']);
         Route::get('job-report-supporting-data',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getJobReportSupportingData']);
         Route::post('job-card-report',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getJobReportData']);
+        Route::post('job-card-csi-data',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getJobCSIData']);
         Route::post('job-card-booking-report',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getBookingReportData']);
-
+        Route::get('csi-supporting-data', [\App\Http\Controllers\JobCard\JobCardController::class,'csiSupportingData']);
+        Route::post('csi-add-data', [\App\Http\Controllers\JobCard\JobCardController::class,'csiAddData']);
         //Job Card Estimation List
         Route::post('estimation-list', [\App\Http\Controllers\JobCard\JobCardEstimationController::class,'index']);
         Route::post('job-estimation-add', [\App\Http\Controllers\JobCard\JobCardEstimationController::class,'store']);

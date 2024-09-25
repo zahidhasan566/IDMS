@@ -11,7 +11,6 @@
                 </div>
             </div>
                 <advanced-datatable :options="tableOptions">
-
                     <template slot="jobStatus" slot-scope="row">
                           <span v-if="row.item.JobStatus==='Close'" style="background: #ffa9a9; padding: 4px 5px; border-radius: 4px;font-weight: bold; border: 1px solid #ffa9a9">
                               {{row.item.JobStatus}}

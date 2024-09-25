@@ -142,11 +142,10 @@ import CustomerWiseProductSold from "../views/sdms/CustomerWiseProductSold.vue";
 import CustomerWiseProductSoldPrint from "../views/sdms/CustomerWiseProductSoldPrint.vue";
 import SdmsDayWiseSalesSummaryReport from "../views/sdms/SdmsDayWiseSalesSummaryReport.vue";
 import SdmsCustomerLedgerPrint from "../views/sdms/SdmsCustomerLedgerPrint.vue"
-
-
 import DealerUser from "../views/users/DealerUsers.vue"
 import DealerOffer from "../views/sdms/DealerOffer.vue";
 import DealerOfferList from "../views/sdms/DealerOfferList.vue";
+import JobCardCSI from "../views/jobcard/JobCardCSI.vue";
 
 Vue.use(VueRouter);
 
@@ -286,6 +285,11 @@ const routes = [
                 path: baseurl + 'jobcard/paid-service-schedule',
                 name: 'PaidServiceSchedule',
                 component: PaidServiceSchedule
+            },
+            {
+                path: baseurl + 'jobcard/csiList',
+                name: 'JobCardCSI',
+                component: JobCardCSI
             },
 
 
