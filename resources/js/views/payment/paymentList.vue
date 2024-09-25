@@ -69,7 +69,8 @@
                                     <tr v-for="(item, index) in contents">
                                       <td class="text-left">
                                         <span class="badge badge-success" v-if="item.Approved=='Y'" >Approved</span>
-                                        <span class="badge badge-success" v-else>Pending</span>
+                                        <span class="badge badge-danger" v-if="item.Approved=='C'" >Cancel</span>
+                                        <span class="badge badge-warning" v-else>Pending</span>
                                       </td>
                                       <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 1 && index !== 15">
                                         {{ item[item2] }}

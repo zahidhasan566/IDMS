@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerMapping;
-use App\Models\OrderInvoiceDetails;
-use App\Models\Payment;
 use App\Models\PaymentTempOnline;
 use App\Traits\CodeGeneration;
-use App\Traits\CodeGeneratiorTrait;
 use App\Traits\CommonTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
-use PhpParser\Node\Stmt\DeclareDeclare;
 
 class PaymentController extends Controller
 {
@@ -62,14 +58,6 @@ class PaymentController extends Controller
             if ($roleId !== 'admin') {
                 $payment->where('PTO.CustomerCode', Auth::user()->UserId);
             }
-//             if($admin ===0){
-//                 $payment->where(function ($q) use ($customerCode){
-//                     $q->where('PTO.CustomerCode', $customerCode );
-//                 });
-//             }else{
-//                 $payment ->whereNotNull('PTO.CustomerCode');
-//             }
-
             return response()->json([
                 'data'=>$payment->get()
             ]);
@@ -174,7 +162,7 @@ class PaymentController extends Controller
 
                     $image = $request->chequeImage;
                     $name = uniqid() . time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-                    Image::make($image)->resize('800', '700')->save(public_path('uploads/payment/') . $name);
+                    $img=Image::make($image)->resize('900')->save(public_path('uploads/payment/') . $name);
                 } else {
                     $name = 'not_found.jpg';
                 }

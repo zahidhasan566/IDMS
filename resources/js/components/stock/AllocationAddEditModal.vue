@@ -36,6 +36,17 @@
                                                 <span class="error-message"> {{ errors[0] }}</span>
                                             </div>
                                     </div>
+                                  <div class="col-12 col-md-6">
+                                            <div class="form-group">
+
+                                                <label for="binNo">Bin Number </label>
+                                                <input type="text" class="form-control"
+                                                       id="binNo "
+                                                       data-required="true"
+                                                       v-model="binNo" name="BinNo " placeholder="BinNo ">
+                                                <span class="error-message"> {{ errors[0] }}</span>
+                                            </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12" style="text-align: end;margin-top:10px">
@@ -70,6 +81,7 @@ export default {
             products: [],
             productCode:'',
             rackName:'',
+            binNo:'',
             active:'',
 
         }
@@ -104,7 +116,6 @@ export default {
         instance.Code = val;
         if (val.length > 0) {
           this.axiosGet('stock/get-all-stock-product/' + instance.Code, function (response) {
-            console.log(response)
               instance.products = response.data;
           }, function (error) {
           });
@@ -112,12 +123,14 @@ export default {
       },
       setAllocation(e) {
        this.rackName = e.rackname;
+       this.binNo = e.BinNumber;
 
       },
         onSubmit() {
           this.axiosPost('stock/store-allocation',{
             rackName:this.rackName,
-            productCode:this.productCode
+            productCode:this.productCode,
+            binNo:this.binNo
           }, (response) => {
             this.successNoti(response.message);
             $("#add-edit-dept").modal("toggle");

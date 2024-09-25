@@ -8,6 +8,8 @@ use App\Models\InvoiceReceiveSurvey;
 use App\Models\InvoiceReceiveSurveyAnswers;
 use App\Models\OrderInvoiceDetails;
 use App\Models\OrderInvoiceMaster;
+use App\Services\DealerReceiveInvoice;
+use App\Services\SpPaginationService;
 use App\Traits\CommonTrait;
 use App\Traits\DashboardTrait;
 use Carbon\Carbon;
@@ -22,14 +24,19 @@ class DashboardController extends Controller
     public function receivables(Request $request)
     {
         $take = $request->take;
+        $page = $request->page;
+        $offset = SpPaginationService::getOffset($page, $take);
         $search = $request->search;
         $userId = Auth::user()->UserId;
-        return $this->doLoadMyReceivable($userId,$search)->paginate($take);
+        $sp = "EXEC sp_receive_products '$userId','$take','$offset'";
+        return $this->doLoadMyReceivable($sp, $take, $offset);
     }
 
     public function getReceivableById($invoiceNo)
     {
-        return $this->doLoadMyReceivableById($invoiceNo)->get();
+        $userId = Auth::user()->UserId;
+        return $this->doLoadMyReceivableById($userId,$invoiceNo);
+//        return $this->doLoadMyReceivableById($invoiceNo)->get();
     }
 
     public function storeSurvey(Request $request)
@@ -80,19 +87,26 @@ class DashboardController extends Controller
             $invoiceNo = $request->invoiceNo;
             $userId = Auth::user()->UserId;
             $orderDetails = $request->details;
-            $data = $this->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
-            if (isset($data[0]->rcount) && intval($data[0]->rcount) > 0) {
-                $receiveId = $data[0]->ReceiveID;
-                $receiveDetails = DealerReceiveInvoiceDetails::where('ReceiveID',$receiveId)->get();
-                $invoice = Invoice::where('InvoiceNo',$invoiceNo)->where('Business','P')->first();
-                if ($invoice) {
-                    if (!empty($receiveDetails)) {
-                        foreach ($receiveDetails as $detail) {
-                            $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
-                        }
-                    }
-                }
+            $dealerReceiveInvoice = new DealerReceiveInvoice($userId,$invoiceNo,$orderDetails);
+            $data = $dealerReceiveInvoice->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
+            if (!$data) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Receiving failed! Something went wrong!'
+                ],500);
             }
+//            if (isset($data[0]->rcount) && intval($data[0]->rcount) > 0) {
+//                $receiveId = $data[0]->ReceiveID;
+//                $receiveDetails = DealerReceiveInvoiceDetails::where('ReceiveID',$receiveId)->get();
+//                $invoice = Invoice::where('InvoiceNo',$invoiceNo)->where('Business','P')->first();
+//                if ($invoice) {
+//                    if (!empty($receiveDetails)) {
+//                        foreach ($receiveDetails as $detail) {
+//                            $this->doUpdateStock($userId,$detail->ProductCode,$detail->ReceivedQnty);
+//                        }
+//                    }
+//                }
+//            }
             return response()->json([
                 'status' => 'success',
                 'message' => 'Receive Successful',
@@ -189,15 +203,18 @@ class DashboardController extends Controller
                     $approval->Level1Approved='Y';
                     $approval->Level1ApprovedBy=$userId;
                     $approval->Level1ApprovedDate=Carbon::now();
+                    $approval->Level1ApprovedIP=\request()->ip();
 
                 }elseif($roleId==='hos' ||$roleId==='hose'){
                     $approval->Level2Approved='Y';
                     $approval->Level2ApprovedBy=$userId;
                     $approval->Level2ApprovedDate=Carbon::now();
+                    $approval->Level2ApprovedIP=\request()->ip();
                 }else{
                     $approval->Level3Approved='Y';
                     $approval->Level3ApprovedBy=$userId;
                     $approval->Level3ApprovedDate=Carbon::now();
+                    $approval->Level3ApprovedIP=\request()->ip();
                 }
             }elseif ($actionType=='reject'){
                 $approval = OrderInvoiceMaster::where('OrderNo',$orderNo)->first();
@@ -205,15 +222,18 @@ class DashboardController extends Controller
                     $approval->Level1Approved='C';
                     $approval->Level1ApprovedBy=$userId;
                     $approval->Level1ApprovedDate=Carbon::now();
+                    $approval->Level1ApprovedIP=\request()->ip();
 
                 }elseif($roleId==='hos' ||$roleId==='hose'){
                     $approval->Level2Approved='C';
                     $approval->Level2ApprovedBy=$userId;
                     $approval->Level2ApprovedDate=Carbon::now();
+                    $approval->Level2ApprovedIP=\request()->ip();
                 }else{
                     $approval->Level3Approved='C';
                     $approval->Level3ApprovedBy=$userId;
                     $approval->Level3ApprovedDate=Carbon::now();
+                    $approval->Level3ApprovedIP=\request()->ip();
                 }
             }else{
                 DB::beginTransaction();
@@ -244,14 +264,17 @@ class DashboardController extends Controller
                         $approval->Level1Approved='Y';
                         $approval->Level1ApprovedBy=$userId;
                         $approval->Level1ApprovedDate=Carbon::now();
+                        $approval->Level1ApprovedIP=\request()->ip();
                     }elseif($roleId==='hos' ||$roleId==='hose'){
                         $approval->Level2Approved='Y';
                         $approval->Level2ApprovedBy=$userId;
                         $approval->Level2ApprovedDate=Carbon::now();
+                        $approval->Level2ApprovedIP=\request()->ip();
                     }else{
                         $approval->Level3Approved='Y';
                         $approval->Level3ApprovedBy=$userId;
                         $approval->Level3ApprovedDate=Carbon::now();
+                        $approval->Level3ApprovedIP=\request()->ip();
                     }
                 }
                 foreach ($preparedArray as $key){

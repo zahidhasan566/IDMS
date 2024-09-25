@@ -83,13 +83,14 @@ class StockController extends Controller
         $search = $request->search;
         $customerCode=Auth::user()->UserId;
         $allocation = DB::table("ProductRackAllocation as A")
-            ->select("A.ProductCode","P.ProductName","A.RackName")
+            ->select("A.ProductCode","P.ProductName","A.RackName","A.BinNumber")
             ->join("Product as P ","P.ProductCode","=","A.ProductCode")
             ->where("A.CustomerCode","=",$customerCode)
             ->where(function ($q) use ($search) {
                 $q->where('P.ProductCode', 'like', '%' . $search . '%');
                 $q->Orwhere('A.RackName', 'like', '%' . $search . '%');
                 $q->Orwhere('P.ProductName', 'like', '%' . $search . '%');
+                $q->Orwhere('A.BinNumber', 'like', '%' . $search . '%');
 
             });
 
@@ -125,8 +126,9 @@ class StockController extends Controller
             $productCode = $product['productcode'];
 
             $rackName = $request->rackName;
+            $binNo = $request->binNo;
 //            return "exec usp_doInsertRackAllocation '$userId', '$productCode', '$rackName'";
-            $rack =DB::select(DB::raw("exec usp_doInsertRackAllocation '$userId', '$productCode', '$rackName' "));
+            $rack =DB::select(DB::raw("exec usp_doInsertRackAllocation '$userId', '$productCode', '$rackName','$binNo' "));
 
             return response()->json([
                 'status' => 'Success',
