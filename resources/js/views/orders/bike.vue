@@ -32,6 +32,9 @@
                       <th>Quantity</th>
                       <th>Vat</th>
                       <th>Total Price</th>
+                      <th>Level1 Approved</th>
+                      <th>Level2 Approved</th>
+                      <th>Level3 Approved</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -44,6 +47,9 @@
                       <td class="text-right">{{ order.Quantity }}</td>
                       <td class="text-right">{{ order.Vat }}</td>
                       <td class="text-right">{{ order.TotalPrice }}</td>
+                      <td class="text-right">{{ order.Level1Approved }}</td>
+                      <td class="text-right">{{ order.Level2Approved }}</td>
+                      <td class="text-right">{{ order.Level3Approved }}</td>
                     </tr>
                     </tbody>
                   </table>

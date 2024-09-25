@@ -22,9 +22,14 @@ class SparePartsController extends Controller
         $search = $request->get('query');
         $prevsixmonth = date("Y-m-d", strtotime("-6 months"));
         $today = date("Y-m-d");
-        $order = DB::table('OrderInvoiceDetails AS od')->select('od.OrderNo', 'od.ProductCode', 'p.ProductName', DB::raw('CONVERT(int,od.Quantity) as Quantity'),
+        $order = DB::table('OrderInvoiceDetails AS od')
+            ->select('od.OrderNo', 'od.ProductCode', 'p.ProductName', DB::raw('CONVERT(int,od.Quantity) as Quantity'),
             DB::raw('CONVERT(int,od.UnitPrice) as UnitPrice'), DB::raw('CONVERT(int,od.VAT) as VAT'),
-            'u.UserName', DB::raw('CONVERT(date,m.OrderDate) as OrderDate'), DB::raw('CONVERT(INT,((od.UnitPrice +od.Vat) * od.Quantity)) as TotalPrice'))
+            'u.UserName', DB::raw('CONVERT(date,m.OrderDate) as OrderDate'),
+                DB::raw('CONVERT(INT,((od.UnitPrice +od.Vat) * od.Quantity)) as TotalPrice'),
+                DB::raw("Case when m.Level1Approved ='Y' then 'Yes' when m.Level1Approved='N' then 'No' when m.Level1Approved='C' then 'Cancel' END Level1Approved"),
+                DB::raw("Case when m.Level2Approved ='Y' then 'Yes' when m.Level2Approved='N' then 'No' when m.Level2Approved='C' then 'Cancel' END Level2Approved"),
+                DB::raw("Case when m.Level3Approved ='Y' then 'Yes' when m.Level3Approved='N' then 'No' when m.Level3Approved='C' then 'Cancel' END Level3Approved"))
             ->join('OrderInvoiceMaster as m ', 'm.OrderNo', 'od.OrderNo')
             ->join('UserManager as u', 'u.UserID', 'm.MasterCode')
             ->join('Product as p', 'p.ProductCode', 'od.ProductCode')
@@ -75,7 +80,6 @@ class SparePartsController extends Controller
 
             $bike->SendTime =    Carbon::now();
             $bike->IPAddress =  $request->ip() ;
-
             if ($bike->save()){
                 foreach ($preparedArray as $key => $value){
                     if ( $value['Quantity'] >0 ){
