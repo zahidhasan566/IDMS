@@ -1,6 +1,6 @@
 <template>
   <div id="receive-table">
-    <advanced-datatable :options="tableOptions">
+    <general-datatable :options="tableOptions">
       <template slot="invoiceNo" slot-scope="row">
         <a href="javascript:" @click="viewDetails(row.item.InvoiceNo)">{{ row.item.InvoiceNo }}</a>
       </template>
@@ -33,7 +33,7 @@
             <a href="javascript:" @click="doSurvey(row.item.InvoiceNo)"><i class="ti-support"></i></a>
         </span>
       </template>
-    </advanced-datatable>
+    </general-datatable>
     <add-survey-modal @changeStatus="changeStatus" v-if="loading"/>
     <receive-details-modal @changeStatus="changeStatus" v-if="loading"/>
     <damage-receive-modal @changeStatus="changeStatus" v-if="loading"/>

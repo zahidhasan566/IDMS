@@ -38,6 +38,9 @@ import ReportDetails from "../views/evaluation/detailsReport.vue";
 import service4pDetailsPart2 from "../views/evaluation/Service4pDetailsPart2.vue";
 import ReceiveReport from "../views/logistics/ReceiveReport.vue";
 import ReceiveSummaryReport from "../views/logistics/ReceiveSummaryReport.vue";
+import InvoiceScrapReturn from "../views/invoice/InvoiceScrapReturn.vue";
+import InvoiceApproveScrapProduct from "../views/invoice/InvoiceApproveScrapProduct.vue";
+import ReportScrapProducts from "../views/reports/reportScrapProducts.vue";
 
 //logistics
 import DealerDocumentAdd from "../views/logistics/DealerDocumentStore.vue";
@@ -139,11 +142,10 @@ import CustomerWiseProductSold from "../views/sdms/CustomerWiseProductSold.vue";
 import CustomerWiseProductSoldPrint from "../views/sdms/CustomerWiseProductSoldPrint.vue";
 import SdmsDayWiseSalesSummaryReport from "../views/sdms/SdmsDayWiseSalesSummaryReport.vue";
 import SdmsCustomerLedgerPrint from "../views/sdms/SdmsCustomerLedgerPrint.vue"
-
-
 import DealerUser from "../views/users/DealerUsers.vue"
 import DealerOffer from "../views/sdms/DealerOffer.vue";
 import DealerOfferList from "../views/sdms/DealerOfferList.vue";
+import JobCardCSI from "../views/jobcard/JobCardCSI.vue";
 
 Vue.use(VueRouter);
 
@@ -236,7 +238,8 @@ const routes = [
             {
                 path: baseurl + 'jobcard/display',
                 name: 'JobCardDisplay',
-                component: JobCardDisplay
+                component: JobCardDisplay,
+                meta: { hideTopBar: true, hideSideMenu: true }
             },
             {
                 path: baseurl + 'jobcard/report',
@@ -283,6 +286,11 @@ const routes = [
                 name: 'PaidServiceSchedule',
                 component: PaidServiceSchedule
             },
+            {
+                path: baseurl + 'jobcard/csiList',
+                name: 'JobCardCSI',
+                component: JobCardCSI
+            },
 
 
             //ORDERS | SPARE PARTS
@@ -327,6 +335,16 @@ const routes = [
                 path: baseurl + 'invoice/return',
                 name: 'InvoiceSparePartsReturn',
                 component: InvoiceSparePartsReturn
+            },
+            {
+                path: baseurl + 'invoice/return-scrap-products',
+                name: 'InvoiceScrapReturn',
+                component: InvoiceScrapReturn
+            },
+            {
+                path: baseurl + 'invoice/approve-scrap-products',
+                name: 'InvoiceApproveScrapProduct',
+                component: InvoiceApproveScrapProduct
             },
             //ORDERS | BIKE
             {
@@ -480,6 +498,7 @@ const routes = [
             { path: baseurl + 'report/customer-bike-sales-feedBack', name: 'reportCustomerBikeSalesFeedBack', component: reportCustomerBikeSalesFeedBack },
             { path: baseurl + 'report/claim-warranty-summary', name: 'ClaimWarrantySummary', component: ClaimWarrantySummary },
             { path: baseurl + 'report/service-summary', name: 'reportServiceSummary', component: reportServiceSummary },
+            { path: baseurl + 'report/scrap-product', name: 'ReportScrapProducts', component: ReportScrapProducts },
 
             // SDMS REPORT
             {

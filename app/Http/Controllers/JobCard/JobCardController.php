@@ -4,9 +4,12 @@ namespace App\Http\Controllers\JobCard;
 
 use App\Http\Controllers\Controller;
 use App\Models\DealerStock;
+use App\Models\JobCard\CSIQuestion;
 use App\Models\JobCard\DealarInvoiceDetails;
 use App\Models\JobCard\DealarInvoiceMaster;
 use App\Models\JobCard\FreeServiceSchedule;
+use App\Models\JobCard\JobCardCSIDetails;
+use App\Models\JobCard\JobCardCSIMaster;
 use App\Models\JobCard\TblBaySetup;
 use App\Models\JobCard\TblDealarMechanics;
 use App\Models\JobCard\TblJobCard;
@@ -90,7 +93,8 @@ class JobCardController extends Controller
             'BayCode',
             'BayName',
             DB::raw("CONCAT(BayCode,'-',BayName) AS Details")
-        )->where('ServiceCenterCode', $userId)->where('Active', 'Y')->get();
+        )->where('Active', 'Y')->get();
+
         $allTechnician = TblTechnicianSetup::select(
             'TblTechnicianSetup.DefaultBay',
             'TblBaySetup.BayName',
@@ -102,10 +106,10 @@ class JobCardController extends Controller
             ->leftjoin("TblBaySetup", function ($join) use ($userId) {
                 $join->on("TblBaySetup.BayCode", "=", "TblTechnicianSetup.DefaultBay")
                     //->on("TblBaySetup.ServiceCenterCode", "=", "TblTechnicianSetup.ServiceCenterCode")
-                    ->where('TblBaySetup.ServiceCenterCode', $userId)
+                    //->where('TblBaySetup.ServiceCenterCode', $userId)
                     ->where('TblTechnicianSetup.Active', 'Y');
             })
-            ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
+           // ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
             ->get();
 
 
@@ -143,6 +147,13 @@ class JobCardController extends Controller
             'allJobType' => $allJobType,
             'ytdNoReason' => $ytdNoReason,
             'fiNoReason' => $fiNoReason,
+        ]);
+    }
+
+    public function csiSupportingData(){
+        $csiQuestion = CSIQuestion::all();
+        return response()->json([
+            'csiQuestion' => $csiQuestion
         ]);
     }
 
@@ -366,7 +377,7 @@ class JobCardController extends Controller
                 }
             }
             //Send Sms To The User
-            $this->SendJobCardSms($request,$jobCardNo);
+            //$this->SendJobCardSms($request,$jobCardNo);
 
             return response()->json([
                 'status' => 'Success',
@@ -448,8 +459,6 @@ class JobCardController extends Controller
 
     public function jobClose(Request $request)
     {
-
-
         try {
             $jobCardNo = $request->jobCardNo;
             $invoiceNo = $this->generateJobCardInvoiceNo();
@@ -930,6 +939,41 @@ class JobCardController extends Controller
                 'message' => 'Job Card Updated Successfully'
             ], 200);
         } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!' . $exception->getMessage()
+            ], 500);
+        }
+    }
+
+    public function csiAddData(Request $request){
+        try{
+            DB::beginTransaction();
+            $jobCardCsiMaster =  new JobCardCSIMaster();
+            $jobCardCsiMaster->JobCardNo = $request->jobCardNo;
+            $jobCardCsiMaster->CSI = (array_sum(array_column($request->csiQuestion, 'Answer'))/(count(array_column($request->csiQuestion, 'QuestionID') )*10)) *100;
+            $jobCardCsiMaster->EntryBy = Auth::user()->UserId;
+            $jobCardCsiMaster->EntryDate = Carbon::now();
+            $jobCardCsiMaster->save();
+
+            //Details
+            foreach ($request->csiQuestion as $key => $value) {
+                $csiDetails = new JobCardCSIDetails();
+                $csiDetails->CSIMasterID = $jobCardCsiMaster->CSIMasterID;
+                $csiDetails->QuestionID = $value['QuestionID'];
+                $csiDetails->QuestionName = $value['QuestionName'];
+                $csiDetails->AnswerValue = $value['Answer'];
+                $csiDetails->save();
+            }
+            DB::commit();
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'CSI Added Successfully'
+            ], 200);
+
+
+        }
+        catch (\Exception $exception) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',

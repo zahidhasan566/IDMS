@@ -115,6 +115,13 @@
                                    v-model="Number(form.unitPrice).toFixed(2)" readonly>
                           </div>
                         </ValidationProvider>
+                        <ValidationProvider name="Chassis No" mode="eager" rules="required" v-slot="{ errors }" v-if="form.hasChassis">
+                          <div class="form-group">
+                            <label for="chassis">Chassis No</label>
+                            <input type="text" class="form-control" name="chassis" id="chassis"
+                                   v-model="form.chassis">
+                          </div>
+                        </ValidationProvider>
                         <ValidationProvider name="Quantity" mode="eager" rules="required|min:0" v-slot="{ errors }">
                           <div class="form-group">
                             <label for="quantity">Quantity</label>
@@ -277,6 +284,7 @@ export default {
         this.form.unitPrice = val.unitPrice
         this.form.total = val.unitPrice
         this.form.rackName = val.rackName
+        this.form.hasChassis = val.brandCode === 'P001' || val.brandCode === 'P002'
         this.grandTotal()
       } else {
         this.clearForm()
@@ -294,7 +302,9 @@ export default {
               id: item.productcode,
               unitPrice: item.mrp,
               title: item.productname,
-              rackName: item.rackname
+              rackName: item.rackname,
+              brandCode: item.BrandCode,
+              brandName: item.BrandName
             })
           })
           this.spareparts = data
@@ -367,7 +377,8 @@ export default {
               quantity: this.form.quantity,
               discount: this.form.discount,
               discountPrice: this.form.discountPrice,
-              total: this.form.total
+              total: this.form.total,
+              chassis: this.form.chassis
             })
             this.clearForm()
             this.grandTotal()

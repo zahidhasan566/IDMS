@@ -392,6 +392,23 @@ class ReportController extends Controller
         //return $sql;
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
+
+    public function getScrapProductsReport(Request $request){
+        $CurrentPage = $request->pagination['current_page'];
+        $PerPage = 20;
+        $Export = $request->Export;
+        $CustomerCode = $request->CustomerCode;
+        $dateFrom = $request->DateFrom;
+        $dateTo = $request->DateTo;
+        $userID = Auth::user()->UserId;
+
+        if ($Export == 'Y'){
+            $CurrentPage = '%';
+        }
+        $sql = "exec usp_reportScrapProducts '$dateFrom', '$dateTo', '$CustomerCode','','P','$userID','$PerPage','$CurrentPage'";
+
+        return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
+    }
     
     
 

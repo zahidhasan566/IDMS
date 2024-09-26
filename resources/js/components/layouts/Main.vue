@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper">
-    <Topbar/>
-    <Leftbar/>
+    <Topbar v-if="!$route.meta.hideTopBar" />
+    <Leftbar v-if="!$route.meta.hideSideMenu" />
     <div class="content-page">
       <div class="content">
         <router-view></router-view>

@@ -9,6 +9,7 @@ use App\Models\InvoiceReceiveSurveyAnswers;
 use App\Models\OrderInvoiceDetails;
 use App\Models\OrderInvoiceMaster;
 use App\Services\DealerReceiveInvoice;
+use App\Services\SpPaginationService;
 use App\Traits\CommonTrait;
 use App\Traits\DashboardTrait;
 use Carbon\Carbon;
@@ -23,14 +24,19 @@ class DashboardController extends Controller
     public function receivables(Request $request)
     {
         $take = $request->take;
+        $page = $request->page;
+        $offset = SpPaginationService::getOffset($page, $take);
         $search = $request->search;
         $userId = Auth::user()->UserId;
-        return $this->doLoadMyReceivable($userId,$search)->paginate($take);
+        $sp = "EXEC sp_receive_products '$userId','$take','$offset'";
+        return $this->doLoadMyReceivable($sp, $take, $offset);
     }
 
     public function getReceivableById($invoiceNo)
     {
-        return $this->doLoadMyReceivableById($invoiceNo)->get();
+        $userId = Auth::user()->UserId;
+        return $this->doLoadMyReceivableById($userId,$invoiceNo);
+//        return $this->doLoadMyReceivableById($invoiceNo)->get();
     }
 
     public function storeSurvey(Request $request)
