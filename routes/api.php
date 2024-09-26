@@ -129,6 +129,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('store-allocation', [StockController::class,'storeRackAllocation']);
         Route::post('allocation', [StockController::class,'allocationList']);
         Route::get('get-all-stock-product/{productCode}', [StockController::class,'getAllStockProduct']);
+        Route::post('get-spare-parts-receive-history', [StockController::class,'getSparePartsHistory']);
+
     });
 
     Route::group(['prefix' => 'reports'],function () {
