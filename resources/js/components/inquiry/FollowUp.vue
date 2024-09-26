@@ -19,7 +19,7 @@
                                         <ValidationProvider name="Visit Type" mode="eager" rules="required"
                                                             v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="Visit Type">Visit Type <span class="error">*</span></label>
+                                            <label for="Visit Type">Visit Type  </label>
                                             <select class="form-control" name="gender"
                                                     v-model="visitType">
                                                 <option value="">Select</option>
@@ -29,11 +29,11 @@
                                         </div>
                                         </ValidationProvider>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-3" v-if="visitType===2 || visitType===4|| visitType===1">
                                         <ValidationProvider name="Product Name" mode="eager" rules="required"
                                                             v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="product">product <span class="error">*</span></label>
+                                            <label for="product">Product  </label>
                                             <v-select :filterable="false"
                                                       :mutiselect="false"
                                                       v-model="product"
@@ -45,11 +45,52 @@
                                         </div>
                                         </ValidationProvider>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                  <div class="col-12 col-md-3" v-if="visitType===2">
+                                        <ValidationProvider name="Received Amount" mode="eager" rules="required" v-slot="{ errors }">
+                                        <div class="form-group">
+                                          <label for="receivedAmount">Received Amount </label>
+                                          <input type="number" class="form-control"
+                                                 id="receivedAmount"
+                                                 data-required="true"
+                                                 placeholder="Received Amount"
+                                                 v-model="receivedAmount" name="receivedAmount">
+                                            <span class="error-message"> {{ errors[0] }}</span>
+                                        </div>
+                                        </ValidationProvider>
+                                    </div>
+                                  <div class="col-12 col-md-3" v-if="visitType===3">
+                                    <ValidationProvider name="Competitor Company" mode="eager" rules="required"
+                                                        v-slot="{ errors }">
+                                      <div class="form-group">
+                                        <label for="competitorCompany">Competitor Company </label>
+                                        <select class="form-control" name="Competitor Company"
+                                                v-model="competitorCompany">
+                                          <option value="">Select</option>
+                                          <option v-for="(company,index) in competitorCompanies" :value="company.CompanyID">{{company.CompanyName}}</option>
+                                        </select>
+                                        <span class="error-message"> {{ errors[0] }}</span>
+                                      </div>
+                                    </ValidationProvider>
+                                  </div>
+                                  <div class="col-12 col-md-3" v-if="visitType===3">
+                                        <ValidationProvider name="Bike Model" mode="eager" rules="required" v-slot="{ errors }">
+                                        <div class="form-group">
+                                          <label for="bikeModel">Bike Model</label>
+                                          <input type="text" class="form-control"
+                                                 id="bikeModel"
+                                                 data-required="true"
+                                                 placeholder="Bike Model"
+                                                 v-model="bikeModel" name="bikeModel">
+                                            <span class="error-message"> {{ errors[0] }}</span>
+                                        </div>
+                                        </ValidationProvider>
+                                    </div>
+
+                                    <div class="col-12 col-md-3" v-if="visitType===1">
                                         <ValidationProvider name="Inquiry Level" mode="eager" rules="required"
                                                             v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="educationalQualification">Inquiry Level <span class="error">*</span></label>
+                                            <label for="educationalQualification">Inquiry Level  </label>
                                             <select class="form-control" name="gender"
                                                     v-model="inquiryLevel">
                                                 <option value="">Select</option>
@@ -59,7 +100,7 @@
                                         </div>
                                         </ValidationProvider>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-3" v-if="visitType===1">
                                         <div class="form-group">
                                             <label for="designation">Expected Delivery</label>
                                             <input type="date" class="form-control"
@@ -69,7 +110,7 @@
                                             <span class="error-message"> {{ errors[0] }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-3">
+                                    <div class="col-12 col-md-3" v-if="visitType===1">
                                             <label for="tagNo">Next Visit</label>
                                             <input type="date" class="form-control"
                                                    id="NextVisit"
@@ -114,12 +155,16 @@ export default {
             dayStr: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             visitType:'',
             product:'',
+            receivedAmount:'',
+            competitorCompany:'',
+            bikeModel:'',
             inquiryLevel:'',
             nextVisit:'',
             expectedDelivery:'',
             inquiryLevelSupportingData:[],
             allProduct:[],
             visitResults:[],
+            competitorCompanies:[],
             inquiryId:''
 
         }
@@ -170,6 +215,7 @@ export default {
                 instance.inquiryLevelSupportingData = response.inquiryLevelSupportingData
                 instance.inquiryDocumentCategory = response.inquiryDocumentCategory
                 instance.visitResults =  response.visitResults
+                instance.competitorCompanies =  response.competitorCompany
 
             }, function (error) {
             });
@@ -201,6 +247,9 @@ export default {
                 inquiryLevel: this.inquiryLevel,
                 expectedDelivery: this.expectedDelivery,
                 nextVisit: this.nextVisit,
+                receivedAmount:this.receivedAmount,
+                competitorCompany:this.competitorCompany,
+                bikeModel:this.bikeModel,
 
             }, (response) => {
                 this.successNoti(response.message);

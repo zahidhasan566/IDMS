@@ -33,7 +33,6 @@
 import {Common} from "../../mixins/common";
 import Bike from "../../components/stock/BikeStock.vue"
 import Parts from "../../components/stock/PartsStock.vue";
-import {bus} from "../../app";
 
 export default {
   mixins: [Common],
@@ -67,7 +66,7 @@ export default {
       this.allTables()
       if (page === 'bike') this.tabProps.bike = true
       if (page === 'parts') this.tabProps.parts = true
-      bus.$emit(`open-${page}-tab`)
+      // bus.$emit(`open-${page}-tab`)
     }
   }
 }

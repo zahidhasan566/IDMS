@@ -40,9 +40,13 @@ export default {
     bus.$off('changeStatus',function () {
       this.changeStatus()
     })
+    bus.$on('open-orders-tab', () => {
+      console.log('this is order component')
+    })
   },
   destroyed() {
     bus.$off('export-data')
+    bus.$off('open-orders-tab')
   },
   methods: {
     changeStatus() {
@@ -55,7 +59,7 @@ export default {
         bus.$emit('order-details-event', row.OrderNo);
       })
     },
-  }
+  },
 }
 </script>
 

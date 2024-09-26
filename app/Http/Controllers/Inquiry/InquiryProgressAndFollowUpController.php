@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inquiry;
 
 use App\Http\Controllers\Controller;
+use App\Models\Inquiry\CompetitorCompany;
 use App\Models\Inquiry\InquiryCustomerCategory;
 use App\Models\Inquiry\InquiryDocument;
 use App\Models\Inquiry\InquiryDocumentCategory;
@@ -88,6 +89,7 @@ class InquiryProgressAndFollowUpController extends Controller
         $inquiryLevel = InquiryLevel::where('Active',1)->get();
         $inquiryDocumentCategory = InquiryDocumentCategory::where('Active',1)->get();
         $visitResults =  VisitResult::all();
+        $competitorCompany =  CompetitorCompany::all();
 
 
         return response()->json([
@@ -98,6 +100,7 @@ class InquiryProgressAndFollowUpController extends Controller
             'inquiryLevelSupportingData'=>$inquiryLevel,
             'inquiryDocumentCategory'=>$inquiryDocumentCategory,
             'visitResults'=>$visitResults,
+            'competitorCompany'=>$competitorCompany,
         ]);
     }
     public function searchProduct($product){
@@ -133,6 +136,8 @@ class InquiryProgressAndFollowUpController extends Controller
             $inquiryMaster->UserCurrent2Wheeler = $request->userCurrentTwoWheeler;
             $inquiryMaster->ModelSuggested = $request->modelSuggested;
             $inquiryMaster->OfferTestRide = $request->testRiderOffer;
+            $inquiryMaster->PurposeOfRoyal = $request->purposeOfRoyal;
+            $inquiryMaster->AppralsAccessories = $request->appralsAccessories;
             $inquiryMaster->ProductCode = $request->product?$request->product['id']:'';
             $inquiryMaster->ModelYear = $request->modelYear;
             $inquiryMaster->ExpectedValue = $request->expectedValue;
@@ -212,7 +217,11 @@ class InquiryProgressAndFollowUpController extends Controller
 
             if($checkInquiry){
                 InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
+
                         'VisitResultId'=>$request->visitType,
+                        'CompetitorCompanyId'=>$request->competitorCompany,
+                        'ReceivedAmount'=>$request->receivedAmount,
+                        'BikeModel'=>$request->bikeModel,
                         'ExpectedDelivery'=>$request->expectedDelivery,
                         'NextDelivery'=>$request->nextVisit,
                         'EntryBy'=>$userId,
