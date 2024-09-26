@@ -279,7 +279,36 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="card-header" style="background: #343a40 !important;border-color: #454d55">Offer test ride to customer</div>
+                                <div class="card-header" style="background: #61519f !important;">Accessories</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label for="appralsAccessories" class="col-lg-5 col-form-label">Interested in Appeals and Accessories</label>
+                                                <div class="col-lg-7">
+                                                    <select class="form-control" name="Appeals Accessories"
+                                                            v-model="appralsAccessories">
+                                                        <option value=1>Yes</option>
+                                                        <option value=0>No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label for="purposeOfRoyal" class="col-lg-5 col-form-label">Intended purpose of Royal Enfield use</label>
+                                                <div class="col-lg-7">
+                                                    <select class="form-control" name="purpose Of Royal"
+                                                            v-model="purposeOfRoyal">
+                                                        <option value=1>Yes</option>
+                                                        <option value=0>No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              <div class="card-header" style="background: #343a40 !important;border-color: #454d55">Offer test ride to customer</div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-3">
@@ -296,9 +325,8 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-                                <div class="card-header" style="background: #6c757d  !important">Deal</div>
+                                <div class="card-header" style="background: #6c757d  !important">Dealer</div>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-3">
@@ -484,6 +512,8 @@ export default {
             userCurrentTwoWheeler:'',
             modelSuggested:'',
             testRiderOffer:'',
+            purposeOfRoyal:'',
+            appralsAccessories:'',
             product:'',
             modelYear:'',
             expectedValue:'',
@@ -596,6 +626,8 @@ export default {
                 modelSuggested: this.modelSuggested,
                 allMediaCategoryId: this.allMediaCategoryId,
                 testRiderOffer: this.testRiderOffer,
+                purposeOfRoyal:this.purposeOfRoyal,
+                appralsAccessories:this.appralsAccessories,
                 product: this.product,
                 modelYear: this.modelYear,
                 expectedValue: this.expectedValue,

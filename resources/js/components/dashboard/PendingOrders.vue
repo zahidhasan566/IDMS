@@ -43,7 +43,9 @@ export default {
     }
   },
   mounted() {
-
+    bus.$on('open-pendingOrders-tab', () => {
+      console.log('this is pending orders component')
+    })
   },
   methods: {
     changeStatus() {
@@ -80,6 +82,7 @@ export default {
 
   },
   destroyed() {
+    bus.$off('open-pendingOrders-tab')
   }
 }
 </script>
