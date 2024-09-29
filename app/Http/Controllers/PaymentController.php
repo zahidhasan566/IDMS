@@ -77,7 +77,7 @@ class PaymentController extends Controller
         ]);
     }
     public function getCustomerCode(){
-        $customers= $this->customerInfo();
+        $customers= $this->loadCustomer();
         return response([
             'data'=>$customers
         ]);
@@ -100,9 +100,10 @@ class PaymentController extends Controller
             $customerID ='%';
 
         }
-        $customerList= $this->allCustomer($customerID);
-        return response([
-            'data'=>$customerList
+        $customerList= $this->loadCustomer();
+
+        return response()->json([
+            'data' => $customerList,
         ]);
     }
 
@@ -129,12 +130,14 @@ class PaymentController extends Controller
                     'message' =>'Cheque No. is required'],500);
             }
         }
-
         $depotCode = $request->customer['DepotCode'];
-        $business = $request->customer['Business'];
-        $SalesType = $request->customer['PaymentMode'];
-        $CustomerCode = $request->customer['CustomerCode'];
-        $CustomerMasterCode = $request->customer['CustomerMasterCode'];
+
+
+        $business = $request['businessCode'];
+
+        $SalesType = $request['customer']['PaymentMode'];
+        $CustomerCode = $request['customer']['CustomerCode'];
+        $CustomerMasterCode = $request['customer']['CustomerCode'];
         $PreparedDate =Carbon::now()->format('Y-m-d');
         $bankCode =$request->bankCode['BankCode'];
         $paymentAmount = $request->payment;
@@ -168,7 +171,7 @@ class PaymentController extends Controller
                 }
                 $payment = new PaymentTempOnline();
                 $payment->MoneyRecNoTemp = $moneyReceiptNo;
-                $payment->DepotCode = $depotCode;
+                $payment->DepotCode = '';
                 $payment->Business = $business;
                 $payment->PaymentDate = $PaymentDate ;
                 $payment->SalesType = $SalesType;

@@ -177,6 +177,7 @@ class InquiryProgressAndFollowUpController extends Controller
             //check already exist or not
             $checkInquiry=  InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->first();
 
+<<<<<<< HEAD
 //            if($checkInquiry){
 //                InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
 //
@@ -191,6 +192,21 @@ class InquiryProgressAndFollowUpController extends Controller
 //                ]);
 //            }
 //            else{
+=======
+            if($checkInquiry){
+                InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
+                        'VisitResultId'=>$request->visitType,
+                        'CompetitorCompanyId'=>$request->competitorCompany,
+                        'ReceivedAmount'=>$request->receivedAmount,
+                        'BikeModel'=>$request->bikeModel,
+                        'ExpectedDelivery'=>$request->expectedDelivery,
+                        'NextDelivery'=>$request->nextVisit,
+                        'EntryBy'=>$userId,
+                        'EntryDate'=>Carbon::now(),
+                ]);
+            }
+            else{
+>>>>>>> 0100b5e7f6154bed36103009bcac15947e267b25
                 $inquiryStatus = new InquiryStatus();
                 $inquiryStatus->InquiryId=$request->inquiryId;
                 $inquiryStatus->VisitResultId=$request->visitType;
