@@ -43,62 +43,6 @@ class InquiryProgressAndFollowUpController extends Controller
 
         return $this->getReportData($sql, $perPage, $currentPage, $export);
     }
-//    public function index(Request $request){
-//        $take = $request->take;
-//        $search = $request->search;
-//        $userId  = Auth::user()->UserId;
-//        $currentDate=  Carbon::now()->format('Y-m-d');
-//
-//        $subQuery = InquiryStatus::select('InquiryId', DB::raw('MAX((EntryDate)) as latest_timestamp'))
-//                    ->where('InquiryStatus.EntryBy', $userId)->groupBy('InquiryStatus.InquiryId');
-//
-//        $followUpList =  InquiryStatus::select(
-//            'InquiryStatus.InquiryId',
-//            'InquiryStatus.VisitResultId',
-//            DB::raw("CASE WHEN convert(date,InquiryStatus.NextDelivery,112) = convert(date,GETDATE(),112) THEN 'Today Call' ELSE 'Missed Call' End As Inquiry_Status") ,
-//            DB::raw("CASE WHEN InquiryStatus.NextDelivery IS NULL THEN '' ELSE CONVERT(VARCHAR(11), InquiryStatus.NextDelivery, 106) END  Next_Visit"),
-//            DB::raw("CASE WHEN InquiryStatus.ExpectedDelivery IS NULL THEN '' ELSE CONVERT(VARCHAR(11), InquiryStatus.ExpectedDelivery, 106) END Expected_Delivery"),
-//            'Product.ProductName',
-//            'InquiryMaster.CustomerName',
-//            'InquiryMaster.ContactNo',
-//            'InquiryMaster.ConvenientTimeToCall',
-//            'InquiryMaster.Add1 as Address',
-//            'InquiryMaster.Age',
-//            'InquiryMaster.Gender',
-//            'InquiryOccupation.OccupationName',
-//            'InquiryMaster.Current2Wheeler',
-//            'InquiryCustomerCategory.CustomerCategoryName as Customer_Category',
-//            'CompetitorCompany.CompanyName',
-//            'InquiryStatus.ReceivedAmount',
-//            'InquiryStatus.BikeModel',
-//            'InquiryMaster.InquiryRemark',
-//            'InquiryMaster.EntryBy'
-//            )
-////            ->joinSub($subQuery,'latest_updates',function ($join){
-////                $join->on('InquiryStatus.EntryDate', '=', 'latest_updates.latest_timestamp');
-////                })
-//            ->join('InquiryMaster','InquiryMaster.InquiryId','InquiryStatus.InquiryId')
-//            ->join('InquiryOccupation','InquiryOccupation.OccupationId','InquiryMaster.OccupationId')
-//            ->join('InquiryCustomerCategory','InquiryCustomerCategory.CustomerCategoryId','InquiryMaster.CustomerCategoryId')
-//            ->leftjoin('CompetitorCompany','CompetitorCompany.CompanyID','InquiryStatus.CompetitorCompanyId')
-//            //->join('InquiryMainUser','InquiryMainUser.InquiryMainUserId','InquiryMaster.InquiryMainUserId')
-//            ->leftJoin('Product','Product.ProductCode','InquiryStatus.ProductCode')
-//            ->where(function ($q) use ($search) {
-//                $q->where('InquiryStatus.InquiryId', '=', $search);
-//                $q->Orwhere('InquiryMaster.CustomerName', 'like', '%' . $search . '%');
-//            })
-//            //->where('InquiryStatus.NextDelivery','>', $currentDate)
-//            ->orderBy( 'InquiryStatus.InquiryId','desc');
-//
-//
-//        if ($request->type === 'export') {
-//            return response()->json([
-//                'data' => $followUpList->get(),
-//            ]);
-//        } else {
-//            return $followUpList->paginate($take);
-//        }
-//    }
 
     public function getSupportingData(){
         $inquiryOccupation = InquiryOccupation::where('Active',1)->orderBy('SL','asc')->get();
