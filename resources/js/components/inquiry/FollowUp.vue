@@ -19,7 +19,7 @@
                                         <ValidationProvider name="Visit Type" mode="eager" rules="required"
                                                             v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="Visit Type">Visit Type  </label>
+                                            <label for="Visit Type">Visit Type  <span class="error">*</span> </label>
                                             <select class="form-control" name="gender"
                                                     v-model="visitType">
                                                 <option value="">Select</option>
@@ -29,16 +29,16 @@
                                         </div>
                                         </ValidationProvider>
                                     </div>
-                                    <div class="col-12 col-md-3" v-if="visitType===2 || visitType===4|| visitType===1">
-                                        <ValidationProvider name="Product Name" mode="eager" rules="required"
+                                    <div class="col-12 col-md-3" v-if="visitType===2 || visitType===4|| visitType===1 ">
+                                        <ValidationProvider name="Product Name" mode="eager" :rules="visitType===2 || visitType===4|| visitType===1?`required`:``"
                                                             v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="product">Product  </label>
+                                            <label for="product">Product  <span class="error">*</span> </label>
                                             <v-select :filterable="false"
                                                       :mutiselect="false"
                                                       v-model="product"
                                                       :options="allProduct" label="ProductName"
-                                                      @search="searchProduct">
+                                                      @search="searchProduct" data-required ="true">
 
                                             </v-select>
                                             <span class="error-message"> {{ errors[0] }}</span>
@@ -46,51 +46,51 @@
                                         </ValidationProvider>
                                     </div>
                                   <div class="col-12 col-md-3" v-if="visitType===2">
-                                        <ValidationProvider name="Received Amount" mode="eager" rules="required" v-slot="{ errors }">
+                                        <ValidationProvider name="Received Amount" mode="eager" :rules="visitType===2?`required`:``" v-slot="{ errors }">
                                         <div class="form-group">
-                                          <label for="receivedAmount">Received Amount </label>
+                                          <label for="receivedAmount">Received Amount <span class="error">*</span> </label>
                                           <input type="number" class="form-control"
                                                  id="receivedAmount"
                                                  data-required="true"
                                                  placeholder="Received Amount"
-                                                 v-model="receivedAmount" name="receivedAmount">
+                                                 v-model="receivedAmount" name="receivedAmount" >
                                             <span class="error-message"> {{ errors[0] }}</span>
                                         </div>
                                         </ValidationProvider>
                                     </div>
                                   <div class="col-12 col-md-3" v-if="visitType===3">
-                                    <ValidationProvider name="Competitor Company" mode="eager" rules="required"
+                                    <ValidationProvider name="Competitor Company" mode="eager" :rules="visitType===3?`required`:``"
                                                         v-slot="{ errors }">
                                       <div class="form-group">
-                                        <label for="competitorCompany">Competitor Company </label>
+                                        <label for="competitorCompany">Competitor Company <span class="error">*</span> </label>
                                         <select class="form-control" name="Competitor Company"
                                                 v-model="competitorCompany">
                                           <option value="">Select</option>
-                                          <option v-for="(company,index) in competitorCompanies" :value="company.CompanyID">{{company.CompanyName}}</option>
+                                          <option v-for="(company,index) in competitorCompanies" :value="company.CompanyID"  data-required="true">{{company.CompanyName}}</option>
                                         </select>
                                         <span class="error-message"> {{ errors[0] }}</span>
                                       </div>
                                     </ValidationProvider>
                                   </div>
                                   <div class="col-12 col-md-3" v-if="visitType===3">
-                                        <ValidationProvider name="Bike Model" mode="eager" rules="required" v-slot="{ errors }">
+                                        <ValidationProvider name="Bike Model" mode="eager" :rules="visitType===3?`required`:``" v-slot="{ errors }">
                                         <div class="form-group">
-                                          <label for="bikeModel">Bike Model</label>
+                                          <label for="bikeModel">Bike Model<span class="error">*</span> </label>
                                           <input type="text" class="form-control"
                                                  id="bikeModel"
                                                  data-required="true"
                                                  placeholder="Bike Model"
-                                                 v-model="bikeModel" name="bikeModel">
+                                                 v-model="bikeModel" name="bikeModel" >
                                             <span class="error-message"> {{ errors[0] }}</span>
                                         </div>
                                         </ValidationProvider>
                                     </div>
 
                                     <div class="col-12 col-md-3" v-if="visitType===1">
-                                        <ValidationProvider name="Inquiry Level" mode="eager" rules="required"
+                                        <ValidationProvider name="Inquiry Level" mode="eager" :rules="visitType===1?`required`:``"
                                                             v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="educationalQualification">Inquiry Level  </label>
+                                            <label for="inquiryLevel">Inquiry Level  <span class="error">*</span> </label>
                                             <select class="form-control" name="gender"
                                                     v-model="inquiryLevel">
                                                 <option value="">Select</option>
@@ -101,24 +101,32 @@
                                         </ValidationProvider>
                                     </div>
                                     <div class="col-12 col-md-3" v-if="visitType===1">
+                                      <ValidationProvider name="Expected Delivery" mode="eager" :rules="visitType===1?`required`:``"
+                                                          v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="designation">Expected Delivery</label>
-                                            <input type="date" class="form-control"
-                                                   id="expectedDelivery"
-                                                   data-required="true"
-                                                   v-model="expectedDelivery" name="expectedDelivery">
-                                            <span class="error-message"> {{ errors[0] }}</span>
+                                          <label for="expectedDelivery">Expected Delivery<span class="error">*</span> </label>
+                                          <input type="date" class="form-control"
+                                                 id="expectedDelivery"
+                                                 data-required="true"
+                                                 v-model="expectedDelivery" name="expectedDelivery">
+                                          <span class="error-message"> {{ errors[0] }}</span>
                                         </div>
+                                      </ValidationProvider>
+
                                     </div>
-                                    <div class="col-12 col-md-3" v-if="visitType===1">
-                                            <label for="tagNo">Next Visit</label>
-                                            <input type="date" class="form-control"
-                                                   id="NextVisit"
-                                                   data-required="true"
-                                                   placeholder="Next Visit"
-                                                   v-model="nextVisit" name="nextVisit">
-                                            <span class="error-message"> {{ errors[0] }}</span>
-                                    </div>
+                                  <div class="col-12 col-md-3" v-if="visitType===1">
+                                    <ValidationProvider name="Next Visit" mode="eager" :rules="visitType===1?`required`:``" v-slot="{ errors }">
+                                      <div class="form-group">
+                                        <label for="nextVisit">Next Visit<span class="error">*</span> </label>
+                                        <input type="date" class="form-control"
+                                               id="nextVisit"
+                                               data-required="true"
+                                               placeholder="Next Visit"
+                                               v-model="nextVisit" name="nextVisit" >
+                                        <span class="error-message"> {{ errors[0] }}</span>
+                                      </div>
+                                    </ValidationProvider>
+                                  </div>
                                 </div>
                             </div>
                             <div class="col-md-12" style="text-align: end;margin-top:10px">
@@ -252,7 +260,6 @@ export default {
                 bikeModel:this.bikeModel,
 
             }, (response) => {
-                console.log(response)
                 this.successNoti(response.message);
                 $("#add-edit-dept").modal("toggle");
                 bus.$emit('refresh-datatable');

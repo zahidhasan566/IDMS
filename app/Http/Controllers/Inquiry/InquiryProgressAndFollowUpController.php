@@ -53,6 +53,9 @@ class InquiryProgressAndFollowUpController extends Controller
             'InquiryOccupation.OccupationName',
             'InquiryMaster.Current2Wheeler',
             'InquiryCustomerCategory.CustomerCategoryName as Customer_Category',
+            'CompetitorCompany.CompanyName',
+            'InquiryStatus.ReceivedAmount',
+            'InquiryStatus.BikeModel',
             'InquiryMaster.InquiryRemark',
             'InquiryMaster.EntryBy'
             )
@@ -62,6 +65,7 @@ class InquiryProgressAndFollowUpController extends Controller
             ->join('InquiryMaster','InquiryMaster.InquiryId','InquiryStatus.InquiryId')
             ->join('InquiryOccupation','InquiryOccupation.OccupationId','InquiryMaster.OccupationId')
             ->join('InquiryCustomerCategory','InquiryCustomerCategory.CustomerCategoryId','InquiryMaster.CustomerCategoryId')
+            ->leftjoin('CompetitorCompany','CompetitorCompany.CompanyID','InquiryStatus.CompetitorCompanyId')
             //->join('InquiryMainUser','InquiryMainUser.InquiryMainUserId','InquiryMaster.InquiryMainUserId')
             ->leftJoin('Product','Product.ProductCode','InquiryStatus.ProductCode')
             ->where(function ($q) use ($search) {
@@ -209,9 +213,9 @@ class InquiryProgressAndFollowUpController extends Controller
     public function updateFollowUp(Request $request){
         try{
             $userId  = Auth::user()->UserId;
-
+//            dd($request->product['id']);
             //check already exist or not
-            $checkInquiry=  InquiryStatus::where('InquiryId',$request->inquiryId)->first();
+            $checkInquiry=  InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->first();
 
             if($checkInquiry){
                 InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
