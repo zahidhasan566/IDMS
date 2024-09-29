@@ -62,11 +62,11 @@
                     </ValidationProvider>
                   </div>
                   <div class="col-12 col-md-3" v-if="visitType===3">
-                    <ValidationProvider name="Competitor Company" mode="eager" rules="required"
+                    <ValidationProvider name=" Company" mode="eager" rules="required"
                                         v-slot="{ errors }">
                       <div class="form-group">
-                        <label for="competitorCompany">Competitor Company <span class="error">*</span> </label>
-                        <select class="form-control" name="Competitor Company"
+                        <label for="competitorCompany">Company <span class="error">*</span> </label>
+                        <select class="form-control" name=" Company"
                                 v-model="competitorCompany">
                           <option value="">Select</option>
                           <option v-for="(company,index) in competitorCompanies" :value="company.CompanyID"

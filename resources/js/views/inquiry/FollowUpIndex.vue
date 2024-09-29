@@ -35,8 +35,8 @@ export default {
             tableOptions: {
                 source: 'inquiry/follow-up-list',
                 search: true,
-                slots: [19],
-                hideColumn: ['VisitResultId'],
+                slots: [16],
+                hideColumn: ['PageNo','SL','VisitResultId'],
                 slotsName: ['action'],
                 sortable: [4],
                 pages: [20, 50, 100],
@@ -67,29 +67,9 @@ export default {
                 bus.$emit('add-edit-inquiry-follow-up', row);
             })
         },
-        encodeConvert(val){
-            let convertVal = btoa(val);
-            return convertVal
-        },
-        closeJobCard(jobCardNo){
-            this.infoAlert('Close JobCard', 'Are you sure?', 'Yes, Close JobCard.', () => {
-                this.postData(jobCardNo);
-            })
-        },
-        postData(jobCardNo){
-            let  submitUrl = 'jobCard/job-close';
-            this.axiosPost(submitUrl, {
-                jobCardNo: jobCardNo,
-            }, (response) => {
-                this.successNoti(response.message);
-                bus.$emit('refresh-datatable');
-            }, (error) => {
-                this.errorNoti(error);
-            })
-        },
 
         exportData() {
-            bus.$emit('export-data','job-card-list-'+moment().format('YYYY-MM-DD'))
+            bus.$emit('export-data','Inquiry-Follow-Up-And-Progress-Card-'+moment().format('YYYY-MM-DD'))
         }
     }
 }
