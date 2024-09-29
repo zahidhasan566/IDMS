@@ -9,6 +9,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
     Route::post('invoice-spare-parts/stock-check', [InvoiceSparePartsController::class, 'stockCheck']);
     Route::post('invoice-spare-parts/checkout', [InvoiceSparePartsController::class, 'createInvoice']);
     Route::post('invoice-spare-parts/get-data-by-id', [InvoiceSparePartsController::class, 'getInvoiceData']);
+    Route::post('invoice-spare-parts/get-customer-by-chassis', [InvoiceSparePartsController::class, 'getCustomerByChassis']);
     Route::post('invoice-spare-parts/return', [InvoiceSparePartsController::class, 'returnInvoice']);
     Route::get('invoice-spare-parts/print/{invoiceId}', [InvoiceSparePartsController::class, 'sparePartsInvoicePrint']);
 

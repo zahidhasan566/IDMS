@@ -147,6 +147,21 @@ class InvoiceSparePartsController extends Controller
         }
     }
 
+    public function getCustomerByChassis(Request $request)
+    {
+        if (empty($request->chassisNo)) {
+            return response()->json([
+                'message' => 'No customer'
+            ]);
+        }
+        $chassis = $request->chassisNo;
+        return DealarInvoiceMaster::join('DealarInvoiceDetails as dd','dd.InvoiceId','DealarInvoiceMaster.InvoiceID')
+            ->where('dd.ChassisNo',$chassis)
+            ->orderBy('InvoiceID','desc')
+            ->select('CustomerName')
+            ->first();
+    }
+
     public function returnInvoice(Request $request)
     {
         $request->validate([
