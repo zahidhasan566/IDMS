@@ -285,7 +285,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label for="appralsAccessories" class="col-lg-5 col-form-label">Interested in Appeals and Accessories</label>
-                                                <div class="col-lg-7">
+                                                <div class="col-lg-4">
                                                     <select class="form-control" name="Appeals Accessories"
                                                             v-model="appralsAccessories">
                                                         <option value=1>Yes</option>
@@ -297,7 +297,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group row">
                                                 <label for="purposeOfRoyal" class="col-lg-5 col-form-label">Intended purpose of Royal Enfield use</label>
-                                                <div class="col-lg-7">
+                                                <div class="col-lg-4">
                                                     <select class="form-control" name="purpose Of Royal"
                                                             v-model="purposeOfRoyal">
                                                         <option value=1>Yes</option>
