@@ -240,7 +240,10 @@ class InquiryProgressAndFollowUpController extends Controller
                 $inquiryStatus->save();
             }
 
-            return response()->json(['message' => "successfully updated"]);
+            return response()->json([
+                'status' => 'Success',
+                'message' => "Successfully updated"
+            ]);
 
         } catch (\Exception $exception) {
             return $exception->getMessage();
