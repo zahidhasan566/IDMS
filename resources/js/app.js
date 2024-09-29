@@ -103,6 +103,10 @@ Vue.component('add-edit-testrider', require('./components/testRide/TestRiderAddE
 Vue.component('add-edit-notify', require('./components/transportNotification/NotificationAddEditModal.vue').default);
 Vue.component('add-edit-brta-registration', require('./components/logistics/BrtaRegistrationStatusAddEditModal.vue').default);
 Vue.component('add-edit-product', require('./components/product/ProductAddEditModal.vue').default);
+Vue.component('add-edit-scrap-product', require('./components/Scrap/ScrapAddEditModal.vue').default);
+Vue.component('add-edit-jobCard-csi', require('./components/JobCard/JobCardCSIAddEdit.vue').default);
+
+
 const app = new Vue({
     el: '#app',
     store: store,

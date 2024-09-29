@@ -177,8 +177,8 @@ class InvoiceController extends Controller
             $invoice->PreviousBikeCC            = $request->previousBikeCC;
             $invoice->PreviousBikeUsage         = $request->previousBikeUsage;
             $invoice->CauseForBuyingNewBike     = $causeForBuyingNewBike;
-            $invoice->YRCisKnown                = $request->YRCisKnown;
-            $invoice->WantJoinYRC               = $request->wantJoinYRC;
+            $invoice->REisKnown                = $request->REisKnown;
+            $invoice->REJoinYRC               = $request->wantJoinRE;
             $invoice->DistrictCode              = $request->DistrictCode;
             $invoice->UpazillaCode              = $request->ThanaCode;
             $invoice->SalesStaffName            = $request->SalesStaffName ? $request->SalesStaffName : '';
