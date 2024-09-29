@@ -77,7 +77,7 @@ class PaymentController extends Controller
         ]);
     }
     public function getCustomerCode(){
-        $customers= $this->customerInfo();
+        $customers= $this->loadCustomer();
         return response([
             'data'=>$customers
         ]);
@@ -130,9 +130,11 @@ class PaymentController extends Controller
                     'message' =>'Cheque No. is required'],500);
             }
         }
+      //  $depotCode = $request->customer['DepotCode'];
 
-        $depotCode = $request->customer['DepotCode'];
-        $business = $request->customer['Business'];
+
+        $business = $request->customer['BusinessCode'];
+
         $SalesType = $request->customer['PaymentMode'];
         $CustomerCode = $request->customer['CustomerCode'];
         $CustomerMasterCode = $request->customer['CustomerMasterCode'];
@@ -169,7 +171,7 @@ class PaymentController extends Controller
                 }
                 $payment = new PaymentTempOnline();
                 $payment->MoneyRecNoTemp = $moneyReceiptNo;
-                $payment->DepotCode = $depotCode;
+                $payment->DepotCode = '';
                 $payment->Business = $business;
                 $payment->PaymentDate = $PaymentDate ;
                 $payment->SalesType = $SalesType;
