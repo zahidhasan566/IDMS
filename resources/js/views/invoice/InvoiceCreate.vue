@@ -226,7 +226,7 @@
                             </ValidationProvider>
                             <ValidationProvider name="IFADisKnown" mode="eager" rules="required" v-slot="{ errors }">
                               <div class="form-group row" style="padding-bottom: 10px">
-                                <label class="col-lg-4 col-form-label text-right">Do you know Royal Enfield ?<span style="color: red">*</span></label>
+                                <label class="col-lg-4 col-form-label text-right">Do you know Royal Enfield Club ?<span style="color: red">*</span></label>
                                 <div class="col-lg-8">
                                   <select name="IFADisKnown" class="form-control" v-model="form.REisKnown" style="margin: 0">
                                     <option value="yes">Yes</option>

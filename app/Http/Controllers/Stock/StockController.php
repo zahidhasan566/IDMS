@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Stock;
 
 use App\Http\Controllers\Controller;
+use App\Models\DealarReceiveInvoiceDetails;
 use App\Models\Logistics\DealerDocument;
 use App\Traits\CommonTrait;
 use Dompdf\Dompdf;
@@ -25,12 +26,16 @@ class StockController extends Controller
             $business = 'P';
             $list = DB::table('DealarStock as d')
                 ->select(DB::raw("ROW_NUMBER() Over (Order by P.ProductCode) As SL "),
-                    'd.ProductCode','p.ProductName','p.PartNo','r.RackName',
+                    'd.ProductCode',
+                    'd.MasterCode',
+                    'customer.CustomerName',
+                    'p.ProductName','p.PartNo','r.RackName',
                     DB::raw("Convert(numeric(18,2), p.MRP) as MRP,
                     Convert(numeric(18,2), d.CurrentStock) as CurrentStock,
                     Convert(numeric(18,2), p.UnitPrice) as UnitPrice,
                     Convert(numeric(18,2), ((p.UnitPrice +p.Vat)*d.CurrentStock)) as TotalPrice"))
                 ->join('Product as p','p.ProductCode','=','d.ProductCode')
+                ->join('Customer','Customer.CustomerCode','d.MasterCode')
                 ->leftjoin("ProductRackAllocation as r",function($join){
                     $join->on("r.CustomerCode","=","d.MasterCode")
                         ->on("r.ProductCode","=","p.ProductCode");
@@ -165,5 +170,18 @@ class StockController extends Controller
                 'data' => $msl,
             ]);
         }
+    }
+
+    public function getSparePartsHistory(Request $request){
+
+        $receiveHistory = DealarReceiveInvoiceDetails::select('DealarReceiveInvoiceMaster.*','DealarReceiveInvoiceDetails.*',)
+            ->join('DealarReceiveInvoiceMaster','DealarReceiveInvoiceMaster.ReceiveID','DealarReceiveInvoiceDetails.ReceiveID')
+            ->where('DealarReceiveInvoiceDetails.ProductCode', '=', $request->ProductCode)
+            ->where('DealarReceiveInvoiceMaster.MasterCode', '=', $request->MasterCode)
+           ->get();
+
+        return response()->json([
+            'receiveHistory' => $receiveHistory,
+        ],200);
     }
 }
