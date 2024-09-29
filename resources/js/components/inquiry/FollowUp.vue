@@ -252,6 +252,7 @@ export default {
                 bikeModel:this.bikeModel,
 
             }, (response) => {
+                console.log(response)
                 this.successNoti(response.message);
                 $("#add-edit-dept").modal("toggle");
                 bus.$emit('refresh-datatable');

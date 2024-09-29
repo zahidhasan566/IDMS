@@ -207,12 +207,11 @@ class InquiryProgressAndFollowUpController extends Controller
         }
     }
     public function updateFollowUp(Request $request){
-
         try{
             $userId  = Auth::user()->UserId;
 
             //check already exist or not
-            $checkInquiry=  InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->first();
+            $checkInquiry=  InquiryStatus::where('InquiryId',$request->inquiryId)->first();
 
             if($checkInquiry){
                 InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
