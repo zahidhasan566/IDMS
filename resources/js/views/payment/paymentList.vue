@@ -199,7 +199,9 @@ export default {
         getCustomer() {
             let instance = this;
             this.axiosGet('payment/get-all-customer', function (response) {
-                instance.customers = response.data;
+                console.log(typeof response.data)
+                instance.customers = response.data[0];
+                console.log('customers', instance.customers)
             }, function (error) {
             });
         },

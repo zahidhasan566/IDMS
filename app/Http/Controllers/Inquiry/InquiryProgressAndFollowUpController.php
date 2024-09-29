@@ -215,7 +215,6 @@ class InquiryProgressAndFollowUpController extends Controller
 
             if($checkInquiry){
                 InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
-
                         'VisitResultId'=>$request->visitType,
                         'CompetitorCompanyId'=>$request->competitorCompany,
                         'ReceivedAmount'=>$request->receivedAmount,

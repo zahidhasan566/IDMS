@@ -100,9 +100,10 @@ class PaymentController extends Controller
             $customerID ='%';
 
         }
-        $customerList= $this->allCustomer($customerID);
-        return response([
-            'data'=>$customerList
+        $customerList= $this->loadCustomer();
+
+        return response()->json([
+            'data' => $customerList,
         ]);
     }
 

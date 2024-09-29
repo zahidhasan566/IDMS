@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\CustomerMapping;
 use App\Models\CustomerType;
 use App\Models\User;
 use App\Traits\CodeGeneration;
@@ -105,6 +106,14 @@ class CustomerController extends Controller
             $user->RoleId = 'customer';
             $user->Active = 0;
             $user->save();
+
+
+            $customerMapping = new CustomerMapping();
+            $customerMapping->CustomerMasterCode = $request->CustomerCode;
+            $customerMapping->CustomerCode = $request->CustomerCode;
+            $customerMapping->Business = 'C';
+            $customerMapping->save();
+
 
             Db::commit();
 

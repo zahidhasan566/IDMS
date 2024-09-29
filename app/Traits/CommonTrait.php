@@ -150,8 +150,13 @@ trait CommonTrait
 //        $sql ="SELECT * FROM Customer WHERE CustomerCode LIKE '$customerId' AND CustomerType IN ('E','D','R') AND LEFT(CustomerCode,2)='HC'";
         $customerList = Customer::where('CustomerCode','like',$customerId)
             ->whereIn('CustomerType',['E','D','R'])
-            ->where('CustomerCode','like','%'.'HC'.'%')->get();
-//        dd($customerList);
+            ->where(function ($q) {
+                $q->where('CustomerCode','like','%'.'HC'.'%');
+                $q->Orwhere('CustomerCode','like','%'.'RE'.'%');
+            })
+
+           ->toSql();
+        dd($customerList);
         return $customerList;
     }
 
