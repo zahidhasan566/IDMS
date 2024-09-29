@@ -35,7 +35,7 @@ export default {
             tableOptions: {
                 source: 'inquiry/follow-up-list',
                 search: true,
-                slots: [16],
+                slots: [19],
                 hideColumn: ['VisitResultId'],
                 slotsName: ['action'],
                 sortable: [4],

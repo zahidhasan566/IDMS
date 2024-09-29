@@ -15,6 +15,13 @@
                         <p style="width: 160px">Customer</p>
                       </div>
                       <div class="col-12">
+                        <ValidationProvider name="Chassis No" mode="eager" rules="required" v-slot="{ errors }">
+                          <div class="form-group">
+                            <label for="chassis">Chassis No</label>
+                            <input type="text" class="form-control" name="chassis" id="chassis"
+                                   v-model="form.chassis" @change="getCustomerByChassis">
+                          </div>
+                        </ValidationProvider>
                         <ValidationProvider name="Customer Name" mode="eager" rules="required" v-slot="{ errors }">
                           <div class="form-group">
                             <label for="customerName">Customer Name<span style="color: red">*</span></label>
@@ -113,13 +120,6 @@
                             <label for="unitPrice">Unit Price</label>
                             <input type="text" class="form-control" name="unitPrice" id="unitPrice"
                                    v-model="Number(form.unitPrice).toFixed(2)" readonly>
-                          </div>
-                        </ValidationProvider>
-                        <ValidationProvider name="Chassis No" mode="eager" rules="required" v-slot="{ errors }" v-if="form.hasChassis">
-                          <div class="form-group">
-                            <label for="chassis">Chassis No</label>
-                            <input type="text" class="form-control" name="chassis" id="chassis"
-                                   v-model="form.chassis">
                           </div>
                         </ValidationProvider>
                         <ValidationProvider name="Quantity" mode="eager" rules="required|min:0" v-slot="{ errors }">
@@ -276,6 +276,13 @@ export default {
         this.affiliators = response.affiliators
       }, (error) => {
 
+      })
+    },
+    getCustomerByChassis() {
+      this.axiosPost('invoice-spare-parts/get-customer-by-chassis',{
+        chassisNo: this.form.chassis
+      },(response) => {
+        console.log(response)
       })
     },
     selectSpareParts(val) {
