@@ -130,14 +130,14 @@ class PaymentController extends Controller
                     'message' =>'Cheque No. is required'],500);
             }
         }
-      //  $depotCode = $request->customer['DepotCode'];
+        $depotCode = $request->customer['DepotCode'];
 
 
-        $business = $request->customer['BusinessCode'];
+        $business = $request['businessCode'];
 
-        $SalesType = $request->customer['PaymentMode'];
-        $CustomerCode = $request->customer['CustomerCode'];
-        $CustomerMasterCode = $request->customer['CustomerMasterCode'];
+        $SalesType = $request['customer']['PaymentMode'];
+        $CustomerCode = $request['customer']['CustomerCode'];
+        $CustomerMasterCode = $request['customer']['CustomerCode'];
         $PreparedDate =Carbon::now()->format('Y-m-d');
         $bankCode =$request->bankCode['BankCode'];
         $paymentAmount = $request->payment;
