@@ -90,6 +90,7 @@ Vue.component('add-edit-user-customer', require('./components/jobCard/UserCustom
 Vue.component('add-edit-paid-service-schedule', require('./components/jobCard/PaidServiceAddEditModal.vue').default);
 //credit payment
 Vue.component('add-credit-payment', require('./components/creditPayment/creditPaymentModal.vue').default);
+Vue.component('credit-payment', require('./views/payment/paymentList.vue').default);
 
 //custom pagination component
 Vue.component('pagination', require('./components/partial/PaginationComponent.vue').default);

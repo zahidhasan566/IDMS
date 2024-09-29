@@ -254,8 +254,8 @@ class LostDocumentController extends Controller
     
         // Build the query using Eloquent
         $customers = Customer::where('CustomerCode', 'LIKE', $customerCodeFilter)
-                              ->whereIn('CustomerType', ['E', 'D', 'R'])
-                              ->whereRaw('LEFT(CustomerCode, 2) = ?', ['HC'])
+//                              ->whereIn('CustomerType', ['E', 'D', 'R'])
+//                              ->whereRaw('LEFT(CustomerCode, 2) = ?', ['HC'])
                               ->get();
         
         return $customers;
