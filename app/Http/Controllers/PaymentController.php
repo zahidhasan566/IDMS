@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\CustomerMapping;
 use App\Models\PaymentTempOnline;
 use App\Traits\CodeGeneration;
@@ -47,7 +48,7 @@ class PaymentController extends Controller
             )
             ->join('Banks as b','b.BankCode','PTO.BankCode')
             ->join('Business as bs','bs.Business','PTO.Business')
-            ->join('Depot as d','d.DepotCode','PTO.DepotCode')
+            ->leftJoin('Depot as d','d.DepotCode','PTO.DepotCode')
             ->leftjoin('Customer as c','c.CustomerCode','PTO.CustomerCode')
             ->where('PTO.Business',$business)
             ->whereNotNull('PTO.ChequeImage')
@@ -130,14 +131,14 @@ class PaymentController extends Controller
                     'message' =>'Cheque No. is required'],500);
             }
         }
-        $depotCode = $request->customer['DepotCode'];
 
+        $customer = Customer::where('CustomerCode',$request->customer['CustomerCode'])->first();
 
-        $business = $request['businessCode'];
-
-        $SalesType = $request['customer']['PaymentMode'];
-        $CustomerCode = $request['customer']['CustomerCode'];
-        $CustomerMasterCode = $request['customer']['CustomerCode'];
+        $depotCode = $customer->DepotCode;
+        $business = $customer->Business;
+        $SalesType =$customer->PaymentMode;
+        $CustomerCode = $request->customer['CustomerCode'];
+        $CustomerMasterCode = $request->customer['CustomerCode'];
         $PreparedDate =Carbon::now()->format('Y-m-d');
         $bankCode =$request->bankCode['BankCode'];
         $paymentAmount = $request->payment;

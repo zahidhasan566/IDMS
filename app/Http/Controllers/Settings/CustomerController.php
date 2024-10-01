@@ -69,8 +69,8 @@ class CustomerController extends Controller
             $customer->Mobile           = $request->Mobile;
             $customer->ThanaCode        = $request->ThanaCode;
             $customer->NID              = $request->NID;
-            $customer->Business         = $request->Business ? $request->Business : '';
-            $customer->DepotCode        = $request->DepotCode ? $request->DepotCode : '';
+            $customer->Business         = $request->Business ? $request->Business : 'C';
+            $customer->DepotCode        = $request->DepotCode ? $request->DepotCode : 'H';
             $customer->CustomerType     = $request->CustomerType;
             $customer->PaymentMode      = $request->PaymentMode;
             $customer->CreditDays       = '';

@@ -31,7 +31,6 @@ class InvoiceController extends Controller
     use CommonTrait;
 
     public function getAllInvoice(Request $request){
-
         $ChassisNo  = $request->ChassisNo;
         $isAdmin    = Auth::user()->grpSup;
         $MasterCode = Auth::user()->UserId;
@@ -48,6 +47,8 @@ class InvoiceController extends Controller
         }
 
         $sql = "EXEC SP_BikeInvoiceList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
+
+       // dd($sql);
         //return $sql;
         $invoice = $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
 
