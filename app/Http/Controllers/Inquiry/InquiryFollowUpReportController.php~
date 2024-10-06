@@ -40,13 +40,14 @@ class InquiryFollowUpReportController extends Controller
                 $customer = $userId;
             }
             if ($type === 'export') {
-                $sp = "exec usp_doLoadInquiryConversionSummary '$startDate','$endDate','$customer','$productCode',$take,1";
+                $sp = "exec usp_doLoadInquiryConversionSummary '$startDate','$endDate','$customer','$productCode',$take,$offset";
                 return response()->json([
                     'data' => SpPaginationService::getPdoResult($sp)
                 ]);
             } else {
-                $sp = "exec usp_doLoadInquiryConversionSummary '$startDate','$endDate','$customer','$productCode',$take,1";
+                $sp = "exec usp_doLoadInquiryConversionSummary '$startDate','$endDate','$customer','$productCode',$take,$offset";
             }
+            dd($sp);
 
             return SpPaginationService::paginate2($sp,$take,$offset);
         }
