@@ -32,7 +32,7 @@ class PrebookingController extends Controller
                 && !empty($singleCustomer['customer']['customer_mobile'])
                 && !empty($singleCustomer['product']['product_id'])
                 && !empty($singleCustomer['product']['product_name'])
-                && !empty($singleCustomer['product']['product_price'])
+//                && !empty($singleCustomer['product']['product_price'])
                 && !empty($singleCustomer['color']['color_id'])
                 && !empty($singleCustomer['color']['color_name'])
                 && !empty($singleCustomer['delivery_location']['delivery_location_id'])

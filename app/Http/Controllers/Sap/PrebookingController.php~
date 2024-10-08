@@ -84,7 +84,7 @@ class PrebookingController extends Controller
                 return response()->json([
                     'status' => 'Success',
                     'message' => 'PreBooking Added Successfully',
-                    'CustomerCount' => $singleCustomer
+                    'BookingCode' => $singleCustomer['booking_code']
                 ], 200);
 
 
