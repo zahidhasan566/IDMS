@@ -64,7 +64,7 @@
                         {{ item.replace(/_/g, ' ', " $1").trim() }}
                       </th>
                       <th>
-                        print
+                        Print
                       </th>
                     </tr>
                     </thead>

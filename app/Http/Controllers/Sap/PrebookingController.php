@@ -20,6 +20,7 @@ class PrebookingController extends Controller
 //            'customer' => $this->loadCustomer(),
             'customer' => PreBookingRe::selectRaw('distinct DeliveryDealerCode as CustomerCode, DeliveryLocationName as CustomerName')->get()->toArray(),
             'products' => PreBookingRe::selectRaw('distinct ProductCode, ProductName')->get()->toArray(),
+            'bookingMode' => PreBookingRe::selectRaw('distinct BookingMode')->get()->toArray(),
         ]);
     }
     public function getPreBookingReport(Request $request){
@@ -29,13 +30,14 @@ class PrebookingController extends Controller
         $Export = $request->Export;
         $CustomerCode = $request->CustomerCode;
         $ProductCode = $request->ProductCode;
+        $bookingMode = $request->bookingMode;
         $dateFrom = $request->DateFrom;
         $dateTo = $request->DateTo;
         $userID = Auth::user()->UserId;
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
-        $sql = " exec usp_doLoadPreBookingReport  '$dateFrom', '$dateTo', '$CustomerCode','$ProductCode','','$userID','$PerPage','$CurrentPage' ";
+        $sql = " exec usp_doLoadPreBookingReport  '$dateFrom', '$dateTo', '$CustomerCode','$ProductCode','$bookingMode','','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
     public function storePreBookingCustomer(Request $request)
@@ -99,6 +101,7 @@ class PrebookingController extends Controller
                 $customer->DeliveryDealerCode = $singleCustomer['delivery_location']['dealer_code'];
                 $customer->DeliveryDistrictCode = $singleCustomer['delivery_location']['delivery_district_id'];
                 $customer->DeliveryDealerCode = $singleCustomer['delivery_location']['dealer_code'];
+                $customer->PrebookUrl = $singleCustomer['invoice_url'];
                 $customer->IUser = Auth::user()->UserId;
                 $customer->IDate = Carbon::now();
                 $customer->IpAddress = $request->ip();

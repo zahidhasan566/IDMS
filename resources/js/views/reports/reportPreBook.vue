@@ -61,8 +61,21 @@
                               </div>
 
                       </div>
-                      
-                    <div class="col-md-2" style="margin-top: 30px">
+                      <div class="col-md-2">
+                          <div class="form-group">
+                              <label>Booking Mode <span class="error">*</span></label>
+                              <select name="jobStatus" class="form-control" v-model="form.bookingMode" style="margin: 0">
+                                  <option :value="null" v-if="user == 'admin'" selected>All</option>
+                                  <option :value="singleBook.BookingMode" v-for="(singleBook , index) in bookingModes"
+                                          :key="index"> {{ singleBook.BookingMode }}</option>
+                              </select>
+                              <div class="error" v-if="form.errors.has('BookingMode')" v-html="form.errors.get('BookingMode')" />
+                          </div>
+
+                      </div>
+
+
+                      <div class="col-md-2" style="margin-top: 30px">
                       <button type="submit" class="btn btn-success"><i class="mdi mdi-filter"></i>Filter</button>
                     </div>
                   </div>
@@ -73,17 +86,27 @@
                   <table class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm small">
                     <thead class="thead-dark">
                     <tr>
-                      <th v-for="(item, index) in headers" v-if="index !== 0 && index !== 32">
+                        <th>
+                            print
+                        </th>
+                      <th v-for="(item, index) in headers" v-if="index !== 0 && index !== 33">
                         {{ item.replace(/_/g, ' ', " $1").trim() }}
                       </th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="(item, index) in contents" >
+                        <td>
+                            <a :href="`${item.PreBookUrl}`" style="font-size: 11px" class="btn btn-primary" target="_blank">
+                                <i class="ti-eye">Print</i>
+                            </a>
+                        </td>
                       <td             
-                        v-for="(item2, index) in headers.slice(1)" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 32">
+                        v-for="(item2, index) in headers.slice(1)" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 33">
                         {{ item[item2] }}
                       </td>
+
+
                     </tr>
                     </tbody>
                   </table>
@@ -140,6 +163,7 @@ export default {
       jobTypes:[],
       jobStatus:[],
       products:[],
+      bookingModes:[],
       ReportName: '',
       user: '',
       loaderTag:false,
@@ -148,6 +172,7 @@ export default {
         DateTo : moment().format('yyyy-MM-DD'),
         CustomerCode:'',
         ProductCode:'',
+        bookingMode:'',
         JobStatus:'',
         JobType:'',
         Query :'',
@@ -240,6 +265,7 @@ export default {
           this.axiosGet('prebook/supporting-data', function (response) {
               instance.customer = response.customer
               instance.products = response.products
+              instance.bookingModes = response.bookingMode
               if(response.user.length===1){
                   instance.form.CustomerCode =  response.user[0].value
               }
