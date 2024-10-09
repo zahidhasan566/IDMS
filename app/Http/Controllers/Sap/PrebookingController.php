@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\PreBookingRe;
 use App\Models\Sap\SapUserLog;
+use App\Traits\CommonTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,30 @@ use Illuminate\Support\Facades\DB;
 
 class PrebookingController extends Controller
 {
+    use commonTrait;
+    public function getPreBookSupportingData(){
+        return response()->json([
+//            'customer' => $this->loadCustomer(),
+            'customer' => PreBookingRe::selectRaw('distinct DeliveryDealerCode as CustomerCode, DeliveryLocationName as CustomerName')->get()->toArray(),
+            'products' => PreBookingRe::selectRaw('distinct ProductCode, ProductName')->get()->toArray(),
+        ]);
+    }
+    public function getPreBookingReport(Request $request){
+
+        $CurrentPage = $request->pagination['current_page'];
+        $PerPage = 20;
+        $Export = $request->Export;
+        $CustomerCode = $request->CustomerCode;
+        $ProductCode = $request->ProductCode;
+        $dateFrom = $request->DateFrom;
+        $dateTo = $request->DateTo;
+        $userID = Auth::user()->UserId;
+        if ($Export == 'Y'){
+            $CurrentPage = '%';
+        }
+        $sql = " exec usp_doLoadPreBookingReport  '$dateFrom', '$dateTo', '$CustomerCode','$ProductCode','','$userID','$PerPage','$CurrentPage' ";
+        return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
+    }
     public function storePreBookingCustomer(Request $request)
     {
         $dt = date('Y-m-d H-i-s A');

@@ -12,5 +12,4 @@ class InvoiceDetailsBatch extends Model
     //public $primaryKey = '';
     protected $guarded = [];
     public $timestamps = false;
-    protected $keyType = 'string';
 }

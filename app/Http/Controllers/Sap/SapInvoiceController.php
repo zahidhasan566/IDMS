@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Sap;
 
 use App\Http\Controllers\Controller;
+use App\Models\Invoice;
 use App\Models\InvoiceDetails;
+use App\Models\InvoiceDetailsBatch;
 use App\Models\PreBookingRe;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,78 +16,94 @@ class SapInvoiceController extends Controller
 {
     public function storeSapInvoice(Request $request)
     {
-
-        dd($request);
         $dt = date('Y-m-d H-i-s A');
         try {
             $singleCustomer = $request->all();
 
-            if (!empty($singleCustomer['booking_id'])
-                && !empty($singleCustomer['booking_code'])
-                && !empty($singleCustomer['status'])
-                && !empty($singleCustomer['booking_amount'])
-                && !empty($singleCustomer['booking_mode'])
-                && !empty($singleCustomer['expected_delivery_date'])
-                && !empty($singleCustomer['payment_method'])
-                && !empty($singleCustomer['payment_status'])
-                && !empty($singleCustomer['payment_transaction_id'])
-                && !empty($singleCustomer['customer']['customer_name'])
-                && !empty($singleCustomer['customer']['customer_mobile'])
-                && !empty($singleCustomer['product']['product_id'])
-                && !empty($singleCustomer['product']['product_name'])
-                && !empty($singleCustomer['product']['product_price'])
-                && !empty($singleCustomer['color']['color_id'])
-                && !empty($singleCustomer['color']['color_name'])
-                && !empty($singleCustomer['delivery_location']['delivery_location_id'])
-                && !empty($singleCustomer['delivery_location']['delivery_location_name'])
-                && !empty($singleCustomer['delivery_location']['dealer_code'])
+            if (!empty($singleCustomer['InvoiceNo'])
+                && !empty($singleCustomer['InvoicePeriod'])
+                && !empty($singleCustomer['InvoiceDate'])
+                && !empty($singleCustomer['Business'])
+                && !empty($singleCustomer['OrderDate'])
+                && !empty($singleCustomer['DeliveryDate'])
+                && !empty($singleCustomer['DeliveryTime'])
+                && !empty($singleCustomer['CustomerCode'])
+                && !empty($singleCustomer['TP'])
+                && !empty($singleCustomer['NET'])
+                && !empty($singleCustomer['NSI'])
+                && !empty($singleCustomer['Paid'])
             ) {
                 DB::beginTransaction();
-                //Customer Prebooking Create
-                $customer = new PreBookingRe();
-                $customer->BookingId = $singleCustomer['booking_id'];
-                $customer->BookingCode = $singleCustomer['booking_code'];
-                $customer->Status = $singleCustomer['status'];
-                $customer->BookingAmount = $singleCustomer['booking_amount'];
-                $customer->BookingMode = $singleCustomer['booking_mode'];
-                $customer->ExpectedDeliveryDate = $singleCustomer['expected_delivery_date'];
-                $customer->PaymentMethod = $singleCustomer['payment_method'];
-                $customer->PaymentStatus = $singleCustomer['payment_status'];
-                $customer->PaymentTransactionId = $singleCustomer['payment_transaction_id'];
-                $customer->BookingCreatedAt = $singleCustomer['booking_created_at'];
-                $customer->BookingUpdatedAt = $singleCustomer['booking_updated_at'];
-
-                $customer->CustomerCode = $singleCustomer['customer']['customer_id'];
-                $customer->CustomerName = $singleCustomer['customer']['customer_name'];
-                $customer->CustomerMobile = $singleCustomer['customer']['customer_mobile'];
-                $customer->CustomerEmail = $singleCustomer['customer']['customer_email'];
-                $customer->CustomerAddress = $singleCustomer['customer']['customer_address'];
-                $customer->CustomerDistrictCode = $singleCustomer['customer']['district_id'];
-                $customer->CustomerDistrict = $singleCustomer['customer']['district'];
-                $customer->CustomerThanaCode = $singleCustomer['customer']['thana_id'];
-                $customer->CustomerThana = $singleCustomer['customer']['thana'];
-                $customer->ProductCode = $singleCustomer['product']['product_id'];
-
-                $customer->ProductName = $singleCustomer['product']['product_name'];
-                $customer->ProductPrice = $singleCustomer['product']['product_price'];
-                $customer->ProductColorCode = $singleCustomer['color']['color_id'];
-                $customer->ProductColorName =  $singleCustomer['color']['color_name'];
-                $customer->DeliveryLocationCode = $singleCustomer['delivery_location']['delivery_location_id'];
-                $customer->DeliveryLocationName =  $singleCustomer['delivery_location']['delivery_location_name'];
-                $customer->DeliveryDealerCode = $singleCustomer['delivery_location']['dealer_code'];
-                $customer->DeliveryDistrictCode = $singleCustomer['delivery_location']['delivery_district_id'];
-                $customer->DeliveryDealerCode = $singleCustomer['delivery_location']['dealer_code'];
-                $customer->IUser = Auth::user()->UserId;
-                $customer->IDate = Carbon::now();
-                $customer->IpAddress = $request->ip();
+                //Customer Invoice Create
+                $customer = new Invoice();
+                $customer->InvoiceNo = $singleCustomer['InvoiceNo'];
+                $customer->InvoicePeriod = $singleCustomer['InvoicePeriod'];
+                $customer->Business = $singleCustomer['Business'];
+                $customer->OrderDate = $singleCustomer['OrderDate'];
+                $customer->DeliveryDate = $singleCustomer['DeliveryDate'];
+                $customer->CustomerCode = $singleCustomer['CustomerCode'];
+                $customer->TP = $singleCustomer['TP'];
+                $customer->VAT = $singleCustomer['VAT'];
+                $customer->Discount = $singleCustomer['Discount'];
+                $customer->NET = $singleCustomer['NET'];
+                $customer->NSI = $singleCustomer['NSI'];
+                $customer->Paid = $singleCustomer['Paid'];
+                $customer->PrepareBy =Auth::user()->UserId;
+                $customer->PrepareDate =Carbon::now();
+                $customer->IpAdress = $request->ip();
                 $customer->save();
+
+                foreach ($singleCustomer['InvoiceDetails'] as $key => $invoiceDetails) {
+                    if(empty($invoiceDetails['ProductCode']) ||  empty($invoiceDetails['UnitPrice']) || empty($invoiceDetails['SalesTP'])  || empty($invoiceDetails['SalesQTY']) || empty($invoiceDetails['TP'])   ){
+                        file_put_contents('public/log/sap_invoice/invoice_details_missing-' . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetails) . "\n", FILE_APPEND);
+                        return response()->json([
+                            'status' => 'Error',
+                            'message' => 'Missing Invoice Details Parameter',
+                            'InvoiceDetails' => $invoiceDetails
+                        ], 422);
+                    }
+                    else{
+                        $details = new InvoiceDetails();
+                        $details->Invoiceno = $singleCustomer['InvoiceNo'];
+                        $details->ProductCode = $invoiceDetails['ProductCode'];
+                        $details->UnitPrice = $invoiceDetails['UnitPrice'];
+                        $details->UnitVAT = $invoiceDetails['UnitVAT'];
+                        $details->SalesTP = $invoiceDetails['SalesTP'];
+                        $details->SalesQTY = $invoiceDetails['SalesQTY'];
+                        $details->TP = $invoiceDetails['TP'];
+                        $details->VAT = $invoiceDetails['VAT'];
+                        $details->Discount = $invoiceDetails['Discount'];
+                        $details->save();
+                    }
+                }
+
+                foreach ($singleCustomer['InvoiceDetailsBatch'] as $key => $invoiceDetailsBatch) {
+                    if(empty($invoiceDetailsBatch['BatchNo'])  && empty($invoiceDetailsBatch['Quantity'])  && empty($invoiceDetailsBatch['SalesQTY'])      ){
+                        file_put_contents('public/log/sap_invoice/invoice_details_batch_missing-' . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetailsBatch) . "\n", FILE_APPEND);
+                        return response()->json([
+                            'status' => 'Error',
+                            'message' => 'Missing Invoice Details Batch Parameter',
+                            'InvoiceDetails' => $invoiceDetailsBatch
+                        ], 422);
+                    }
+                    else{
+                        $detailsBatch = new InvoiceDetailsBatch();
+                        $detailsBatch->Invoiceno = $singleCustomer['InvoiceNo'];
+                        $detailsBatch->ProductCode = $invoiceDetails['ProductCode'];
+                        $detailsBatch->BatchNo = $invoiceDetailsBatch['BatchNo'];
+                        $detailsBatch->Quantity = $invoiceDetailsBatch['Quantity'];
+                        $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
+                        $detailsBatch->save();
+                    }
+                }
+
                 DB::commit();
 
-                file_put_contents('public/log/prebooking/prebooking_customer_success-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+                file_put_contents('public/log/sap_invoice/sap_invoice_success-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                 return response()->json([
                     'status' => 'Success',
-                    'message' => 'PreBooking Added Successfully',
-                    'BookingCode' => $singleCustomer['booking_code']
+                    'message' => 'Invoice Added Successfully',
+                    'InvoiceNo' => $customer->InvoiceNo
                 ], 200);
 
 
@@ -93,13 +111,13 @@ class SapInvoiceController extends Controller
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'Missing Required Parameter',
-                    'CustomerCount' => $singleCustomer
+                    'Customer' => $singleCustomer
                 ], 422);
             }
         }
         catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/prebooking/prebooking_customer_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents('public/log/sap_invoice/sap_invoice_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!' . $exception->getMessage() . '-' . $exception->getLine()

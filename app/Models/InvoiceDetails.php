@@ -13,5 +13,4 @@ class InvoiceDetails extends Model
    // public $primaryKey = '';
     protected $guarded = [];
     public $timestamps = false;
-    protected $keyType = 'string';
 }
