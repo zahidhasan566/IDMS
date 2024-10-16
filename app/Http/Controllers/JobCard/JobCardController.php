@@ -4,12 +4,9 @@ namespace App\Http\Controllers\JobCard;
 
 use App\Http\Controllers\Controller;
 use App\Models\DealerStock;
-use App\Models\JobCard\CSIQuestion;
 use App\Models\JobCard\DealarInvoiceDetails;
 use App\Models\JobCard\DealarInvoiceMaster;
 use App\Models\JobCard\FreeServiceSchedule;
-use App\Models\JobCard\JobCardCSIDetails;
-use App\Models\JobCard\JobCardCSIMaster;
 use App\Models\JobCard\TblBaySetup;
 use App\Models\JobCard\TblDealarMechanics;
 use App\Models\JobCard\TblJobCard;
@@ -80,6 +77,8 @@ class JobCardController extends Controller
                 'data' => $tblJobCard->get(),
             ]);
         } else {
+            dd($tblJobCard->toSql());
+
             return $tblJobCard->paginate($take);
         }
     }
@@ -93,8 +92,7 @@ class JobCardController extends Controller
             'BayCode',
             'BayName',
             DB::raw("CONCAT(BayCode,'-',BayName) AS Details")
-        )->where('Active', 'Y')->get();
-
+        )->where('ServiceCenterCode', $userId)->where('Active', 'Y')->get();
         $allTechnician = TblTechnicianSetup::select(
             'TblTechnicianSetup.DefaultBay',
             'TblBaySetup.BayName',
@@ -106,10 +104,10 @@ class JobCardController extends Controller
             ->leftjoin("TblBaySetup", function ($join) use ($userId) {
                 $join->on("TblBaySetup.BayCode", "=", "TblTechnicianSetup.DefaultBay")
                     //->on("TblBaySetup.ServiceCenterCode", "=", "TblTechnicianSetup.ServiceCenterCode")
-                    //->where('TblBaySetup.ServiceCenterCode', $userId)
+                    ->where('TblBaySetup.ServiceCenterCode', $userId)
                     ->where('TblTechnicianSetup.Active', 'Y');
             })
-           // ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
+            ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
             ->get();
 
 
@@ -150,13 +148,6 @@ class JobCardController extends Controller
         ]);
     }
 
-    public function csiSupportingData(){
-        $csiQuestion = CSIQuestion::all();
-        return response()->json([
-            'csiQuestion' => $csiQuestion
-        ]);
-    }
-
     public function checkChassisNo($chassisNo)
     {
         $userId = Auth::user()->UserId;
@@ -186,6 +177,15 @@ class JobCardController extends Controller
             'bikeList' => $bikeList,
             'onGoingStatusCheck' => $onGoingStatusCheck,
         ]);
+    }
+
+    public function checkOnlineBookingNo($bookingNo){
+        $onlineBooking= DB::connection('dbYamahaServiceCenter')->table('tblOnlineBooking')
+            ->select('tblOnlineBooking.ChassisNo')->where('tblOnlineBooking.ReservationNo', $bookingNo)->first();
+        return response()->json([
+            'onlineBooking' => $onlineBooking,
+        ]);
+
     }
 
     public function checkLastServiceHistory($chassisNo)
@@ -285,6 +285,7 @@ class JobCardController extends Controller
             return response()->json(['status' => 401, 'error' => $validator->errors()]);
         }
 
+
         try {
             //Store TblJobCard
             DB::beginTransaction();
@@ -377,7 +378,8 @@ class JobCardController extends Controller
                 }
             }
             //Send Sms To The User
-            //$this->SendJobCardSms($request,$jobCardNo);
+            $this->SendJobCardSms($request,$jobCardNo);
+            file_put_contents('public/log/jobCard/jobCard_create-' .$jobCardNo. '.txt', json_encode($request->all()) . "\n", FILE_APPEND);
 
             return response()->json([
                 'status' => 'Success',
@@ -461,23 +463,20 @@ class JobCardController extends Controller
     {
         try {
             $jobCardNo = $request->jobCardNo;
-            $invoiceNo = $this->generateJobCardInvoiceNo();
+//            $invoiceNo = $this->generateJobCardInvoiceNo();
             $userId = Auth::user()->UserId;
             $existingJobCard = TblJobCard::where('JobCardNo', $jobCardNo)->first();
 
+
+
             $checkJobCard = DealarInvoiceMaster::where('FatherName',$jobCardNo)->first();
-            if($checkJobCard){
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Job Card Already exist'
-                ], 200);
-            }
-            else{
+            file_put_contents('public/log/jobCard/jobCard_close-' .$jobCardNo. '.txt', json_encode($request->all()) . "\n", FILE_APPEND);
+            if(empty($checkJobCard)){
                 DB::beginTransaction();
                 //Dealer Invoice Master
                 $dealerInvoiceMaster = new  DealarInvoiceMaster();
                 $dealerInvoiceMaster->MasterCode = $userId;
-                $dealerInvoiceMaster->InvoiceNo = $invoiceNo;
+                $dealerInvoiceMaster->InvoiceNo = $jobCardNo;
                 $dealerInvoiceMaster->InvoiceDate = Carbon::now()->format('Y-m-d');
                 $dealerInvoiceMaster->InvoiceTime = Carbon::now();
                 $dealerInvoiceMaster->CustomerCode = '';
@@ -495,29 +494,16 @@ class JobCardController extends Controller
                 $dealerInvoiceMaster->Picture = '';
                 $dealerInvoiceMaster->MerriageDay = null;
                 $dealerInvoiceMaster->VerifyCode = '';
-//            $dealerInvoiceMaster->Verified = null;
-                // $dealerInvoiceMaster->IsEMI = null;
                 $dealerInvoiceMaster->InstallmentSize = '';
-                //$dealerInvoiceMaster->EMIBankID = null;
-                // $dealerInvoiceMaster->EMIAmount = null;
-                // $dealerInvoiceMaster->EMIInterestRate = null;
-                // $dealerInvoiceMaster->EMIInterestPayable = null;
                 $dealerInvoiceMaster->ExchangeBrandCode = '';
                 $dealerInvoiceMaster->ExchangeEngineNo = '';
                 $dealerInvoiceMaster->ExchangeChassisNo = '';
-                $dealerInvoiceMaster->OldBikeModel = '';
-                //$dealerInvoiceMaster->OldBikePrice = '';
                 $dealerInvoiceMaster->ExchangeMedium = '';
-                // $dealerInvoiceMaster->ExchangeCustomerDiscount = '';
                 $dealerInvoiceMaster->ResellerName = '';
                 $dealerInvoiceMaster->ResellerContact = '';
-                // $dealerInvoiceMaster->ResellerCommission = '';
                 $dealerInvoiceMaster->MSRStaffId = '';
-                //$dealerInvoiceMaster->InquiryId = null;
                 $dealerInvoiceMaster->ReferanceNumber = '';
                 $dealerInvoiceMaster->LocalMechanicsCode = '';
-                //$dealerInvoiceMaster->OccupationId = null;
-                //$dealerInvoiceMaster->MonthlyIncomeId = null;
                 $dealerInvoiceMaster->ProductIntroducingMedia = '';
                 $dealerInvoiceMaster->InterestInProduct = '';
                 $dealerInvoiceMaster->PreviouslyUsedBike = '';
@@ -531,19 +517,13 @@ class JobCardController extends Controller
                 $dealerInvoiceMaster->SalesStaffName = '';
                 $dealerInvoiceMaster->Gender = '';
                 $dealerInvoiceMaster->OwnerType = '';
-                // $dealerInvoiceMaster->AffiliatorDiscount = '';
-                //$dealerInvoiceMaster->isSync = null;
-                //$dealerInvoiceMaster->CSIResult = '';
                 $dealerInvoiceMaster->save();
 
                 $existingParts = TblJobCardDetailSparepartWork::where('JobCardNo', $jobCardNo)->where('ItemType', 'Parts')->get();
-                $invoice = DealarInvoiceMaster::where('InvoiceNo', $invoiceNo)->first();
-                $invoiceId = $invoice['InvoiceID'];
-                if (!empty($invoiceId)) {
                     foreach ($existingParts as $singleParts) {
                         $productName = Product::select('ProductName')->where('ProductCode', $singleParts['ItemCode'])->first();
                         $dealerInvoiceDetails = new DealarInvoiceDetails();
-                        $dealerInvoiceDetails->InvoiceID = $invoiceId;
+                        $dealerInvoiceDetails->InvoiceID = $dealerInvoiceMaster->InvoiceID;
                         $dealerInvoiceDetails->ProductCode = $singleParts['ItemCode'];
                         $dealerInvoiceDetails->ProductName = isset($productName['ProductName']) ? $productName['ProductName'] : '';
                         $dealerInvoiceDetails->Quantity = intval($singleParts['Quantity']);
@@ -560,20 +540,18 @@ class JobCardController extends Controller
                             ]);
                         }
                     }
-                }
-
-                //Job Status Close
-                $existingJobCard->JobStatus = 'Close';
-                $existingJobCard->JobEndTime = Carbon::now();
-                $existingJobCard->TimeTaken =  $existingJobCard->JobEndTime->diffInMinutes($existingJobCard->JobStartTime);
-                $existingJobCard->save();
-                DB::commit();
-
-                return response()->json([
-                    'status' => 'Success',
-                    'message' => 'Job Card Closed Successfully'
-                ], 200);
             }
+            //Job Status Close
+            $existingJobCard->JobStatus = 'Close';
+            $existingJobCard->JobEndTime = Carbon::now();
+            $existingJobCard->TimeTaken =  $existingJobCard->JobEndTime->diffInMinutes($existingJobCard->JobStartTime);
+            $existingJobCard->save();
+            DB::commit();
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Job Card Closed Successfully'
+            ], 200);
 
 
 
@@ -601,14 +579,38 @@ class JobCardController extends Controller
 
         //Img exist or not
         if($existingJobCard){
-            $signatureBefore = file_exists("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureBefore'])
-            ?"https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureBefore']:"https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureBefore'];
 
-            $signatureAfter = file_exists("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureAfter'])
-                ?"https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureAfter']:"https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureAfter'];
+            $signatureBefore =  get_headers("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureBefore']);
+            if ($signatureBefore[0] == 'HTTP/1.1 200 OK') {
+                $signatureBefore = "https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureBefore'];
+            } else {
+                $signatureBefore= "https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureBefore'];
+            }
 
-            $signatureSupervisor = file_exists("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureSupervisor'])
-                ?"https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureSupervisor']:"https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureSupervisor'];
+            $signatureAfter =  get_headers("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureAfter']);
+            if ($signatureAfter[0] == 'HTTP/1.1 200 OK') {
+                $signatureAfter = "https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureAfter'];
+            } else {
+                $signatureAfter= "https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureAfter'];
+            }
+
+            $signatureSupervisor =  get_headers("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureSupervisor']);
+            if ($signatureSupervisor[0] == 'HTTP/1.1 200 OK') {
+                $signatureSupervisor = "https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureSupervisor'];
+            } else {
+                $signatureSupervisor= "https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureSupervisor'];
+            }
+
+
+
+//            $signatureBefore = get_headers("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureBefore'])
+//            ?"https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureBefore']:"https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureBefore'];
+//
+//            $signatureAfter = file_exists("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureAfter'])
+//                ?"https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureAfter']:"https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureAfter'];
+//
+//            $signatureSupervisor = file_exists("https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureSupervisor'])
+//                ?"https://app.acibd.com/apps/dms_signature/public/uploads/".$existingJobCardInfo[0]['SignatureSupervisor']:"https://dms-signature.s3.ap-southeast-1.amazonaws.com/public/uploads/". $existingJobCardInfo[0]['SignatureSupervisor'];
 
         }
 
@@ -642,7 +644,9 @@ class JobCardController extends Controller
             return response()->json(['status' => 401, 'error' => $validator->errors()]);
         }
 
+        DB::beginTransaction();
         try {
+
             //Update JobCard
             $userId = Auth::user()->UserId;
             $defaultBay = '';
@@ -655,7 +659,8 @@ class JobCardController extends Controller
 
             //For Ydt File
             $jobFile = TblJobCard::where('JobCardNo', $request->jobCardNo)->first();
-            if (!empty($jobFile->YTD_File) && file_exists(public_path('uploads/JobCardYdt/' . $jobFile->YTD_File))) {
+
+            if (!empty($jobFile->YTD_File) && file_exists(public_path('uploads/JobCardYdt/' . $jobFile->YTD_File) ) && $request->ydTFile) {
                 unlink(public_path('uploads/JobCardYdt/' . $jobFile->YTD_File));
             }
             if($jobFile->JobStartTime===null && $jobStatus =='OnGoing'){
@@ -698,7 +703,7 @@ class JobCardController extends Controller
                 'LocalMechanicsCode' => !empty($request->reference['MechanicsCode']) ? $request->reference['MechanicsCode'] : '',
                 'IUser' => $userId,
                 'IDate' => Carbon::now(),
-                'YTD_File' => $request->ydTFile ? FileBase64Service::fileUpload($request->ydTFile, 'jobCardYdt', public_path('uploads/JobCardYdt/')) : '',
+                'YTD_File' => $request->ydTFile ? FileBase64Service::fileUpload($request->ydTFile, 'jobCardYdt', public_path('uploads/JobCardYdt/')) : $jobFile->YTD_File,
                 'YTD_status' => $request->ytdStatus,
                 'FI_Status' => $request->fiStatus,
                 'YTD_status_no_reason' => $request->ytdStatus === 'N' ? $request->reasonOfYDT['Id'] : null,
@@ -742,6 +747,7 @@ class JobCardController extends Controller
                     ], 500);
                 }
             }
+            DB::commit();
             if ($jobStatus === 'Close') {
                 $this->jobClose($request);
             }
@@ -768,7 +774,7 @@ class JobCardController extends Controller
         $url = 'http://aci.yamahabd.com/customer/index/' . base64_encode($jobCardNo);
 
         $smsContent = "Dear " . $request->customerName . ",\n" .
-            "Thanks for visiting our dealership.\n Please find your Vehicle Service Status using the Link.\n" . $url . "\n Let’s keep our environment Green & have a safe ride.\n IFAD Bangladesh";
+            "Thanks for visiting our dealership.\n Please find your Vehicle Service Status using the Link.\n" . $url . "\n Let’s keep our environment Green & have a safe ride.\n ACI Motors-Yamaha Bangladesh";
 
         $this->sendSmsQ($request->mobileNo, '8809617615000', 'Dms_V2', 'jobCard', '', $userId, 'smsq', $smsContent);
     }
@@ -939,41 +945,6 @@ class JobCardController extends Controller
                 'message' => 'Job Card Updated Successfully'
             ], 200);
         } catch (\Exception $exception) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Something went wrong!' . $exception->getMessage()
-            ], 500);
-        }
-    }
-
-    public function csiAddData(Request $request){
-        try{
-            DB::beginTransaction();
-            $jobCardCsiMaster =  new JobCardCSIMaster();
-            $jobCardCsiMaster->JobCardNo = $request->jobCardNo;
-            $jobCardCsiMaster->CSI = (array_sum(array_column($request->csiQuestion, 'Answer'))/(count(array_column($request->csiQuestion, 'QuestionID') )*10)) *100;
-            $jobCardCsiMaster->EntryBy = Auth::user()->UserId;
-            $jobCardCsiMaster->EntryDate = Carbon::now();
-            $jobCardCsiMaster->save();
-
-            //Details
-            foreach ($request->csiQuestion as $key => $value) {
-                $csiDetails = new JobCardCSIDetails();
-                $csiDetails->CSIMasterID = $jobCardCsiMaster->CSIMasterID;
-                $csiDetails->QuestionID = $value['QuestionID'];
-                $csiDetails->QuestionName = $value['QuestionName'];
-                $csiDetails->AnswerValue = $value['Answer'];
-                $csiDetails->save();
-            }
-            DB::commit();
-            return response()->json([
-                'status' => 'Success',
-                'message' => 'CSI Added Successfully'
-            ], 200);
-
-
-        }
-        catch (\Exception $exception) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
