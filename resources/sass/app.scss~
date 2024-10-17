@@ -109,9 +109,9 @@ a {
   color: antiquewhite !important;
 }
 
-//.router-link-exact-active {
-//  background-color: #05623a;
-//}
+.router-link-exact-active {
+  background-color: #05623a;
+}
 
 //table design
 //.table .thead-dark th {
