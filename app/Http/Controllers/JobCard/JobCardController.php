@@ -77,8 +77,6 @@ class JobCardController extends Controller
                 'data' => $tblJobCard->get(),
             ]);
         } else {
-            dd($tblJobCard->toSql());
-
             return $tblJobCard->paginate($take);
         }
     }
