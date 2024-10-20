@@ -24,6 +24,26 @@
                                             <div class="row">
                                                 <div class="col-md-4"></div>
                                                 <div class="col-md-4"></div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group row">
+                                                        <label class="col-lg-3 col-form-label">Booking No</label>
+                                                        <div class="col-lg-6" style="display: flex">
+                                                            <input type="text" class="form-control"
+                                                                   id="bookingNo"
+                                                                   v-model="bookingNo" name="bookingNo"
+                                                                   placeholder="Booking No">
+
+                                                            <span style="margin-left: 5px">
+                                                                <button id="add-row"
+                                                                type="button"
+                                                                class="btn btn-success btn-sm"
+                                                                @click="checkOnlineBooking">Check
+                                                            </button>
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
 
