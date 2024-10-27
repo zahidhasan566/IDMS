@@ -60,9 +60,6 @@ import TestRideAgentList from "../views/TestRide/AgentIndex";
 import TestRiderList from "../views/TestRide/RiderIndex.vue";
 import NotificationList from "../views/notification/NotificationIndex.vue";
 
-//iHelpBD
-import SendYamahaCall from "../views/iHelpBD/SendYamahaCall.vue";
-import SendFotonCall from "../views/iHelpBD/SendFotonCall.vue";
 
 //reportSalesSummary
 import reportSalesSummary from "../views/reports/SalesSummaryReport.vue";
@@ -391,16 +388,6 @@ const routes = [
                 path: baseurl + 'logistics/dealerdocument/report',
                 name: 'DealerDocumentReport',
                 component: DealerDocumentReport
-            },
-            {
-                path: baseurl + 'ihelp-bd/send-yamaha-call',
-                name: 'SendYamahaCall',
-                component: SendYamahaCall
-            },
-            {
-                path: baseurl + 'ihelp-bd/send-foton-call',
-                name: 'SendFotonCall',
-                component: SendFotonCall
             },
             {
                 path: baseurl + 'logistics/lostdocument',

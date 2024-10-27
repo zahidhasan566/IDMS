@@ -500,6 +500,7 @@ const routes = [
             { path: baseurl + 'report/claim-warranty-summary', name: 'ClaimWarrantySummary', component: ClaimWarrantySummary },
             { path: baseurl + 'report/service-summary', name: 'reportServiceSummary', component: reportServiceSummary },
             { path: baseurl + 'report/scrap-product', name: 'ReportScrapProducts', component: ReportScrapProducts },
+            { path: baseurl + 'prebook/list', name: 'ReportPreBook', component: ReportPreBook },
 
             // SDMS REPORT
             {
