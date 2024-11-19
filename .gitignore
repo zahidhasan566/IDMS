@@ -1,7 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
-/public/assets/images
+/public/log
+#/public/assets/images
 /public/assets/lostdocuments
 resources/js/base_url.js
 /storage/*.key

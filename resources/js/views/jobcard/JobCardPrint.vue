@@ -7,11 +7,11 @@
                 <thead style="background:none">
                 <tr>
                     <th style="text-align: left; width: 33%;">
-                      <img :src="`${baseUrl+'public/assets/images/reLogo.png'}`" style="height: auto;width: 100px">
+                      <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/reLogo.png'}`" style="height: 100px;width: 100px">
                     </th>
                     <th style="width: 33%;color:#000000; text-align: center;"><h2>JOB CARD</h2></th>
                     <th style="text-align: right; width: 33%;">
-                        <img :src="`${baseUrl+'public/assets/images/logo-svg.png'}`" style="height: auto;width: 100px">
+                        <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/logo-svg.png'}`" style="height: 30px;width: 100px">
                     </th>
                 </tr>
                 </thead>
@@ -93,7 +93,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="bold"> YDT Status</td>
+                    <td class="bold"> Diagnosis Status</td>
                     <td style="text-align: center">
                         <span v-if="ytdStatus==='Y'">
                             Yes
@@ -457,7 +457,7 @@
             </table>
             <p style="background:#CCCCCC; padding:5px;font-size:11px"><span
                     style="font-weight:bold">Dealer Name: </span>{{ customerName }}</p>
-            <p style="color:red;font-size:11px">* YDT will not be served if any extra Electrical device is installed in
+            <p style="color:red;font-size:11px">Diagnosis Status will not be served if any extra Electrical device is installed in
                 Motorcycle</p>
             <p style="color:green;font-size:11px">Please print this page only if necessary. Go Green!</p>
         </div>

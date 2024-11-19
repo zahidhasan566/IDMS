@@ -340,6 +340,12 @@ Route::group(['middleware' => ['jwt:api']], function () {
 
     });
 
+    Route::group(['prefix' => 'prebook'],function () {
+        Route::get('supporting-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookSupportingData']);
+        Route::post('prebook-report-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookingReport']);
+    });
+
+
 });
 
 

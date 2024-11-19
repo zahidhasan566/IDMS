@@ -60,9 +60,6 @@ import TestRideAgentList from "../views/TestRide/AgentIndex";
 import TestRiderList from "../views/TestRide/RiderIndex.vue";
 import NotificationList from "../views/notification/NotificationIndex.vue";
 
-//iHelpBD
-import SendYamahaCall from "../views/iHelpBD/SendYamahaCall.vue";
-import SendFotonCall from "../views/iHelpBD/SendFotonCall.vue";
 
 //reportSalesSummary
 import reportSalesSummary from "../views/reports/SalesSummaryReport.vue";
@@ -146,6 +143,7 @@ import DealerUser from "../views/users/DealerUsers.vue"
 import DealerOffer from "../views/sdms/DealerOffer.vue";
 import DealerOfferList from "../views/sdms/DealerOfferList.vue";
 import JobCardCSI from "../views/jobcard/JobCardCSI.vue";
+import ReportPreBook from "../views/reports/reportPreBook.vue";
 
 Vue.use(VueRouter);
 
@@ -392,16 +390,6 @@ const routes = [
                 component: DealerDocumentReport
             },
             {
-                path: baseurl + 'ihelp-bd/send-yamaha-call',
-                name: 'SendYamahaCall',
-                component: SendYamahaCall
-            },
-            {
-                path: baseurl + 'ihelp-bd/send-foton-call',
-                name: 'SendFotonCall',
-                component: SendFotonCall
-            },
-            {
                 path: baseurl + 'logistics/lostdocument',
                 name: 'LostDocument',
                 component: LostDocument
@@ -499,6 +487,7 @@ const routes = [
             { path: baseurl + 'report/claim-warranty-summary', name: 'ClaimWarrantySummary', component: ClaimWarrantySummary },
             { path: baseurl + 'report/service-summary', name: 'reportServiceSummary', component: reportServiceSummary },
             { path: baseurl + 'report/scrap-product', name: 'ReportScrapProducts', component: ReportScrapProducts },
+            { path: baseurl + 'prebook/list', name: 'ReportPreBook', component: ReportPreBook },
 
             // SDMS REPORT
             {

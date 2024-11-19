@@ -28,7 +28,7 @@ export default {
         source: 'inquiry/conversion-summary-report',
         search: false,
         slots: [],
-        hideColumn: [],
+        hideColumn: ['CountData'],
         slotsName: [],
         filterOption: true,
         showFilter: ['startDate','endDate','customers','products'],
