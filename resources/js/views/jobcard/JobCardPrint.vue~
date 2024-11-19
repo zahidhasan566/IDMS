@@ -93,7 +93,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="bold"> YDT Status</td>
+                    <td class="bold"> Diagnosis Status</td>
                     <td style="text-align: center">
                         <span v-if="ytdStatus==='Y'">
                             Yes
@@ -457,7 +457,7 @@
             </table>
             <p style="background:#CCCCCC; padding:5px;font-size:11px"><span
                     style="font-weight:bold">Dealer Name: </span>{{ customerName }}</p>
-            <p style="color:red;font-size:11px">* YDT will not be served if any extra Electrical device is installed in
+            <p style="color:red;font-size:11px">Diagnosis Status will not be served if any extra Electrical device is installed in
                 Motorcycle</p>
             <p style="color:green;font-size:11px">Please print this page only if necessary. Go Green!</p>
         </div>

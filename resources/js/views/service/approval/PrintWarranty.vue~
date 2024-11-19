@@ -7,9 +7,9 @@
               <table>
                 <thead>
                   <tr>
-                    <th style="text-align: center"><img :src="yamahaLogo()"></th>
+                    <th style="text-align: center"><img :src="royalLogo()"></th>
                     <th style="text-align: center"><h2>WARRANTY CLAIM REPORT</h2></th>
-                    <th style="text-align: center;"><img :src="aciLogo()"></th>
+                    <th style="text-align: center;"><img :src="ifadLogo()"></th>
                   </tr>
                 </thead>
               </table>
@@ -308,11 +308,11 @@ export default {
         return acc + parseFloat(val.ServiceCharge);
       }, 0);
     },
-    yamahaLogo(){
-      return baseurl + "warranty/"+ 'yamahalogo.jpg';
+    royalLogo(){
+      return baseurl + "/assets/images/reLogo.png";
     },
-    aciLogo(){
-      return baseurl + "warranty/"+ 'aci.jpg';
+      ifadLogo(){
+      return baseurl + "/assets/images/logo-svg.png";
     },
     imageLoad(image){
       let image_s3_base_url = 'https://yamaha-dms.s3.ap-southeast-1.amazonaws.com/';

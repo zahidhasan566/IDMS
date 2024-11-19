@@ -7,11 +7,11 @@
                 <thead style="background:none">
                 <tr>
                     <th style="text-align: left; width: 33%;">
-                      <img :src="`${baseUrl+'/assets/images/reLogo.png'}`" style="height: auto;width: 100px">
+                      <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/reLogo.png'}`" style="height: auto;width: 100px">
                     </th>
                     <th style="width: 33%;color:#000000; text-align: center;"><h2>JOB CARD</h2></th>
                     <th style="text-align: right; width: 33%;">
-                        <img :src="`${baseUrl+'/assets/images/logo-svg.png'}`" style="height: auto;width: 100px">
+                        <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/logo-svg.png'}`" style="height: auto;width: 100px">
                     </th>
                 </tr>
                 </thead>
