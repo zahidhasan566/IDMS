@@ -7,9 +7,9 @@
               <table>
                 <thead>
                   <tr>
-                    <th style="text-align: center"><img :src="royalLogo()"></th>
+                    <th style="text-align: center;"><img style="height: 100px" :src="royalLogo()"></th>
                     <th style="text-align: center"><h2>WARRANTY CLAIM REPORT</h2></th>
-                    <th style="text-align: center;"><img :src="ifadLogo()"></th>
+                    <th style="text-align: center;"><img style="height: 30px" :src="ifadLogo()"></th>
                   </tr>
                 </thead>
               </table>

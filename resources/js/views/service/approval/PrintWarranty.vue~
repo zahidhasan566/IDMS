@@ -309,10 +309,10 @@ export default {
       }, 0);
     },
     royalLogo(){
-      return baseurl + "/assets/images/reLogo.png";
+      return 'https://dms.ifadmotors.com/' + "/assets/images/reLogo.png";
     },
       ifadLogo(){
-      return baseurl + "/assets/images/logo-svg.png";
+      return 'https://dms.ifadmotors.com/' + "/assets/images/logo-svg.png";
     },
     imageLoad(image){
       let image_s3_base_url = 'https://yamaha-dms.s3.ap-southeast-1.amazonaws.com/';
