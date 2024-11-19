@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\inquiry;
+namespace App\Http\Controllers\Inquiry;
 
 use App\Http\Controllers\Controller;
 use App\Services\SpPaginationService;
