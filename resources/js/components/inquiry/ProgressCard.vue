@@ -362,7 +362,7 @@
                                                 <label for="expectedValue" class="col-lg-5 col-form-label">Expected
                                                     Value</label>
                                                 <div class="col-lg-7">
-                                                    <input type="text" class="form-control"
+                                                    <input type="number" class="form-control"
                                                            id="expectedValue"
                                                            placeholder="Expected Value"
                                                            data-required="true"
