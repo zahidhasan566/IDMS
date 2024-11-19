@@ -276,8 +276,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::get('search-product/{product}', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'searchProduct']);
         Route::post('progress-card-add', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'addProgressCard']);
         Route::post('update-follow-up', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'updateFollowUp']);
-        Route::get('load-supportingData', [\App\Http\Controllers\inquiry\InquiryFollowUpReportController::class, 'supportingData']);
-        Route::post('conversion-summary-report', [\App\Http\Controllers\inquiry\InquiryFollowUpReportController::class, 'report']);
+        Route::get('load-supportingData', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'supportingData']);
+        Route::post('conversion-summary-report', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'report']);
     });
     //Inquiry
     Route::group(['prefix' => 'test-ride'],function () {
