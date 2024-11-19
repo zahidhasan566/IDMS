@@ -70,6 +70,7 @@ class PrebookingController extends Controller
                 //Check Existing Customer
                 $existingCustomer = PreBookingRe::where('BookingId', $singleCustomer['booking_id'])->first();
                 if (!empty($existingCustomer)) {
+                    dd($existingCustomer);
                     $updateCustomer = $this->updatePreBookingCustomer($existingCustomer,$singleCustomer,$request);
                     if($updateCustomer==='success'){
                         return response()->json([
