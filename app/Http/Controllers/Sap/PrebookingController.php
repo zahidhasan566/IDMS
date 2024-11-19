@@ -122,7 +122,7 @@ class PrebookingController extends Controller
                     $customer->save();
                     DB::commit();
 
-                    file_put_contents('public/log/prebooking/prebooking_customer_success-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+                    file_put_contents(public_path('log/prebooking/prebooking_customer_success-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                     return response()->json([
                         'status' => 'Success',
                         'message' => 'PreBooking Added Successfully',
@@ -140,7 +140,7 @@ class PrebookingController extends Controller
         }
         catch (\Exception $exception) {
                 DB::rollBack();
-                file_put_contents('public/log/prebooking/prebooking_customer_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+                file_put_contents(public_path('log/prebooking/prebooking_customer_error-' . $dt . '.txt'), $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Something went wrong!' . $exception->getMessage() . '-' . $exception->getLine()
@@ -192,7 +192,7 @@ class PrebookingController extends Controller
         }
         catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/prebooking/prebooking_customer_update_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents(public_path('log/prebooking/prebooking_customer_update_error-') . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!' . $exception->getMessage() . '-' . $exception->getLine()
