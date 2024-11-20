@@ -59,6 +59,7 @@ import inquiryConversionSummaryReport from "../views/inquiry/InquiryConversionSu
 import TestRideAgentList from "../views/TestRide/AgentIndex";
 import TestRiderList from "../views/TestRide/RiderIndex.vue";
 import NotificationList from "../views/notification/NotificationIndex.vue";
+import inquiryPrint from "../views/inquiry/InquiryPrint.vue";
 
 
 //reportSalesSummary
@@ -627,6 +628,12 @@ const routes = [
                 path: baseurl + 'dashboard/edit-approve',
                 name: 'EditApproved',
                 component: EditApproved
+            },
+            //Inquiry Print
+            {
+                path: baseurl + 'inquiry-print',
+                name: 'inquiryPrint',
+                component: inquiryPrint
             },
 
 
