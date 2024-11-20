@@ -7,8 +7,8 @@
                     <th style="text-align: left; width: 23%;">
                       <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/reLogo.png'}`" style="height: 100px;width: 100px">
                     </th>
-                    <th style="width: 43%;color:#000000; "><h2>Inquiry Summary - {{existingInquiry.Customer_Name}}</h2></th>
-                    <th style="text-align: right; width: 33%;">
+                    <th style="width: 63%;color:#000000; "><h2>Inquiry Summary - {{existingInquiry.Customer_Name}}</h2></th>
+                    <th style="text-align: right; width: 23%;">
                         <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/logo-svg.png'}`" style="height: 30px;width: 100px">
                     </th>
                 </tr>
