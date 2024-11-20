@@ -219,4 +219,6 @@ class InquiryProgressAndFollowUpController extends Controller
 
 
 
+
+
 }

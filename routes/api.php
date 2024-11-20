@@ -278,6 +278,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('update-follow-up', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'updateFollowUp']);
         Route::get('load-supportingData', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'supportingData']);
         Route::post('conversion-summary-report', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'report']);
+        Route::get('get/print-data/{inquiryId}', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'existingInquiry']);
     });
     //Inquiry
     Route::group(['prefix' => 'test-ride'],function () {

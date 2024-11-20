@@ -9,7 +9,7 @@
     </div>
     <general-datatable :options="tableOptions" :customers="customers">
         <template slot="action" slot-scope="row">
-            <router-link class="btn btn-primary" style="font-size: 12px;width:65px;padding: 2px 0px" :to="{path: `${baseurl}`+'inquiry-print?action_type=print&item='+(row.item.InquiryId)}"><i class="fa fa-print">Print {{row.item.InquiryId}}</i></router-link>
+            <router-link class="btn btn-primary" style="font-size: 12px;width:65px;padding: 2px 0px" target='_blank' :to="{path: `${baseurl}`+'inquiry-print?action_type=print&item='+encodeConvert(row.item.InquiryId)}"><i class="fa fa-print">Print</i></router-link>
         </template>
     </general-datatable>
   </div>
@@ -31,7 +31,7 @@ export default {
       tableOptions: {
         source: 'inquiry/conversion-summary-report',
         search: false,
-        slots: [14],
+        slots: [15],
         hideColumn: ['CountData'],
         slotsName: ['action'],
         filterOption: true,
@@ -57,6 +57,10 @@ export default {
         this.products = response.products
       })
     },
+      encodeConvert(val){
+          let convertVal = btoa(val);
+          return convertVal
+      },
     exportData() {
       bus.$emit('export-data','inquiry-conversion-summary-report-'+moment().format('YYYY-MM-DD'))
     }
