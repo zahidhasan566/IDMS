@@ -48,6 +48,9 @@ class SapInvoiceController extends Controller
                 $customer->NET = $singleCustomer['NET'];
                 $customer->NSI = $singleCustomer['NSI'];
                 $customer->Paid = $singleCustomer['Paid'];
+                $customer->VehicleNumber = $singleCustomer['VehicleNumber'];
+                $customer->DriverName = $singleCustomer['DriverName'];
+                $customer->DriverMobile = $singleCustomer['DriverMobile'];
                 $customer->PrepareBy =Auth::user()->UserId;
                 $customer->PrepareDate =Carbon::now();
                 $customer->IpAdress = $request->ip();
@@ -93,6 +96,8 @@ class SapInvoiceController extends Controller
                         $detailsBatch->BatchNo = $invoiceDetailsBatch['BatchNo'];
                         $detailsBatch->Quantity = $invoiceDetailsBatch['Quantity'];
                         $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
+                        $detailsBatch->Description = $invoiceDetailsBatch['Description'];
+                        $detailsBatch->Colour = $invoiceDetailsBatch['Colour'];
                         $detailsBatch->save();
                     }
                 }

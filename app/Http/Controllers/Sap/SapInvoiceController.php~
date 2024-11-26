@@ -48,6 +48,9 @@ class SapInvoiceController extends Controller
                 $customer->NET = $singleCustomer['NET'];
                 $customer->NSI = $singleCustomer['NSI'];
                 $customer->Paid = $singleCustomer['Paid'];
+                $customer->VehicleNumber = $singleCustomer['VehicleNumber'];
+                $customer->DriverName = $singleCustomer['DriverName'];
+                $customer->DriverMobile = $singleCustomer['DriverMobile'];
                 $customer->PrepareBy =Auth::user()->UserId;
                 $customer->PrepareDate =Carbon::now();
                 $customer->IpAdress = $request->ip();
@@ -64,7 +67,7 @@ class SapInvoiceController extends Controller
                     }
                     else{
                         $details = new InvoiceDetails();
-                        $details->Invoiceno = $customer->InvoiceNo;
+                        $details->Invoiceno = $singleCustomer['InvoiceNo'];
                         $details->ProductCode = $invoiceDetails['ProductCode'];
                         $details->UnitPrice = $invoiceDetails['UnitPrice'];
                         $details->UnitVAT = $invoiceDetails['UnitVAT'];
@@ -88,11 +91,13 @@ class SapInvoiceController extends Controller
                     }
                     else{
                         $detailsBatch = new InvoiceDetailsBatch();
-                        $detailsBatch->Invoiceno = $customer->InvoiceNo;
+                        $detailsBatch->Invoiceno = $singleCustomer['InvoiceNo'];
                         $detailsBatch->ProductCode = $invoiceDetails['ProductCode'];
                         $detailsBatch->BatchNo = $invoiceDetailsBatch['BatchNo'];
                         $detailsBatch->Quantity = $invoiceDetailsBatch['Quantity'];
                         $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
+                        $detailsBatch->Description = $invoiceDetailsBatch['Description'];
+                        $detailsBatch->SalesQTY = $invoiceDetailsBatch['Description'];
                         $detailsBatch->save();
                     }
                 }
