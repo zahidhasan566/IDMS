@@ -55,7 +55,7 @@ class SapInvoiceController extends Controller
 
                 foreach ($singleCustomer['InvoiceDetails'] as $key => $invoiceDetails) {
                     if(empty($invoiceDetails['ProductCode'])){
-                        file_put_contents('public/log/sap_invoice/invoice_details_missing-' . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetails) . "\n", FILE_APPEND);
+                        file_put_contents(public_path('log/sap_invoice/invoice_details_missing-') . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetails) . "\n", FILE_APPEND);
                         return response()->json([
                             'status' => 'Error',
                             'message' => 'Missing Invoice Details Parameter',
@@ -79,7 +79,7 @@ class SapInvoiceController extends Controller
 
                 foreach ($singleCustomer['InvoiceDetailsBatch'] as $key => $invoiceDetailsBatch) {
                     if(empty($invoiceDetailsBatch['BatchNo'])  && empty($invoiceDetailsBatch['Quantity'])  && empty($invoiceDetailsBatch['SalesQTY'])      ){
-                        file_put_contents('public/log/sap_invoice/invoice_details_batch_missing-' . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetailsBatch) . "\n", FILE_APPEND);
+                        file_put_contents(public_path('log/sap_invoice/invoice_details_batch_missing-') . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetailsBatch) . "\n", FILE_APPEND);
                         return response()->json([
                             'status' => 'Error',
                             'message' => 'Missing Invoice Details Batch Parameter',
@@ -101,7 +101,7 @@ class SapInvoiceController extends Controller
 
                 DB::commit();
 
-                file_put_contents('public/log/sap_invoice/sap_invoice_success-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+                file_put_contents(public_path('log/sap_invoice/sap_invoice_success-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                 return response()->json([
                     'status' => 'Success',
                     'message' => 'Invoice Added Successfully',
@@ -119,7 +119,7 @@ class SapInvoiceController extends Controller
         }
         catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap_invoice/sap_invoice_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents(public_path('log/sap_invoice/sap_invoice_error-') . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!' . $exception->getMessage() . '-' . $exception->getLine()
