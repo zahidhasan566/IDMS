@@ -28,9 +28,6 @@ class SapInvoiceController extends Controller
                 && !empty($singleCustomer['DeliveryDate'])
                 && !empty($singleCustomer['DeliveryTime'])
                 && !empty($singleCustomer['CustomerCode'])
-                && !empty($singleCustomer['TP'])
-                && !empty($singleCustomer['NET'])
-                && !empty($singleCustomer['NSI'])
                 && !empty($singleCustomer['Paid'])
             ) {
                 DB::beginTransaction();
@@ -97,7 +94,7 @@ class SapInvoiceController extends Controller
                         $detailsBatch->Quantity = $invoiceDetailsBatch['Quantity'];
                         $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
                         $detailsBatch->Description = $invoiceDetailsBatch['Description'];
-                        $detailsBatch->SalesQTY = $invoiceDetailsBatch['Description'];
+                        $detailsBatch->Colour = $invoiceDetailsBatch['Colour'];
                         $detailsBatch->save();
                     }
                 }

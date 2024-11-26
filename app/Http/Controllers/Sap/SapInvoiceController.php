@@ -28,9 +28,6 @@ class SapInvoiceController extends Controller
                 && !empty($singleCustomer['DeliveryDate'])
                 && !empty($singleCustomer['DeliveryTime'])
                 && !empty($singleCustomer['CustomerCode'])
-                && !empty($singleCustomer['TP'])
-                && !empty($singleCustomer['NET'])
-                && !empty($singleCustomer['NSI'])
                 && !empty($singleCustomer['Paid'])
             ) {
                 DB::beginTransaction();
@@ -57,7 +54,7 @@ class SapInvoiceController extends Controller
                 $customer->save();
 
                 foreach ($singleCustomer['InvoiceDetails'] as $key => $invoiceDetails) {
-                    if(empty($invoiceDetails['ProductCode']) ||  empty($invoiceDetails['UnitPrice']) || empty($invoiceDetails['SalesTP'])  || empty($invoiceDetails['SalesQTY']) || empty($invoiceDetails['TP'])   ){
+                    if(empty($invoiceDetails['ProductCode'])){
                         file_put_contents('public/log/sap_invoice/invoice_details_missing-' . $dt .'-'.$singleCustomer['InvoiceNo']. '.txt', json_encode($invoiceDetails) . "\n", FILE_APPEND);
                         return response()->json([
                             'status' => 'Error',
