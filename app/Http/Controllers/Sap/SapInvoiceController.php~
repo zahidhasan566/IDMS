@@ -97,7 +97,6 @@ class SapInvoiceController extends Controller
                         $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
                         $detailsBatch->Description = $invoiceDetailsBatch['Description'];
                         $detailsBatch->Colour = $invoiceDetailsBatch['Colour'];
-                        $detailsBatch->Model = $invoiceDetailsBatch['Model'];
                         $detailsBatch->save();
                     }
                 }
