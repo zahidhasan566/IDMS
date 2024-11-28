@@ -72,6 +72,7 @@ class SapInvoiceController extends Controller
                         $details->SalesTP = $invoiceDetails['SalesTP'];
                         $details->SalesQTY = $invoiceDetails['SalesQTY'];
                         $details->TP = $invoiceDetails['TP'];
+                        $details->TPRoundOff = $invoiceDetails['TP'];
                         $details->VAT = $invoiceDetails['VAT'];
                         $details->DiscountPercentage = $invoiceDetails['DiscountPercentage'];
                         $details->Discount = $invoiceDetails['Discount'];
@@ -97,6 +98,7 @@ class SapInvoiceController extends Controller
                         $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
                         $detailsBatch->Description = $invoiceDetailsBatch['Description'];
                         $detailsBatch->Colour = $invoiceDetailsBatch['Colour'];
+                        $detailsBatch->Model = $invoiceDetailsBatch['Model'];
                         $detailsBatch->save();
                     }
                 }
