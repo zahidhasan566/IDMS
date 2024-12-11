@@ -144,7 +144,7 @@ class InvoiceController extends Controller
             $invoice->PerAddress                = $request->PermanentAddress;
             $invoice->MobileNo                  = $request->Mobile;
             $invoice->EmergencyMobile            = $request->EmergencyMobile;
-            $invoice->BloodGroup                = $request->bloodGroup;
+            $invoice->BloodGroup            = $request->bloodGroup;
             $invoice->EMail                     = isset($request->Email) ? $request->Email : '';
             $invoice->NID                       = $request->NID;
             $invoice->InquerySale               = isset($request->InquirySale) ? $request->InquirySale : 0;
