@@ -8,6 +8,8 @@ import AdjustmentsUnadjusted from "../views/reports/general/Unadjusted";
 import AdjustmentsAdjusted from "../views/reports/general/Adjusted";
 import ProductIndex from "../views/product/ProductIndex.vue";
 import EditApproved from "../components/dashboard/pendingOrderEditApproved.vue";
+import PostDeliveryPrint from "../views/post-delivery/PostDeliveryPrint.vue";
+
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
 import WorkIndex from "../views/jobcard/WorkIndex.vue";
@@ -136,15 +138,18 @@ import ProgressCard from "../components/inquiry/ProgressCard.vue";
 // SDMS REPORT
 import SdmsInvoiceList from "../views/sdms/SdmsInvoiceList.vue"
 import SdmsCustomerLedger from "../views/sdms/SdmsCustomerLedger.vue"
-import CustomerWiseProductSold from "../views/sdms/CustomerWiseProductSold.vue";
-import CustomerWiseProductSoldPrint from "../views/sdms/CustomerWiseProductSoldPrint.vue";
-import SdmsDayWiseSalesSummaryReport from "../views/sdms/SdmsDayWiseSalesSummaryReport.vue";
+import CustomerWiseProductSold from "../views/sdms/CustomerWiseProductSold.vue"
+import CustomerWiseProductSoldPrint from "../views/sdms/CustomerWiseProductSoldPrint.vue"
+import SdmsDayWiseSalesSummaryReport from "../views/sdms/SdmsDayWiseSalesSummaryReport.vue"
 import SdmsCustomerLedgerPrint from "../views/sdms/SdmsCustomerLedgerPrint.vue"
 import DealerUser from "../views/users/DealerUsers.vue"
-import DealerOffer from "../views/sdms/DealerOffer.vue";
-import DealerOfferList from "../views/sdms/DealerOfferList.vue";
-import JobCardCSI from "../views/jobcard/JobCardCSI.vue";
-import ReportPreBook from "../views/reports/reportPreBook.vue";
+import DealerOffer from "../views/sdms/DealerOffer.vue"
+import DealerOfferList from "../views/sdms/DealerOfferList.vue"
+import JobCardCSI from "../views/jobcard/JobCardCSI.vue"
+import ReportPreBook from "../views/reports/reportPreBook.vue"
+
+import PostDeliveryChecklist from "../views/post-delivery/Checklist.vue"
+import CreatePostDeliveryChecklist from "../views/post-delivery/Create.vue"
 
 Vue.use(VueRouter);
 
@@ -635,9 +640,21 @@ const routes = [
                 name: 'inquiryPrint',
                 component: inquiryPrint
             },
-
-
-
+            {
+                path: baseurl + 'post-delivery/checklist',
+                name: 'PostDeliveryChecklist',
+                component: PostDeliveryChecklist
+            },
+            {
+                path: baseurl + 'post-delivery/checklist/create',
+                name: 'CreatePostDeliveryChecklist',
+                component: CreatePostDeliveryChecklist
+            },
+            {
+                path: baseurl + 'post-delivery/checklist/print/:inquiryId',
+                name: 'PostDeliveryPrint',
+                component: PostDeliveryPrint
+            }
         ],
         beforeEnter(to, from, next) {
             checkToken(to, from, next);
