@@ -83,8 +83,11 @@ class CommonSapController extends Controller
                         $product->Size = $singleProduct['Size'];
                         $product->EAN = $singleProduct['EAN'];
                         $product->InspMemo = $singleProduct['InspMemo'];
-                        $product->IndStdDesc = $singleProduct['IndStdDesc'];
+
+
+
                         $product->Business = $singleProduct['Business'];
+                        $product->Active = $singleProduct['Active'];
                         $product->save();
                         DB::commit();
                     }
