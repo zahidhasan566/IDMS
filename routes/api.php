@@ -91,7 +91,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         //Bike Order
         Route::get('bike-list', [BikeController::class,'index']);
         Route::post('store-bike', [BikeController::class,'storeBikeOrder']);
-        Route::get('search-product', [CommonController::class,'bikeList']);
+        Route::get('search-product', [CommonController::class,'searchProduct']);
         Route::get('get-bike-by-product-code', [CommonController::class,'getBikeByProductCode']);
 
     //Spare Parts

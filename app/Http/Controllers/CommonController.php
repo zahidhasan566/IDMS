@@ -46,32 +46,53 @@ class CommonController extends Controller
             'allSubMenus' => Menu::whereNotIn('MenuID',['Dashboard','Users'])->with('allSubMenus')->orderBy('MenuOrder','asc')->get()
         ]);
     }
-    public function bikeList(){
-        $products= Product::select(DB::raw("Product.ProductCode + ' - ' + Product.ProductName as BikeName"),'ProductCode','ProductName')
-            ->where('Business','C')
-            ->where('Active','Y')
-            ->where('SMSOrder','Y')
-            ->where('MRP','>','0')
-            ->where('UnitPrice','>','10')
-          ->orderBy('ProductCode','desc')->get();
+//    public function bikeList(){
+//        $products= Product::select(DB::raw("Product.ProductCode + ' - ' + Product.ProductName as BikeName"),'ProductCode','ProductName')
+//            ->where('Business','C')
+//            ->where('Active','Y')
+//            ->where('SMSOrder','Y')
+//            ->where('MRP','>','0')
+//            ->where('UnitPrice','>','10')
+//          ->orderBy('ProductCode','desc')->get();
+//
+//        return  $products;
+//
+//    }
 
-        return  $products;
 
-    }
     public function searchProduct(Request $request){
+
         $ProductCode = $request->ProductCode;
-        $products= Product::select(DB::raw("Product.ProductCode + ' - ' + Product.ProductName as BikeName"),'ProductCode','ProductName')
+        $products= Product::select(DB::raw("Product.ProductCode + ' - ' + Product.ProductName as BikeName"),
+            'ProductCode','ProductName')
             ->where('Business','C')
             ->where('Active','Y')
             ->where('MRP','>','0')
-            ->where('UnitPrice','>','10')
-            ->where(function ($q) use ($ProductCode){
-                $q->where('ProductName', 'LIKE', $ProductCode . '%');
-                $q->orWhere('ProductCode', 'LIKE', $ProductCode . '%');
-            })->orderBy('ProductCode','desc')->get();
-        return  $products;
+            ->where('SMSOrder','Y')
+            ->where('UnitPrice','>','10');
+        if ($ProductCode!=='undefined'){
+            $products ->where(function ($q) use ($ProductCode){
+                $q->where('ProductName', 'LIKE','%'. $ProductCode . '%');
+                $q->orWhere('ProductCode', 'LIKE', '%'.$ProductCode . '%');
+            });
+        }
+        return  $products->orderBy('ProductCode','desc')->get();
 
     }
+//    public function searchProduct(Request $request){
+//        $ProductCode = $request->ProductCode;
+//        $products= Product::select(DB::raw("Product.ProductCode + ' - ' + Product.ProductName as BikeName"),'ProductCode','ProductName')
+//            ->where('Business','C')
+//            ->where('Active','Y')
+//            ->where('MRP','>','0')
+//            ->where('UnitPrice','>','10')
+//            ->where(function ($q) use ($ProductCode){
+//                $q->where('ProductName', 'LIKE', $ProductCode . '%');
+//                $q->orWhere('ProductCode', 'LIKE', $ProductCode . '%');
+//            })->orderBy('ProductCode','desc')->get();
+//        return  $products;
+//
+//    }
     public function getBikeByProductCode(Request $request){
 
         $ProductCode =$request->ProductCode;
