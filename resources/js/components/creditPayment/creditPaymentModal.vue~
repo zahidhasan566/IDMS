@@ -51,6 +51,18 @@
                       </div>
                     </ValidationProvider>
                   </div>
+
+                  <div class="col-12 col-md-4" >
+                    <ValidationProvider name="paymentMode" mode="eager" rules="required" v-slot="{ errors }" >
+                      <div class="form-group">
+                        <label for="tagNo">Sales Type</label>
+                        <select data-required="true" readonly name="paymentMode" class="form-control">
+                          <option  v-for="(item, index) in sales" :key="index">{{ item.PaymentMode }} : {{ item.CustomerName }}</option>
+                        </select>
+                        <span class="error-message"> {{ errors[0] }}</span>
+                      </div>
+                    </ValidationProvider>
+                  </div>
                   <div class="col-12 col-md-4">
                     <ValidationProvider name="reference" mode="eager" rules="required"
                                         v-slot="{ errors }">
