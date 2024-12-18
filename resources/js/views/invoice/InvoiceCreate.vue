@@ -640,20 +640,6 @@
                                                                 </div>
                                                             </div>
                                                         </ValidationProvider>
-                                                        <!--                            <ValidationProvider name="wantJoinRE" mode="eager" rules="required" v-slot="{ errors }">-->
-                                                        <!--                              <div class="form-group row" style="padding-bottom: 10px">-->
-                                                        <!--                                <label class="col-lg-7 col-form-label text-right">Will you join Royal Enfield Club<span style="color: red">*</span>.</label>-->
-                                                        <!--                                <div class="col-lg-5 text-left">-->
-                                                        <!--                                  <select name="wantJoinRE" class="form-control" v-model="form.wantJoinRE" style="margin: 0">-->
-                                                        <!--                                    <option value="Present Member">Present Member</option>-->
-                                                        <!--                                    <option value="yes">Yes</option>-->
-                                                        <!--                                    <option value="no">No</option>-->
-                                                        <!--                                  </select>-->
-                                                        <!--                                  <div class="error" v-if="form.errors.has('wantJoinRE')" v-html="form.errors.get('wantJoinRE')" />-->
-                                                        <!--                                  <span class="error-message"> {{ errors[0] }}</span>-->
-                                                        <!--                                </div>-->
-                                                        <!--                              </div>-->
-                                                        <!--                            </ValidationProvider>-->
                                                         <div class="form-group row" style="padding-bottom: 10px">
                                                             <label class="col-lg-7 col-form-label text-right">Blood Group</label>
                                                             <div class="col-lg-5 text-left">

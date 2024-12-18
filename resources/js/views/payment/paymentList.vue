@@ -57,8 +57,7 @@
                                 <table class="table  table-bordered table-striped nowrap dataTable no-footer dtr-inline table-sm small" style="max-height: 200px; overflow: scroll;">
                                     <thead class="thead-dark" v-if="headers.length > 0">
                                     <tr>
-                                      <th>Status</th>
-                                      <th v-for="(item, index) in headers" v-if="index !== 1 && index !== 15">
+                                      <th v-for="(item, index) in headers" v-if="index !== 1 && index !== 2 && index !== 3 && index !== 15">
                                         {{ item.replace(/_/g, ' ', " $1").trim() }}
                                       </th>
                                       <th>Image</th>
@@ -67,12 +66,7 @@
                                     </thead>
                                     <tbody>
                                     <tr v-for="(item, index) in contents">
-                                      <td class="text-left">
-                                        <span class="badge badge-success" v-if="item.Approved=='Y'" >Approved</span>
-                                        <span class="badge badge-danger" v-if="item.Approved=='C'" >Cancel</span>
-                                        <span class="badge badge-warning" v-else>Pending</span>
-                                      </td>
-                                      <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 1 && index !== 15">
+                                      <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 1 && index !== 2 && index !== 3 && index !== 15">
                                         {{ item[item2] }}
                                       </td>
                                       <td class="text-center">
@@ -213,8 +207,7 @@ export default {
 
         },
         tableImage(ChequeImage) {
-            // return baseurl + "uploads/payment/" + ChequeImage;
-            return AWS_S3_PAYMENT_IMAGE_LINK  + ChequeImage;
+             return baseurl + "uploads/payment/" + ChequeImage;
         },
 
         closeModal() {

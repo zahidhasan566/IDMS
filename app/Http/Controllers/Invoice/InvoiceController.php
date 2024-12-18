@@ -180,8 +180,8 @@ class InvoiceController extends Controller
             $invoice->PreviousBikeCC            = $request->previousBikeCC;
             $invoice->PreviousBikeUsage         = $request->previousBikeUsage;
             $invoice->CauseForBuyingNewBike     = $causeForBuyingNewBike;
-            $invoice->REisKnown                = $request->REisKnown;
-            $invoice->REJoinYRC               = $request->wantJoinRE;
+            $invoice->REisKnown                = '';
+            $invoice->REJoinYRC               = '';
             $invoice->DistrictCode              = $request->DistrictCode;
             $invoice->UpazillaCode              = $request->ThanaCode;
             $invoice->SalesStaffName            = $request->SalesStaffName ? $request->SalesStaffName : '';
@@ -270,11 +270,11 @@ class InvoiceController extends Controller
                 }
 
                 //SEND MESSAGE
-                $encodedInfo        = base64_encode($invoice->InvoiceID . '.' . $request->Mobile . '.' . $VerifyCode . '.' . $invoice->InvoiceID);
-                $feedbackBaseUrl    = 'http://feedback.yamahabd.com/';
-                $feedbackLink       = $feedbackBaseUrl . '?i=' . $encodedInfo;
-                $smsText            = "Dear Customer: Thanks for buying from IFAD. You can give your valuable feedback through the link bellow." . "\n" . $feedbackLink;
-                $this->sendSms($request->Mobile, $smsText);
+//                $encodedInfo        = base64_encode($invoice->InvoiceID . '.' . $request->Mobile . '.' . $VerifyCode . '.' . $invoice->InvoiceID);
+//                $feedbackBaseUrl    = 'http://feedback.yamahabd.com/';
+//                $feedbackLink       = $feedbackBaseUrl . '?i=' . $encodedInfo;
+//                $smsText            = "Dear Customer: Thanks for buying from IFAD. You can give your valuable feedback through the link bellow." . "\n" . $feedbackLink;
+//                $this->sendSms($request->Mobile, $smsText);
 
                 DB::commit();
                 return response()->json([

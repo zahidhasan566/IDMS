@@ -85,6 +85,8 @@ class CommonSapController extends Controller
                         $product->InspMemo = $singleProduct['InspMemo'];
                         $product->IndStdDesc = $singleProduct['IndStdDesc'];
                         $product->Business = $singleProduct['Business'];
+                        $product->Active = $singleProduct['Active'];
+                        $product->MaterialType = $singleProduct['MaterialType'];
                         $product->save();
                         DB::commit();
                     }
@@ -194,7 +196,7 @@ class CommonSapController extends Controller
                         $customer->CreateDate = '';
                         $customer->EditDate = '';
                         $customer->DiscountStatus = '';
-                        $customer->Active = 'Y';
+                        $customer->Active = $singleCustomer['Active'];
                         $customer->Fifo = 'Y';
                         $customer->Message = '';
                         $customer->Category = '';
