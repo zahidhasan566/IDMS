@@ -50,12 +50,18 @@ class SparePartsController extends Controller
     public function storeSparePartsOrder(Request $request ){
         try {
 
-
             DB::beginTransaction();
-            $preparedArray = $request->products;
-
+            $products = $request->products;
+            foreach ($products as $key => $value){
+                if(empty($value['ProductCode'])){
+                    unset($products[$key]);
+                }
+            }
+            $products = array_values($products);
+            $preparedArray = $products;
             $unique_check = collect($preparedArray);
             $unique_check = $unique_check->pluck('ProductCode');
+
             $productCodes = [];
             foreach ($unique_check as $each) {
                 $productCodes[] = $each;
@@ -80,16 +86,16 @@ class SparePartsController extends Controller
 
             $bike->SendTime =    Carbon::now();
             $bike->IPAddress =  $request->ip() ;
+
             if ($bike->save()){
                 foreach ($preparedArray as $key => $value){
-                    if ( $value['Quantity'] >0 ){
+                    if (  $value['Quantity'] >0 ){
                         $details = new OrderInvoiceDetails();
                         $details->OrderNo = $bike->OrderNo;
                         $details->ProductCode = $value['ProductCode'];
                         $details->Quantity = $value['Quantity'];
                         $details->UnitPrice = $value['UnitPrice'];
                         $details->Vat = $value['Vat'];
-
                         $details->save();
                     }else{
                         return response()->json([

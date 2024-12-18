@@ -40,71 +40,79 @@ class BikeController extends Controller
            'data'=>$order->orderBy('OrderDate','Desc')->paginate(15)
         ]);
     }
-   public function storeBikeOrder(Request $request ){
-       try {
+    public function storeBikeOrder(Request $request ){
+        try {
 
-           DB::beginTransaction();
-           $preparedArray = $request->products;
+            DB::beginTransaction();
+//dd($request->products);
+            $products = $request->products;
+            foreach ($products as $key => $value){
+                if(empty($value['ProductCode'])){
+                    unset($products[$key]);
+                }
+            }
+            $products = array_values($products);
 
-           $unique_check = collect($preparedArray);
-           $unique_check = $unique_check->pluck('ProductCode');
+            $preparedArray = $products;
+            $unique_check = collect($preparedArray);
+            $unique_check = $unique_check->pluck('ProductCode');
 
-           $productCodes = [];
-           foreach ($unique_check as $each) {
-               $productCodes[] = $each['ProductCode'];
-           }
+            $productCodes = [];
+            foreach ($unique_check as $each) {
+                $productCodes[] = $each['ProductCode'];
+            }
 
-           $unique = array_unique($productCodes);
+            $unique = array_unique($productCodes);
 
-           $unique_check = $unique_check->toArray();
+            $unique_check = $unique_check->toArray();
 
-           $result = array_diff_key($unique_check, $unique);
+            $result = array_diff_key($unique_check, $unique);
 
-           if ($result) {
-               return response()->json([
-                   'status' => 'error',
-                   'message' => 'You have added '.$result[1].' multiple times!'
-               ]);
-           }
-           $bike = new OrderInvoiceMaster();
-           $bike->MasterCode =  Auth::user()->UserId;
-           $bike->OrderDate = Carbon::now()->format("Y-m-d 00:00:00.000");
-           $bike->OrderTime =   Carbon::now();
-           $bike->InvoiceOK =   'N';
-           $bike->SendTime =    Carbon::now();
-           $bike->IPAddress =  $request->ip() ;
-         if ($bike->save()){
-             foreach ($preparedArray as $key => $value){
-                 if ( $value['Quantity'] >0){
-                     $details = new OrderInvoiceDetails();
-                     $details->OrderNo = $bike->OrderNo;
-                     $details->ProductCode = $value['ProductCode']['ProductCode'];
-                     $details->Quantity = $value['Quantity'];
-                     $details->UnitPrice = $value['UnitPrice'];
-                     $details->Vat = $value['Vat'];
-                     $details->save();
-                 }else{
-                     return response()->json([
-                         'status' => 'error',
-                         'message'=>$value['ProductCode'].' Quantity Cannot Be Zero.'
-                     ]);
-                 }
-             }
-             DB::commit();
-             return response()->json([
-                 'status' => 'success',
-                 'message'=>'Order has been placed'
-             ]);
-         }
+            if ($result) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'You have added '.$result[1]['BikeName'].' multiple times!'
+                ]);
+            }
+            $bike = new OrderInvoiceMaster();
+            $bike->MasterCode =  Auth::user()->UserId;
+            $bike->OrderDate = Carbon::now()->format("Y-m-d 00:00:00.000");
+            $bike->OrderTime =   Carbon::now();
+            $bike->InvoiceOK =   'N';
+            $bike->SendTime =    Carbon::now();
+            $bike->IPAddress =  $request->ip() ;
+            if ($bike->save()){
+                foreach ($preparedArray as $key => $value){
+                    if ( $value['Quantity'] >0){
+                        $details = new OrderInvoiceDetails();
+                        $details->OrderNo = $bike->OrderNo;
+                        $details->ProductCode = $value['ProductCode']['ProductCode'];
+                        $details->Quantity = $value['Quantity'];
+                        $details->UnitPrice = $value['UnitPrice'];
+                        $details->Vat = $value['Vat'];
+                        $details->save();
+                    }else{
+                        return response()->json([
+                            'status' => 'error',
+                            'message'=>$value['ProductCode'].' Quantity Cannot Be Zero.'
+                        ]);
+                    }
+                }
+                DB::commit();
+                return response()->json([
+                    'status' => 'success',
+                    'message'=>'Order has been placed'
+                ]);
+            }
 
-           } catch (\Exception $exception) {
-           DB::rollBack();
-           return response()->json([
-               'status' => 'error',
-               'message' => $exception->getMessage()
-           ], 500);
-       }
-   }
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ], 500);
+        }
+    }
 
 
 }

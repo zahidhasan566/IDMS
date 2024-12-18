@@ -821,25 +821,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <h3 id="form-horizontal-h-3" class="title">Reference</h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-lg-3 col-form-label">Local Mechanics</label>
-                                                    <div class="col-lg-9">
-                                                        <multiselect v-model="reference" :options="allReference"
-                                                                     :multiple="false"
-                                                                     :close-on-select="true"
-                                                                     :clear-on-select="false"
-                                                                     :preserve-search="false"
-                                                                     placeholder="Local Mechanics"
-                                                                     label="MechanicsDetails" track-by="MechanicsCode">
-
-                                                        </multiselect>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="col-md-12" style="text-align: end;margin-top:10px">
                                         <submit-form v-if="buttonShow" :name="buttonText"/>
