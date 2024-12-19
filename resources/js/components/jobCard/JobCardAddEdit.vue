@@ -426,25 +426,25 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"
-                                                                        v-slot="{ errors }">
-                                                        <div class="form-group row">
-                                                            <label for="fiStatus" class="col-lg-3 col-form-label">FI
-                                                                Status
-                                                                <span class="error">*</span></label>
-                                                            <div class="col-lg-9">
-                                                                <select class="form-control" name="ytdStatus"
-                                                                        @change="setFiNoReason($event)"
-                                                                        v-model="fiStatus">
-                                                                    <option value="Y">Yes</option>
-                                                                    <option value="N">No</option>
-                                                                </select>
-                                                                <span class="error-message"> {{ errors[0] }}</span>
-                                                            </div>
-                                                        </div>
-                                                    </ValidationProvider>
-                                                </div>
+<!--                                                <div class="col-md-4">-->
+<!--                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"-->
+<!--                                                                        v-slot="{ errors }">-->
+<!--                                                        <div class="form-group row">-->
+<!--                                                            <label for="fiStatus" class="col-lg-3 col-form-label">FI-->
+<!--                                                                Status-->
+<!--                                                                <span class="error">*</span></label>-->
+<!--                                                            <div class="col-lg-9">-->
+<!--                                                                <select class="form-control" name="ytdStatus"-->
+<!--                                                                        @change="setFiNoReason($event)"-->
+<!--                                                                        v-model="fiStatus">-->
+<!--                                                                    <option value="Y">Yes</option>-->
+<!--                                                                    <option value="N">No</option>-->
+<!--                                                                </select>-->
+<!--                                                                <span class="error-message"> {{ errors[0] }}</span>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </ValidationProvider>-->
+<!--                                                </div>-->
                                             </div>
                                             <div class="row" v-if="fiNoTag">
                                                 <div class="col-md-6">
