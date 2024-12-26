@@ -85,7 +85,7 @@ class CommonSapController extends Controller
                         $product->InspMemo = $singleProduct['InspMemo'];
                         $product->IndStdDesc = $singleProduct['IndStdDesc'];
                         $product->Business = $singleProduct['Business'];
-                        $product->Active = $singleProduct['Active'];
+                        $product->Active = 'Y';
                         $product->MaterialType = $singleProduct['MaterialType'];
                         $product->save();
                         DB::commit();
@@ -109,7 +109,7 @@ class CommonSapController extends Controller
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Product Added Successfully',
-                'ProductCount' => $productCount
+                'ProductCode' => $requestProducts[0]['ProductCode']
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -196,7 +196,7 @@ class CommonSapController extends Controller
                         $customer->CreateDate = '';
                         $customer->EditDate = '';
                         $customer->DiscountStatus = '';
-                        $customer->Active = $singleCustomer['Active'];
+                        $customer->Active = 'Y';
                         $customer->Fifo = 'Y';
                         $customer->Message = '';
                         $customer->Category = '';
@@ -225,7 +225,7 @@ class CommonSapController extends Controller
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Customer Added Successfully',
-                'CustomerCount' => $customerCount
+                'CustomerCode' => $requestCustomers[0]['CustomerCode']
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
