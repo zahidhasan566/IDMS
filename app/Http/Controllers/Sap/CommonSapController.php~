@@ -270,7 +270,7 @@ class CommonSapController extends Controller
     }
 
     public function updateSapCustomer($existCustomerCheck,$singleCustomer){
-    
+        dd($checkExisting);
         $existCustomerCheck->Title = $singleCustomer['Title'];
         $existCustomerCheck->CustomerCode = $singleCustomer['CustomerCode'];
         $existCustomerCheck->CustomerName = $singleCustomer['CustomerName'];
