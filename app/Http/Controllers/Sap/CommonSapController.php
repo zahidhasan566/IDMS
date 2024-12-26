@@ -49,7 +49,7 @@ class CommonSapController extends Controller
                     //Check Already Exist Or Not
                     $checkExisting = Product::where('ProductCode', $singleProduct['ProductCode'])->first();
                     if (!empty($checkExisting->ProductCode)) {
-                        file_put_contents('public/log/sap/sap_product_file_already_exist-' . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+                        file_put_contents(public_path('log/sap/sap_product_file_already_exist-') . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
                         $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>'Already Exist']);
                         return response()->json([
                             'status' => 'error',
@@ -92,7 +92,7 @@ class CommonSapController extends Controller
                     }
                 } else {
                     DB::rollBack();
-                    file_put_contents('public/log/sap/sap_product_file_not_acceptable_create-' . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+                    file_put_contents(public_path('log/sap/sap_product_file_not_acceptable_create-') . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
                     //SAP USER  LOG
                     $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>'Format Or Empty Or Existing Issue']);
 
@@ -113,7 +113,7 @@ class CommonSapController extends Controller
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap/sap_product_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents(public_path('log/sap/sap_product_error-') . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>$exception->getMessage() . '-' . $exception->getLine()]);
             return response()->json([
                 'status' => 'error',
@@ -136,7 +136,7 @@ class CommonSapController extends Controller
                     //Check Already Exist Or Not
                     $existCustomerCheck = Customer::query()->where('CustomerCode', $singleCustomer['CustomerCode'])->exists();
                     if ($existCustomerCheck) {
-                        file_put_contents('public/log/sap/sap_customer_file_already_exist-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+                        file_put_contents(public_path('log/sap/sap_customer_file_already_exist-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                         $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>'Already Exist']);
                         return response()->json([
                             'status' => 'error',
@@ -212,7 +212,7 @@ class CommonSapController extends Controller
                     }
                 } else {
                     DB::rollBack();
-                    file_put_contents('public/log/sap/sap_customer_file_not_acceptable_create-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+                    file_put_contents(public_path('log/sap/sap_customer_file_not_acceptable_create-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                     $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>'Format Or Empty Or Existing Issue']);
                     return response()->json([
                         'status' => 'error',
@@ -229,7 +229,7 @@ class CommonSapController extends Controller
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap/sap_customer_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents(public_path('log/sap/sap_customer_error-') . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>$exception->getMessage() . '-' . $exception->getLine()]);
             return response()->json([
                 'status' => 'error',
