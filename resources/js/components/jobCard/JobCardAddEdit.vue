@@ -409,23 +409,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4" v-if="ytdNoTag">
-                                                    <div class="form-group row">
-                                                        <label for="failureAnalysis" class="col-lg-3 col-form-label">
-                                                            Reason of Diagnose <span class="error">*</span> </label>
-                                                        <div class="col-lg-9">
-                                                            <multiselect v-model="reasonOfYDT" :options="ytdNoReason"
-                                                                         :multiple="false"
-                                                                         :close-on-select="true"
-                                                                         :clear-on-select="false"
-                                                                         :preserve-search="false"
-                                                                         placeholder="Reason Of Ytd"
-                                                                         label="Ytd_Stauts_Reason" track-by="Id">
-
-                                                            </multiselect>
-                                                        </div>
-                                                    </div>
-                                                </div>
 <!--                                                <div class="col-md-4">-->
 <!--                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"-->
 <!--                                                                        v-slot="{ errors }">-->

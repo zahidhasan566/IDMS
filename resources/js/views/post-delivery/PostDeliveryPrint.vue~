@@ -23,7 +23,7 @@
               <p>IFAD Tower</p>
               <p>Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208</p>
             </div>
-              <div class="col-md-4 headerRightLogo" style="text-align: end">
+              <div class="col-md-5 headerRightLogo" style="text-align: end">
                   <img :src="`${mainOrigin}assets/images/reLogo.png`" style="width:90px;height: 90px;"/>
               </div>
           </div>
