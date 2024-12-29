@@ -394,6 +394,7 @@ class JobCardController extends Controller
 
     public function storeSparePartsWork($request, $jobCardNo)
     {
+        dd("Dfdf");
         try {
             //Insert Parts table job card spare part Work
             if (!empty($request->partsFields)) {
