@@ -16,15 +16,15 @@
           </div>
           <div class="row">
             <div class="col-md-2">
-              <img :src="`${mainOrigin}assets/images/logo-svg.png`" style="width:90px;height: 90px;"/>
+              <img :src="`${mainOrigin}assets/images/logo-svg.png`" style="width:100%;height: 70px;"/>
             </div>
             <div class="col-md-4 head">
               <p style="font-weight: bold;font-size: 16px;">Ifad Motors Limited</p>
               <p>IFAD Tower</p>
               <p>Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208</p>
             </div>
-              <div class="col-md-5 headerRightLogo" style="text-align: end">
-                  <img :src="`${mainOrigin}assets/images/reLogo.png`" style="width:90px;height: 90px;"/>
+              <div class="offset-4 col-md-2 headerRightLogo" style="text-align: end">
+                  <img :src="`${mainOrigin}assets/images/reLogo.png`" style="width:50%;"/>
               </div>
           </div>
           <div class="row r-info">
@@ -66,7 +66,7 @@
               </div>
             </div>
           </div>
-          <div class="row signature">
+          <div class="row signature" style="margin-top: 150px">
             <div class="col-md-4">
               <p class="bold">Customer Signature</p>
               <div class="pad">
@@ -84,7 +84,7 @@
           </div>
             <div class="row support">
                 <div class="col-md-4">
-                    <p class="bold"> <i class="ti-support"></i> Customer Support : 16598</p>
+                    <p class="bold"> <i class="ti ti-mobile"></i> Customer Support : 16598</p>
 
                 </div>
                 <div class="offset-md-4 col-md-4">
