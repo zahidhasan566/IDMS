@@ -49,15 +49,15 @@ class CommonSapController extends Controller
                     //Check Already Exist Or Not
                     $checkExisting = Product::where('ProductCode', $singleProduct['ProductCode'])->first();
                     if (!empty($checkExisting->ProductCode)) {
-                        file_put_contents(public_path('log/sap/sap_product_file_already_exist-') . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+//                        file_put_contents(public_path('log/sap/sap_product_file_already_exist-') . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
                         $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>'Already Exist']);
                         $this->updateSapProduct($checkExisting,$singleProduct);
 
-//                        return response()->json([
-//                            'status' => 'error',
-//                            'message' => 'product Updated Successfully',
-//                            'ErrorProduct' => $singleProduct
-//                        ], 409);
+                        return response()->json([
+                            'status' => 'Success',
+                            'message' => 'Product Updated Successfully',
+                            'ProductCode' => $requestProducts[0]['ProductCode']
+                        ], 200);
                     } else {
                         $productCount += 1;
                         DB::beginTransaction();
@@ -137,14 +137,14 @@ class CommonSapController extends Controller
                     //Check Already Exist Or Not
                     $existCustomerCheck = Customer::where('CustomerCode', $singleCustomer['CustomerCode'])->first();
                     if ($existCustomerCheck) {
-                        file_put_contents(public_path('log/sap/sap_customer_file_already_exist-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+//                        file_put_contents(public_path('log/sap/sap_customer_file_already_exist-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                         $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>'Already Exist']);
                         $this->updateSapCustomer($existCustomerCheck,$singleCustomer);
-//                        return response()->json([
-//                            'status' => 'error',
-//                            'message' => 'Customer Already Exist',
-//                            'ErrorCustomer' => $singleCustomer
-//                        ], 409);
+                        return response()->json([
+                            'status' => 'Success',
+                            'message' => 'Customer Updated Successfully',
+                            'CustomerCode' => $requestCustomers[0]['CustomerCode']
+                        ], 200);
                     } else {
                         $customerCount += 1;
                         DB::beginTransaction();
