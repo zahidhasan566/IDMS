@@ -848,6 +848,7 @@ class JobCardController extends Controller
     {
         if (!empty($chassisNo)) {
             try {
+                dd("Dfdf");
                 $serviceHistory = DB::select("exec usp_doLoadServiceHistoriesNew '$chassisNo'");
                 $customerInfo = DB::select("exec usp_doLoadServiceCustomerInfo '$chassisNo'");
 

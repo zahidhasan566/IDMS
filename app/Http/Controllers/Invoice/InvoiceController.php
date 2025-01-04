@@ -141,8 +141,10 @@ class InvoiceController extends Controller
             $invoice->MotherName                = $request->MotherName;
             $invoice->MotherName                = $request->MotherName;
             $invoice->PreAddress                = $request->Address;
-            $invoice->PerAddress                = $request->Address;
+            $invoice->PerAddress                = !empty($request->PermanentAddress)?$request->PermanentAddress:$request->Address;
             $invoice->MobileNo                  = $request->Mobile;
+            $invoice->EmergencyMobile            = $request->EmergencyMobile;
+            $invoice->BloodGroup                = $request->bloodGroup;
             $invoice->EMail                     = isset($request->Email) ? $request->Email : '';
             $invoice->NID                       = $request->NID;
             $invoice->InquerySale               = isset($request->InquirySale) ? $request->InquirySale : 0;
@@ -178,8 +180,8 @@ class InvoiceController extends Controller
             $invoice->PreviousBikeCC            = $request->previousBikeCC;
             $invoice->PreviousBikeUsage         = $request->previousBikeUsage;
             $invoice->CauseForBuyingNewBike     = $causeForBuyingNewBike;
-            $invoice->REisKnown                = $request->REisKnown;
-            $invoice->REJoinYRC               = $request->wantJoinRE;
+//            $invoice->REisKnown                 = '';
+//            $invoice->REJoinYRC                 = '';
             $invoice->DistrictCode              = $request->DistrictCode;
             $invoice->UpazillaCode              = $request->ThanaCode;
             $invoice->SalesStaffName            = $request->SalesStaffName ? $request->SalesStaffName : '';
@@ -190,6 +192,7 @@ class InvoiceController extends Controller
             $invoice->AffiliatorDiscount        = 0;
             $invoice->isSync                    = '';
             $invoice->CSIResult                 = 0;
+
 
             if ($invoice->save()){
 
@@ -267,13 +270,6 @@ class InvoiceController extends Controller
                     }
                 }
 
-                //SEND MESSAGE
-                $encodedInfo        = base64_encode($invoice->InvoiceID . '.' . $request->Mobile . '.' . $VerifyCode . '.' . $invoice->InvoiceID);
-                $feedbackBaseUrl    = 'http://feedback.yamahabd.com/';
-                $feedbackLink       = $feedbackBaseUrl . '?i=' . $encodedInfo;
-                $smsText            = "Dear Customer: Thanks for buying from IFAD. You can give your valuable feedback through the link bellow." . "\n" . $feedbackLink;
-                $this->sendSms($request->Mobile, $smsText);
-
                 DB::commit();
                 return response()->json([
                     'status'    => 'success',
@@ -286,7 +282,7 @@ class InvoiceController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage() . '-' . $e->getLine()
             ],500);
         }
     }
@@ -441,17 +437,6 @@ class InvoiceController extends Controller
                 ]
             ]);
         }
-    }
-
-    function sendSms($receipient, $smstext='Sample Text') {
-        $ip = '192.168.100.213';
-        $userId = 'motors';
-        $password = 'Asdf1234';
-        $smstext = urlencode($smstext);
-        $smsUrl = "http://{$ip}/httpapi/sendsms?userId={$userId}&password={$password}&smsText=" . $smstext . "&commaSeperatedReceiverNumbers=" . $receipient;
-        $smsUrl = preg_replace("/ /", "%20", $smsUrl);
-        $response = file_get_contents($smsUrl);
-        return json_decode($response);
     }
 
     public function DBConnectionQuery($sql){

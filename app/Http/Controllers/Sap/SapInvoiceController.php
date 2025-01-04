@@ -109,7 +109,7 @@ class SapInvoiceController extends Controller
                 return response()->json([
                     'status' => 'Success',
                     'message' => 'Invoice Added Successfully',
-                    'InvoiceNo' => $customer->InvoiceNo
+                    'InvoiceNo' => $singleCustomer['InvoiceNo']
                 ], 200);
 
 

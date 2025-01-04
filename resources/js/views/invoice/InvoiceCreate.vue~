@@ -243,8 +243,8 @@
                                                                 <input name="permanentAddress" type="text"
                                                                        class="form-control"
                                                                        v-model="form.PermanentAddress"/>
-                                                                <div class="error" v-if="form.errors.has('PermanentAddress')"
-                                                                     v-html="form.errors.get('PermanentAddress')"/>
+                                                                <div class="error" v-if="form.errors.has('Address')"
+                                                                     v-html="form.errors.get('Address')"/>
                                                                 <span class="error-message"> {{ errors[0] }}</span>
                                                             </div>
                                                         </div>

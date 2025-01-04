@@ -285,31 +285,68 @@ export default {
       })
     },
 
-    searchProduct() {
-        axios.get(baseurl + 'api/orders/search-product'
-            , this.config()).then((response) => {
-          this.parts = response.data;
-        }).catch((error) => {
+    searchProduct(val) {
+      let productCode = val;
+      axios.get(baseurl + 'api/orders/search-product?ProductCode=' + productCode, this.config()).then((response) => {
+        this.parts = response.data;
+      }).catch((error) => {
 
-        })
-
-    },
-    setProduct(index) {
-      let productCode = this.form.products[index].ProductCode.ProductCode
-      this.form.products[index].ProductName = ''
-      this.form.products[index].Vat = 0
-      this.form.products[index].UnitPrice = 0
-      this.form.products[index].Quantity = 0
-      this.form.products[index].TotalPrice = 0
-      this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
-        this.form.products[index].ProductName = response.ProductName
-        this.form.products[index].Vat = parseInt(response.Vat)
-        this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
-        this.grandTotal();
-      },(error) => {
-        this.errorNoti(error);
       })
     },
+    setProduct(index) {
+      if (this.form.products[index].ProductCode !== null && this.form.products[index].ProductCode.ProductCode !== undefined) {
+        let productCode = this.form.products[index].ProductCode.ProductCode
+        this.form.products[index].ProductName = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].TotalPrice = 0
+        this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
+          this.form.products[index].ProductName = response.ProductName
+          this.form.products[index].Vat = parseInt(response.Vat)
+          this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+          this.grandTotal();
+        },(error) => {
+          this.errorNoti(error);
+        })
+        this.grandTotal();
+      }else {
+        this.form.products[index].ProductCode = ''
+        this.form.products[index].ProductName = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].TotalPrice = 0
+        this.grandTotal();
+      }
+
+    },
+
+    // searchProduct() {
+    //     axios.get(baseurl + 'api/orders/search-product'
+    //         , this.config()).then((response) => {
+    //       this.parts = response.data;
+    //     }).catch((error) => {
+    //
+    //     })
+    //
+    // },
+    // setProduct(index) {
+    //   let productCode = this.form.products[index].ProductCode.ProductCode
+    //   this.form.products[index].ProductName = ''
+    //   this.form.products[index].Vat = 0
+    //   this.form.products[index].UnitPrice = 0
+    //   this.form.products[index].Quantity = 0
+    //   this.form.products[index].TotalPrice = 0
+    //   this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
+    //     this.form.products[index].ProductName = response.ProductName
+    //     this.form.products[index].Vat = parseInt(response.Vat)
+    //     this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+    //     this.grandTotal();
+    //   },(error) => {
+    //     this.errorNoti(error);
+    //   })
+    // },
     changeProductPrice(e,index) {
       let qty =  e.target.value;
       this.form.products[index].TotalPrice = (parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat)) * qty

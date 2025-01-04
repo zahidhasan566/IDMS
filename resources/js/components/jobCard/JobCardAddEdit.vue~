@@ -426,25 +426,25 @@
                                                         </div>
                                                     </div>
                                                 </div>
-<!--                                                <div class="col-md-4">-->
-<!--                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"-->
-<!--                                                                        v-slot="{ errors }">-->
-<!--                                                        <div class="form-group row">-->
-<!--                                                            <label for="fiStatus" class="col-lg-3 col-form-label">FI-->
-<!--                                                                Status-->
-<!--                                                                <span class="error">*</span></label>-->
-<!--                                                            <div class="col-lg-9">-->
-<!--                                                                <select class="form-control" name="ytdStatus"-->
-<!--                                                                        @change="setFiNoReason($event)"-->
-<!--                                                                        v-model="fiStatus">-->
-<!--                                                                    <option value="Y">Yes</option>-->
-<!--                                                                    <option value="N">No</option>-->
-<!--                                                                </select>-->
-<!--                                                                <span class="error-message"> {{ errors[0] }}</span>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                    </ValidationProvider>-->
-<!--                                                </div>-->
+                                                <div class="col-md-4">
+                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"
+                                                                        v-slot="{ errors }">
+                                                        <div class="form-group row">
+                                                            <label for="fiStatus" class="col-lg-3 col-form-label">FI
+                                                                Status
+                                                                <span class="error">*</span></label>
+                                                            <div class="col-lg-9">
+                                                                <select class="form-control" name="ytdStatus"
+                                                                        @change="setFiNoReason($event)"
+                                                                        v-model="fiStatus">
+                                                                    <option value="Y">Yes</option>
+                                                                    <option value="N">No</option>
+                                                                </select>
+                                                                <span class="error-message"> {{ errors[0] }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </ValidationProvider>
+                                                </div>
                                             </div>
                                             <div class="row" v-if="fiNoTag">
                                                 <div class="col-md-6">
@@ -818,6 +818,25 @@
                                                         </tr>
                                                         </tbody>
                                                     </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h3 id="form-horizontal-h-3" class="title">Reference</h3>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label class="col-lg-3 col-form-label">Local Mechanics</label>
+                                                    <div class="col-lg-9">
+                                                        <multiselect v-model="reference" :options="allReference"
+                                                                     :multiple="false"
+                                                                     :close-on-select="true"
+                                                                     :clear-on-select="false"
+                                                                     :preserve-search="false"
+                                                                     placeholder="Local Mechanics"
+                                                                     label="MechanicsDetails" track-by="MechanicsCode">
+
+                                                        </multiselect>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

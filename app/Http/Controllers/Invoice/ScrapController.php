@@ -251,9 +251,8 @@ class ScrapController extends Controller
 
     public function approveScrapProducts(Request $request){
         $selectedItems = $request->selectedItems;
-
+        DB::beginTransaction();
         try{
-            DB::beginTransaction();
             foreach ($selectedItems as $item) {
                 ReturnScrappedProducts::where('ScrapID', $item['ScrapID'])->update([
                     'ApproveQnty' => $item['approveQty'],

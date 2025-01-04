@@ -323,33 +323,47 @@ export default {
       }
     },
     setProduct(index) {
-      let productCode = this.form.products[index].ProductCode.ProductCode
-      this.form.products[index].ProductName = ''
-      this.form.products[index].PartNo = ''
-      this.form.products[index].Vat = 0
-      this.form.products[index].UnitPrice = 0
-      this.form.products[index].Quantity = 0
-      this.form.products[index].CurrentStock = 0
-      this.form.products[index].TotalPrice = 0
-      this.axiosGet('orders/get-parts-by-product-code?ProductCode=' + productCode,(response) => {
-        this.form.products[index].ProductCode = productCode
-        this.form.products[index].ProductName = response.ProductName
-        this.form.products[index].PartNo = response.PartNo
-        this.form.products[index].Vat = parseFloat(response.Vat)
-        this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
-        this.form.products[index].CurrentStock = parseInt(response.CurrentStock)
-      },(error) => {
-        this.errorNoti(error);
-      })
 
+      if (this.form.products[index].ProductCode !== null && this.form.products[index].ProductCode.ProductCode !== undefined) {
+        let productCode = this.form.products[index].ProductCode.ProductCode
+        this.form.products[index].ProductName = ''
+        this.form.products[index].PartNo = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].CurrentStock = 0
+        this.form.products[index].TotalPrice = 0
+        this.axiosGet('orders/get-parts-by-product-code?ProductCode=' + productCode, (response) => {
+          this.form.products[index].ProductCode = productCode
+          this.form.products[index].ProductName = response.ProductName
+          this.form.products[index].PartNo = response.PartNo
+          this.form.products[index].Vat = parseFloat(response.Vat)
+          this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+          this.form.products[index].CurrentStock = parseInt(response.CurrentStock)
+        }, (error) => {
+          this.errorNoti(error);
+        })
+        this.grandTotal();
+      } else {
+        this.form.products[index].ProductCode = ''
+        this.form.products[index].ProductName = ''
+        this.form.products[index].PartNo = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].CurrentStock = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].TotalPrice = 0
+        this.grandTotal();
+      }
     },
-    changeProductPrice(e,index) {
-      let qty =  e.target.value;
-      this.form.products[index].TotalPrice = (parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat)) * qty
+    changeProductPrice(e, index) {
+      let qty = e.target.value;
+      let sum = parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat) * qty
+      this.form.products[index].TotalPrice = parseInt(sum)
       this.form.products[index].parts = [];
     },
     calculate(i) {
-      this.form.products[i].TotalPrice = (Number(this.form.products[i].UnitPrice) + Number(this.form.products[i].Vat)) * Number(this.form.products[i].Quantity)
+      this.form.products[i].TotalPrice = parseFloat((Number(this.form.products[i].UnitPrice) + Number(this.form.products[i].Vat)) * Number(this.form.products[i].Quantity)).toFixed(2)
       this.grandTotal()
     },
     grandTotal() {
@@ -357,10 +371,10 @@ export default {
       this.GrossTotalPrice = 0
       if (this.form.products.length > 0) {
         this.form.products.forEach((item) => {
-          grandTotal += (parseFloat(item.UnitPrice) + parseFloat(item.Vat) ) * item.Quantity
+          grandTotal += (parseFloat(item.UnitPrice) + parseFloat(item.Vat)) * item.Quantity
         })
 
-        this.GrossTotalPrice =parseInt(grandTotal)
+        this.GrossTotalPrice = parseInt(grandTotal)
       }
       // console.log(parseFloat(this.GrossTotalPrice))
     },
