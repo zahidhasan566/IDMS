@@ -307,7 +307,7 @@
                 <p style="margin: 0">BRTA</p>
                 <p>Sub: Regarding new Motor cycle Registration</p>
                 <p style="margin: 0">Sir, We hereby declare that the under mentioned {{invoice.productname}} {{invoice.cubiccapacity}}, CC model Royel Enfield Motorcycle
-                  is imported by Ifad Motors Ltd. Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208. The motorcycle has been sold to Name - {{invoice.customername}},
+                  is imported by IFAD Motors Ltd. Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208. The motorcycle has been sold to Name - {{invoice.customername}},
                   Father Name - {{invoice.fathername}}, Address - {{invoice.preaddress}} through our registered dealer {{invoice.CustomerName}}. We request you to register this motorcycle against our commercial invoice no. {{invoice.invoiceno}}. The
                   information about this vehicle is mentioned below :</p>
                 <br>
