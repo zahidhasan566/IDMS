@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
     protected $table = "Customer";
     public $timestamps = false;
-    public $primaryKey = false;
+    public $primaryKey = 'CustomerCode';
     public $incrementing = false;
     protected $keyType = "string";
     protected $guarded = [];

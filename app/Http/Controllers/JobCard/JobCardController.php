@@ -276,7 +276,7 @@ class JobCardController extends Controller
             'jobType' => 'required',
             'ServiceNo' => 'required',
             'ytdStatus' => 'required',
-            'fiStatus' => 'required',
+//            'fiStatus' => 'required',
             'timeReqMin' => 'required'
         ]);
         if ($validator->fails()) {
@@ -337,9 +337,9 @@ class JobCardController extends Controller
             $tblJobCard->IDate = Carbon::now();
             $tblJobCard->YTD_status = $request->ytdStatus;
 
-            $tblJobCard->YTD_status_no_reason = $request->ytdStatus === 'N' ? $request->reasonOfYDT['Id'] : null;
-            $tblJobCard->FI_Status = $request->fiStatus;
-            $tblJobCard->FI_status_no_reason = $request->fiStatus === 'N' ? $request->reasonOfFI['Id'] : null;
+            $tblJobCard->YTD_status_no_reason = $request->ytdStatus;
+            $tblJobCard->FI_Status = '';
+            $tblJobCard->FI_status_no_reason = '';
             $tblJobCard->Signature = null;
             if ($request->ydTFile) {
                 $tblJobCard->YTD_File = FileBase64Service::fileUpload($request->ydTFile, 'jobCardYdt', public_path('uploads/JobCardYdt/'));
@@ -347,6 +347,7 @@ class JobCardController extends Controller
             $tblJobCard->SignatureBefore = null;
             $tblJobCard->SignatureAfter = null;
             $tblJobCard->SignatureSupervisor = null;
+
             $tblJobCard->save();
             //Job Type
             if ($request->jobType['Id'] === '2') {
@@ -551,7 +552,7 @@ class JobCardController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Something went wrong!' . $exception->getMessage()
+                'message' => 'Something went wrong!' . $exception->getMessage() . 'Line No: ' . $exception->getLine()
             ], 500);
         }
     }
@@ -617,8 +618,6 @@ class JobCardController extends Controller
             'jobStatus' => 'required',
             'jobType' => 'required',
             'ServiceNo' => 'required',
-            'ytdStatus' => 'required',
-            'fiStatus' => 'required',
             'timeReqMin' => 'required'
         ]);
         if ($validator->fails()) {
@@ -630,14 +629,12 @@ class JobCardController extends Controller
 
             //Update JobCard
             $userId = Auth::user()->UserId;
-            $defaultBay = '';
 
             if (isset($request->jobStatus['StatusCode'])) {
                 $jobStatus = $request->jobStatus['StatusCode'];
             } else {
                 $jobStatus = $request->jobStatus[0]['StatusCode'];
             }
-
             //For Ydt File
             $jobFile = TblJobCard::where('JobCardNo', $request->jobCardNo)->first();
 
@@ -681,12 +678,13 @@ class JobCardController extends Controller
                 'LocalMechanicsCode' => !empty($request->reference['MechanicsCode']) ? $request->reference['MechanicsCode'] : '',
                 'IUser' => $userId,
                 'IDate' => Carbon::now(),
-                'YTD_File' => $request->ydTFile ? FileBase64Service::fileUpload($request->ydTFile, 'jobCardYdt', public_path('uploads/JobCardYdt/')) : $jobFile->YTD_File,
-                'YTD_status' => $request->ytdStatus,
-                'FI_Status' => $request->fiStatus,
+//                'YTD_File' => $request->ydTFile ? FileBase64Service::fileUpload($request->ydTFile, 'jobCardYdt', public_path('uploads/JobCardYdt/')) : $jobFile->YTD_File,
+//                'YTD_status' => $request->ytdStatus,
+                'FI_Status' => '',
                 'YTD_status_no_reason' => $request->ytdStatus === 'N' ? $request->reasonOfYDT['Id'] : null,
                 'FI_status_no_reason' => $request->fiStatus === 'N' ? $request->reasonOfFI['Id'] : null,
             ]);
+
 
             //Job Type
             if ($request->jobType['Id'] === '2') {

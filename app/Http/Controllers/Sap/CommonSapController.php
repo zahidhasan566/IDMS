@@ -49,13 +49,15 @@ class CommonSapController extends Controller
                     //Check Already Exist Or Not
                     $checkExisting = Product::where('ProductCode', $singleProduct['ProductCode'])->first();
                     if (!empty($checkExisting->ProductCode)) {
-                        file_put_contents('public/log/sap/sap_product_file_already_exist-' . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+//                        file_put_contents(public_path('log/sap/sap_product_file_already_exist-') . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
                         $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>'Already Exist']);
+                        $this->updateSapProduct($checkExisting,$singleProduct);
+
                         return response()->json([
-                            'status' => 'error',
-                            'message' => 'Already Exist',
-                            'ErrorProduct' => $singleProduct
-                        ], 409);
+                            'status' => 'Success',
+                            'message' => 'Product Updated Successfully',
+                            'ProductCode' => $requestProducts[0]['ProductCode']
+                        ], 200);
                     } else {
                         $productCount += 1;
                         DB::beginTransaction();
@@ -85,14 +87,14 @@ class CommonSapController extends Controller
                         $product->InspMemo = $singleProduct['InspMemo'];
                         $product->IndStdDesc = $singleProduct['IndStdDesc'];
                         $product->Business = $singleProduct['Business'];
-                        $product->Active = $singleProduct['Active'];
+                        $product->Active = 'Y';
                         $product->MaterialType = $singleProduct['MaterialType'];
                         $product->save();
                         DB::commit();
                     }
                 } else {
                     DB::rollBack();
-                    file_put_contents('public/log/sap/sap_product_file_not_acceptable_create-' . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
+                    file_put_contents(public_path('log/sap/sap_product_file_not_acceptable_create-') . $dt . '.txt', json_encode($singleProduct) . "\n", FILE_APPEND);
                     //SAP USER  LOG
                     $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>'Format Or Empty Or Existing Issue']);
 
@@ -109,11 +111,11 @@ class CommonSapController extends Controller
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Product Added Successfully',
-                'ProductCount' => $productCount
+                'ProductCode' => $requestProducts[0]['ProductCode']
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap/sap_product_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents(public_path('log/sap/sap_product_error-') . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Product', 'Status' => 'Failed','Reason'=>$exception->getMessage() . '-' . $exception->getLine()]);
             return response()->json([
                 'status' => 'error',
@@ -130,19 +132,19 @@ class CommonSapController extends Controller
             $customerCount = 0;
 
             foreach ($requestCustomers as $singleCustomer) {
-                if (!empty($singleCustomer['CustomerCode']) && !empty($singleCustomer['CustomerName']) && !empty($singleCustomer['DistrictName']) &&
-                    !empty($singleCustomer['Add1']) && !empty($singleCustomer['Email'])
+                if (!empty($singleCustomer['CustomerCode']) && !empty($singleCustomer['CustomerName'])  && !empty($singleCustomer['Email'])
                     && !empty($singleCustomer['Mobile'])) {
                     //Check Already Exist Or Not
-                    $existCustomerCheck = Customer::query()->where('CustomerCode', $singleCustomer['CustomerCode'])->exists();
+                    $existCustomerCheck = Customer::where('CustomerCode', $singleCustomer['CustomerCode'])->first();
                     if ($existCustomerCheck) {
-                        file_put_contents('public/log/sap/sap_customer_file_already_exist-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+//                        file_put_contents(public_path('log/sap/sap_customer_file_already_exist-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                         $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>'Already Exist']);
+                        $this->updateSapCustomer($existCustomerCheck,$singleCustomer);
                         return response()->json([
-                            'status' => 'error',
-                            'message' => 'Customer Already Exist',
-                            'ErrorCustomer' => $singleCustomer
-                        ], 409);
+                            'status' => 'Success',
+                            'message' => 'Customer Updated Successfully',
+                            'CustomerCode' => $requestCustomers[0]['CustomerCode']
+                        ], 200);
                     } else {
                         $customerCount += 1;
                         DB::beginTransaction();
@@ -196,7 +198,7 @@ class CommonSapController extends Controller
                         $customer->CreateDate = '';
                         $customer->EditDate = '';
                         $customer->DiscountStatus = '';
-                        $customer->Active = $singleCustomer['Active'];
+                        $customer->Active = 'Y';
                         $customer->Fifo = 'Y';
                         $customer->Message = '';
                         $customer->Category = '';
@@ -212,7 +214,7 @@ class CommonSapController extends Controller
                     }
                 } else {
                     DB::rollBack();
-                    file_put_contents('public/log/sap/sap_customer_file_not_acceptable_create-' . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
+                    file_put_contents(public_path('log/sap/sap_customer_file_not_acceptable_create-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
                     $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>'Format Or Empty Or Existing Issue']);
                     return response()->json([
                         'status' => 'error',
@@ -225,16 +227,108 @@ class CommonSapController extends Controller
             return response()->json([
                 'status' => 'Success',
                 'message' => 'Customer Added Successfully',
-                'CustomerCount' => $customerCount
+                'CustomerCode' => $requestCustomers[0]['CustomerCode']
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            file_put_contents('public/log/sap/sap_customer_error-' . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
+            file_put_contents(public_path('log/sap/sap_customer_error-') . $dt . '.txt', $exception->getMessage() . '-' . $exception->getLine() . "\n", FILE_APPEND);
             $sapUserLog = SapUserLog::where('Id', $this->id)->update(['ApiType' => 'Customer', 'Status' => 'Failed','Reason'=>$exception->getMessage() . '-' . $exception->getLine()]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!' . $exception->getMessage() . '-' . $exception->getLine()
             ], 500);
         }
+    }
+
+    public function updateSapProduct($checkExisting,$singleProduct){
+
+        $checkExisting->ProductName = $singleProduct['ProductName'];
+        $checkExisting->PackSize = $singleProduct['PackSize'];
+        $checkExisting->Brand = $singleProduct['Brand'];
+        $checkExisting->UnitPrice = $singleProduct['UnitPrice'];
+        $checkExisting->VAT = $singleProduct['VAT'];
+        $checkExisting->MRP = $singleProduct['MRP'];
+        $checkExisting->SalesUnit = $singleProduct['SalesUnit'];
+        $checkExisting->MaterialGroup = $singleProduct['MaterialGroup'];
+        $checkExisting->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
+        $checkExisting->MaterialGroupThree = $singleProduct['MaterialGroupThree'];
+        $checkExisting->MaterialGroupFour = $singleProduct['MaterialGroupFour'];
+        $checkExisting->MaterialGroupFive = $singleProduct['MaterialGroupFive'];
+        $checkExisting->OldMaterialNumber = $singleProduct['OldMaterialNumber'];
+        $checkExisting->Division = $singleProduct['Division'];
+        $checkExisting->GrossWeight = $singleProduct['GrossWeight'];
+        $checkExisting->NetWeight = $singleProduct['NetWeight'];
+        $checkExisting->VolumeUnit = $singleProduct['VolumeUnit'];
+        $checkExisting->Size = $singleProduct['Size'];
+        $checkExisting->EAN = $singleProduct['EAN'];
+        $checkExisting->InspMemo = $singleProduct['InspMemo'];
+        $checkExisting->IndStdDesc = $singleProduct['IndStdDesc'];
+        $checkExisting->Business = $singleProduct['Business'];
+        $checkExisting->Active = 'Y';
+        $checkExisting->MaterialType = $singleProduct['MaterialType'];
+        $checkExisting->save();
+    }
+
+    public function updateSapCustomer($existCustomerCheck,$singleCustomer){
+    
+        $existCustomerCheck->Title = $singleCustomer['Title'];
+        $existCustomerCheck->CustomerCode = $singleCustomer['CustomerCode'];
+        $existCustomerCheck->CustomerName = $singleCustomer['CustomerName'];
+        $existCustomerCheck->CustomerNameTwo = $singleCustomer['CustomerNameTwo'];
+        $existCustomerCheck->CustomerNameThree = $singleCustomer['CustomerNameThree'];
+        $existCustomerCheck->CustomerNameFour = $singleCustomer['CustomerNameFour'];
+        $existCustomerCheck->SearchTermOne = $singleCustomer['SearchTermOne'];
+        $existCustomerCheck->SearchTermTwo = $singleCustomer['SearchTermTwo'];
+
+
+        $existCustomerCheck->Gender = $singleCustomer['Gender'];
+        $existCustomerCheck->Add1 = $singleCustomer['Add1'];
+        $existCustomerCheck->Add2 = $singleCustomer['Add2'];
+        $existCustomerCheck->Add3 = $singleCustomer['Add3'];
+        $existCustomerCheck->Add4 = $singleCustomer['Add4'];
+        $existCustomerCheck->Add5 = $singleCustomer['Add5'];
+        $existCustomerCheck->Add6 = $singleCustomer['Add6'];
+        $existCustomerCheck->DistrictCode = $singleCustomer['DistrictCode'];
+        $existCustomerCheck->DistrictName = $singleCustomer['DistrictName'];
+
+        $existCustomerCheck->PostalCode = $singleCustomer['PostalCode'];
+        $existCustomerCheck->Country = $singleCustomer['Country'];
+        $existCustomerCheck->CountryName = $singleCustomer['CountryName'];
+        $existCustomerCheck->Region = $singleCustomer['Region'];
+        $existCustomerCheck->TimeZone = $singleCustomer['TimeZone'];
+
+        $existCustomerCheck->ThanaCode = $singleCustomer['Thana'];
+        $existCustomerCheck->Email = $singleCustomer['Email'];
+        $existCustomerCheck->ContactPerson = $singleCustomer['ContactPerson'];
+        $existCustomerCheck->Phone = '';
+        $existCustomerCheck->Mobile = $singleCustomer['Mobile'];
+        $existCustomerCheck->ThanaCode = $singleCustomer['Thana'];
+        $existCustomerCheck->NID = $singleCustomer['NID'];
+        $existCustomerCheck->Business = '';
+        $existCustomerCheck->DepotCode = '';
+        $existCustomerCheck->CustomerType = '';
+        $existCustomerCheck->PaymentMode = '';
+        $existCustomerCheck->CreditDays = '';
+        $existCustomerCheck->CreditLimit = '';
+        $existCustomerCheck->Metro = '';
+        $existCustomerCheck->RouteCode = '';
+        $existCustomerCheck->TTYCode = '';
+        $existCustomerCheck->UnionCode = '';
+        $existCustomerCheck->HatBazarCode = '';
+        $existCustomerCheck->CreateDate = '';
+        $existCustomerCheck->EditDate = '';
+        $existCustomerCheck->DiscountStatus = '';
+        $existCustomerCheck->Active = 'Y';
+        $existCustomerCheck->Fifo = 'Y';
+        $existCustomerCheck->Message = '';
+        $existCustomerCheck->Category = '';
+        $existCustomerCheck->RegistrationName = '';
+        $existCustomerCheck->RegistrationAdd1 = '';
+        $existCustomerCheck->RegistrationAdd2 = '';
+        $existCustomerCheck->FathersName = '';
+        $existCustomerCheck->DOB = '';
+        $existCustomerCheck->OwnerType = '';
+        $existCustomerCheck->SubBusinessCode = '';
+        $existCustomerCheck->save();
     }
 }

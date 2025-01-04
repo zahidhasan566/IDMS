@@ -409,6 +409,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
+<<<<<<< HEAD
                                                 <div class="col-md-4" v-if="ytdNoTag">
                                                     <div class="form-group row">
                                                         <label for="failureAnalysis" class="col-lg-3 col-form-label">
@@ -426,6 +427,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
+=======
+>>>>>>> 4ddd6a18cd87f9ba645e2cb44db0c2664c5d3344
 <!--                                                <div class="col-md-4">-->
 <!--                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"-->
 <!--                                                                        v-slot="{ errors }">-->

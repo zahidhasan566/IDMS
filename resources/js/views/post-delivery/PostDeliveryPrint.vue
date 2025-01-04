@@ -4,20 +4,28 @@
     <div class="card">
       <div class="card-body">
         <div id="printDiv">
+            <div class="row" style="text-align: center;">
+                <div class="col-md-12">
+                    <p style="font-weight: bold;font-size: 25px;">Post Delivery Checklist</p>
+                </div>
+            </div>
           <div class="row" style="text-align: center;">
             <div class="col-md-12">
               <p style="font-weight: bold;font-size: 20px;">Delivery Checklist</p>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-1">
-              <img :src="`${mainOrigin}assets/images/reLogo.png`" style="width:90px;height: 90px;"/>
+            <div class="col-md-2">
+              <img :src="`${mainOrigin}assets/images/logo-svg.png`" style="width:100%;height: 70px;"/>
             </div>
             <div class="col-md-4 head">
               <p style="font-weight: bold;font-size: 16px;">Ifad Motors Limited</p>
               <p>IFAD Tower</p>
               <p>Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208</p>
             </div>
+              <div class="offset-4 col-md-2 headerRightLogo" style="text-align: end">
+                  <img :src="`${mainOrigin}assets/images/reLogo.png`" style="width:50%;"/>
+              </div>
           </div>
           <div class="row r-info">
             <div class="col-md-2">
@@ -58,7 +66,7 @@
               </div>
             </div>
           </div>
-          <div class="row signature">
+          <div class="row signature" style="margin-top: 250px">
             <div class="col-md-4">
               <p class="bold">Customer Signature</p>
               <div class="pad">
@@ -74,6 +82,15 @@
               </div>
             </div>
           </div>
+            <div class="row support">
+                <div class="col-md-4">
+                    <p class="bold"> <i class="ti ti-mobile"></i> Customer Support : 16598</p>
+
+                </div>
+                <div class="offset-md-4 col-md-4">
+                    <p class="bold"> <i class="mdi mdi-fuel"></i>Use OCTANE Only</p>
+                </div>
+            </div>
         </div>
       </div>
     </div>
@@ -130,6 +147,9 @@ export default {
 .head p {
   margin: 0;
 }
+.headerRightLogo{
+    padding: 10px 0 0 30px;
+}
 .r-info {
   margin: 40px 0;
 }
@@ -158,6 +178,15 @@ export default {
 }
 .signature .pad {
   padding: 10px 0;
+}
+.support {
+    margin-top: 50px;
+}
+.support p {
+    margin: 0;
+}
+.support .pad {
+    padding: 10px 0;
 }
 .col-md-1 {
   flex: 0 0 8.333333%;
