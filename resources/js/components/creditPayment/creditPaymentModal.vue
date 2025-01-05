@@ -86,7 +86,7 @@
                   <div class="col-12 col-md-4" >
                     <ValidationProvider name="chequeNo" mode="eager" v-slot="{ errors }">
                       <div class="form-group">
-                        <label for="Cheque">Cheque No<span class="error">*</span></label>
+                        <label for="Cheque">Cheque No/Transection No<span class="error">*</span></label>
                         <input type="text" class="form-control"
                                id="chequeNo"
                                :required="false"
