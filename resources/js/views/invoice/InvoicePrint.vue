@@ -10,8 +10,8 @@
           <div class="row">
             <div class="col-md-12">
                 <div style="display: flex">
-                    <div class="col-md-6"> <img :src="`${baseUrl+'public/assets/images/reLogo.png'}`" style="height: auto;width: 100px"></div>
-                    <div class="col-md-6" style="text-align: end;"> <img :src="`${baseUrl+'public/assets/images/logo-svg.png'}`" style="height: auto;width: 100px"></div>
+                    <div class="col-md-6"> <img :src="`${baseUrl+'assets/images/reLogo.png'}`" style="height: auto;width: 100px"></div>
+                    <div class="col-md-6" style="text-align: end;"> <img :src="`${baseUrl+'assets/images/logo-svg.png'}`" style="height: auto;width: 100px"></div>
                 </div>
               <div class="first" style="margin-top: 200px">
                 <p style="text-align: center;font-weight: bold;border:1px solid;width: 400px; margin: 0 auto;border-radius: 15px;font-size: 22px">Money Receipt</p>
