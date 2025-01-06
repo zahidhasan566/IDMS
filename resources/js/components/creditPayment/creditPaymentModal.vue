@@ -100,7 +100,7 @@
                     <ValidationProvider name="Cheque Date" rules="required"
                                         mode="eager" v-slot="{ errors }">
                       <label for="chequeDate">Deposited / Cheque Date <span class="error">*</span></label>
-                      <input type="date" class="form-control"  data-required="true" v-model="chequeDate" name="toDate">
+                      <input type="date" class="form-control" :max="maxDate"  data-required="true" v-model="chequeDate" name="toDate">
                       <span class="error-message"> {{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -197,6 +197,7 @@ export default {
       buttonShow: false,
       selected: false,
       requiredStatus: true,
+      maxDate: this.getTodayDate(), // Max date for input
 
       errors: [],
     }
@@ -234,6 +235,13 @@ export default {
         this.requiredStatus = true
       }
     },
+      getTodayDate() {
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+      },
     getCustomer() {
       let instance = this;
       this.axiosGet('payment/get-customer-list', function (response) {

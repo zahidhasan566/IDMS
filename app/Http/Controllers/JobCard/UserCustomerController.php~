@@ -46,7 +46,7 @@ class UserCustomerController extends Controller
                 $q->Orwhere('c.CustomerCode', 'like', '%' . $search . '%');
             });
         if ($roleId !== 'admin') {
-            $user->where('u.CustomerCode', $userId);
+            $user->where('CustomerCode', $userId);
         }
         if ($request->type === 'export') {
             return response()->json([

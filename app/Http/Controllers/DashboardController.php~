@@ -29,7 +29,7 @@ class DashboardController extends Controller
         $search = $request->search;
         $userId = Auth::user()->UserId;
         $sp = "EXEC sp_receive_products '$userId','$take','$offset'";
-
+        
         return $this->doLoadMyReceivable($sp, $take, $offset);
     }
 

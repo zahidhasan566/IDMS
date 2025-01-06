@@ -87,6 +87,7 @@ trait DashboardTrait
 
     public function doLoadPendingOrders($roleId,$userId){
         $sql = "exec SP_OrderMasterPendingList '$roleId','$userId'";
+        dd($sql);
         $list = DB::select($sql);
         return $list;
 

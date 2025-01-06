@@ -137,7 +137,7 @@
                         <input type="number" id="qty"
                                placeholder="Qty"
                                v-model="product.Quantity"
-                               @input="calculate(i)" min="1" step="1">
+                               @keyup="calculate(i)" min="1" step="1">
 
                     </td>
                     <td>

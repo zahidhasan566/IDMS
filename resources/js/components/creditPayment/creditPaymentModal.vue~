@@ -86,7 +86,7 @@
                   <div class="col-12 col-md-4" >
                     <ValidationProvider name="chequeNo" mode="eager" v-slot="{ errors }">
                       <div class="form-group">
-                        <label for="Cheque">Cheque No<span class="error">*</span></label>
+                        <label for="Cheque">Cheque No/Transection No<span class="error">*</span></label>
                         <input type="text" class="form-control"
                                id="chequeNo"
                                :required="false"
@@ -197,6 +197,7 @@ export default {
       buttonShow: false,
       selected: false,
       requiredStatus: true,
+      maxDate: this.getTodayDate(), // Max date for input
 
       errors: [],
     }
@@ -234,6 +235,13 @@ export default {
         this.requiredStatus = true
       }
     },
+      getTodayDate() {
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+      },
     getCustomer() {
       let instance = this;
       this.axiosGet('payment/get-customer-list', function (response) {

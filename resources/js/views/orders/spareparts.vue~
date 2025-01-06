@@ -162,7 +162,7 @@
                                    placeholder="Qty" type="number"
                                    v-model="product.Quantity"
                                    @keydown.enter="nextRow(i)"
-                                   @input="calculate(i)"  min="1">
+                                   @keyup="calculate(i)"  min="1">
 
                           </td>
                           <td>
