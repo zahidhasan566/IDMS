@@ -117,7 +117,7 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!',
-                'error' => $exception->getMessage()
+                'error' => $exception->getMessage() . '-' . $exception->getLine()
             ],500);
         }
     }

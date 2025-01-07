@@ -215,6 +215,7 @@ class CommonSapController extends Controller
                         DB::commit();
 
                         $customerCode= $singleCustomer['CustomerCode'];
+
                         $user = new User();
                         $user->UserId = $singleCustomer['CustomerCode'];
                         $user->UserName = $singleCustomer['CustomerName'];

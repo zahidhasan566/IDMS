@@ -46,7 +46,7 @@ export default {
         source: 'dashboard/receivables',
         search: true,
         slots: [0,1, 2, 3, 4, 5, 6, 7],
-        hideColumn: ['IsReceiveSurvey','CountData'],
+        hideColumn: ['IsReceiveSurvey'],
         slotsName: ['invoiceNo','invoiceDate', 'deliveryDate', 'orderDate', 'discount', 'total', 'action', 'survey'],
         sortable: [],
         pages: [20, 50, 100],

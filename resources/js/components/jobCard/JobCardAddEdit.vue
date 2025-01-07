@@ -387,7 +387,6 @@
                                                             <div class="col-lg-9">
                                                                 <select class="form-control" name="ytdStatus"
                                                                         data-index="12"
-                                                                        @change="setYdtNoReason($event)"
                                                                         v-model="ytdStatus">
                                                                     <option value="Y">Yes</option>
                                                                     <option value="N">No</option>

@@ -109,6 +109,8 @@ class DealerReceiveInvoice
 
     private function insertIntoDealerReceiveInvoiceDetails($receiveInvoiceMaster, $row, $quantity)
     {
+
+        dd("red");
         try {
             $importYear = DB::table('Receive','r')->join('ReceiveDetails as rd',function($q) {
                 $q->on('r.ReceiveNo','rd.ReceiveNo');
