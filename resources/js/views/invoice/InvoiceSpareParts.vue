@@ -100,7 +100,7 @@
                       <div class="col-12">
                         <ValidationProvider name="Spare Parts" mode="eager" rules="required" v-slot="{ errors }">
                           <div class="form-group">
-                            <label for="customerName">Spare Parts<span style="color: red">*</span></label>
+                            <label for="customerName">Spare Parts<span style="color: red">* (provide at least 3 character)</span></label>
                             <v-select :filterable="false" :options="spareparts" label="title" v-model="form.sparePart"
                                       @search="filterSpareParts" @input="selectSpareParts"></v-select>
                             <div class="error" v-if="form.errors.has('spareParts')"
