@@ -16,23 +16,17 @@
       <template slot="discount" slot-scope="row">
         <span>{{ Number(row.item.Discount) }}</span>
       </template>
-      <template slot="total" slot-scope="row">
-        <span>{{ numberWithCommas(row.item.Total) }}</span>
-      </template>
+<!--      <template slot="total" slot-scope="row">-->
+<!--        <span>{{ numberWithCommas(row.item.Total) }}</span>-->
+<!--      </template>-->
       <template slot="action" slot-scope="row">
-        <span
-            v-if="(row.item.IsReceiveSurvey === 'Y' && row.item.InvoiceNo.includes('HC')) || row.item.InvoiceNo.includes('HP')">
-            <a href="javascript:" @click="doReceive(row.item.InvoiceNo)"><i class="ti-check"></i></a>
-        </span>
-        <span v-else>
-          <p>Complete Survey</p>
-        </span>
+          <a href="javascript:" @click="doReceive(row.item.InvoiceNo)"><i class="ti-check"></i></a>
       </template>
-      <template slot="survey" slot-scope="row">
-        <span v-if="row.item.IsReceiveSurvey === 'N' && row.item.InvoiceNo.includes('HC')">
-            <a href="javascript:" @click="doSurvey(row.item.InvoiceNo)"><i class="ti-support"></i></a>
-        </span>
-      </template>
+<!--      <template slot="survey" slot-scope="row">-->
+<!--        <span v-if="row.item.IsReceiveSurvey === 'N' && row.item.InvoiceNo.includes('HC')">-->
+<!--            <a href="javascript:" @click="doSurvey(row.item.InvoiceNo)"><i class="ti-support"></i></a>-->
+<!--        </span>-->
+<!--      </template>-->
     </general-datatable>
     <add-survey-modal @changeStatus="changeStatus" v-if="loading"/>
     <receive-details-modal @changeStatus="changeStatus" v-if="loading"/>
@@ -52,11 +46,11 @@ export default {
         source: 'dashboard/receivables',
         search: true,
         slots: [0,1, 2, 3, 4, 5, 6, 7],
-        hideColumn: ['IsReceiveSurvey'],
+        hideColumn: ['IsReceiveSurvey','CountData'],
         slotsName: ['invoiceNo','invoiceDate', 'deliveryDate', 'orderDate', 'discount', 'total', 'action', 'survey'],
         sortable: [],
         pages: [20, 50, 100],
-        addHeader: ['Action', 'Survey']
+        addHeader: ['Action']
       }
     }
   },

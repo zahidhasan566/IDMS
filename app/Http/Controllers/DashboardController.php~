@@ -29,7 +29,7 @@ class DashboardController extends Controller
         $search = $request->search;
         $userId = Auth::user()->UserId;
         $sp = "EXEC sp_receive_products '$userId','$take','$offset'";
-        
+
         return $this->doLoadMyReceivable($sp, $take, $offset);
     }
 
@@ -90,6 +90,7 @@ class DashboardController extends Controller
             $orderDetails = $request->details;
             $dealerReceiveInvoice = new DealerReceiveInvoice($userId,$invoiceNo,$orderDetails);
             $data = $dealerReceiveInvoice->doStorePartialReceivable($userId,$invoiceNo,$orderDetails);
+            dd($data);
             if (!$data) {
                 return response()->json([
                     'status' => 'error',
@@ -117,7 +118,7 @@ class DashboardController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Something went wrong!',
-                'error' => $exception->getMessage()
+                'error' => $exception->getMessage() . '-' . $exception->getLine()
             ],500);
         }
     }

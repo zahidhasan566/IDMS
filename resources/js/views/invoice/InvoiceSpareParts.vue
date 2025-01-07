@@ -15,7 +15,7 @@
                         <p style="width: 160px">Customer</p>
                       </div>
                       <div class="col-12">
-                        <ValidationProvider name="Chassis No" mode="eager" rules="required" v-slot="{ errors }">
+                        <ValidationProvider name="Chassis No" mode="eager" v-slot="{ errors }">
                           <div class="form-group">
                             <label for="chassis">Chassis No</label>
                             <input type="text" class="form-control" name="chassis" id="chassis"
@@ -32,7 +32,7 @@
                             <span class="error-message"> {{ errors[0] }}</span>
                           </div>
                         </ValidationProvider>
-                        <ValidationProvider name="Customer Address" mode="eager" rules="" v-slot="{ errors }">
+                        <ValidationProvider name="Customer Address" mode="eager"v-slot="{ errors }">
                           <div class="form-group">
                             <label for="Customer Address">Customer Address</label>
                             <textarea rows="10" class="form-control" name="customerAddress" id="customerAddress"
@@ -42,7 +42,7 @@
                             <span class="error-message"> {{ errors[0] }}</span>
                           </div>
                         </ValidationProvider>
-                        <ValidationProvider name="Customer Mobile" mode="eager" rules="" v-slot="{ errors }">
+                        <ValidationProvider name="Customer Mobile" mode="eager"  v-slot="{ errors }">
                           <div class="form-group">
                             <label for="Customer Mobile">Customer Mobile</label>
                             <input type="text" class="form-control" name="customerMobile" id="customerMobile"
@@ -59,7 +59,7 @@
                         <p style="width: 160px">Optional</p>
                       </div>
                       <div class="col-12">
-                        <ValidationProvider name="Affiliation" mode="eager" rules="" v-slot="{ errors }">
+                        <ValidationProvider name="Affiliation" mode="eager"  v-slot="{ errors }">
                           <div class="form-group">
                             <label for="affiliation">Affiliated Agent</label>
                             <select class="form-control" name="affiliation" id="affiliation"
@@ -77,7 +77,7 @@
                             </div>
                           </div>
                         </ValidationProvider>
-                        <ValidationProvider name="Reference" mode="eager" rules="" v-slot="{ errors }">
+                        <ValidationProvider name="Reference" mode="eager" v-slot="{ errors }">
                           <div class="form-group">
                             <label for="reference">Local Mechanics</label>
                             <select class="form-control" name="reference" id="reference"
@@ -87,6 +87,7 @@
                                 {{ m.UpazillaName }} - {{ m.MechanicsName }}
                               </option>
                             </select>
+                              <span class="error-message"> {{ errors[0] }}</span>
                           </div>
                         </ValidationProvider>
                       </div>
@@ -108,14 +109,15 @@
                             <span class="error-message"> {{ errors[0] }}</span>
                           </div>
                         </ValidationProvider>
-                        <ValidationProvider name="Rack Name" mode="eager" rules="" v-slot="{ errors }">
+                        <ValidationProvider name="Rack Name" mode="eager"  v-slot="{ errors }">
                           <div class="form-group">
                             <label for="rackName">Rack name</label>
                             <input type="text" class="form-control" name="rackName" id="rackName"
                                    v-model="form.rackName" readonly>
+                              <span class="error-message"> {{ errors[0] }}</span>
                           </div>
                         </ValidationProvider>
-                        <ValidationProvider name="Unit Price" mode="eager" rules="" v-slot="{ errors }">
+                        <ValidationProvider name="Unit Price" mode="eager" v-slot="{ errors }">
                           <div class="form-group">
                             <label for="unitPrice">Unit Price</label>
                             <input type="text" class="form-control" name="unitPrice" id="unitPrice"
@@ -370,6 +372,7 @@ export default {
       this.totalAfterAffiliation = this.total - this.form.affiliatorDiscount
     },
     onSubmit() {
+        console.log("ok")
       let exists = this.fields.find((item) => {
         return item.model.id === this.form.sparePart.id
       })
@@ -411,6 +414,8 @@ export default {
       this.spareparts = []
     },
     checkout() {
+        console.log(this.fields)
+
       if (this.fields.length > 0) {
         this.axiosPost('invoice-spare-parts/checkout',{
           customerName: this.form.customerName,

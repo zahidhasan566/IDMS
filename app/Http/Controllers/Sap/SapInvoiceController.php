@@ -35,6 +35,7 @@ class SapInvoiceController extends Controller
                 $customer = new Invoice();
                 $customer->InvoiceNo = $singleCustomer['InvoiceNo'];
                 $customer->InvoicePeriod = $singleCustomer['InvoicePeriod'];
+                $customer->InvoiceDate = $singleCustomer['InvoiceDate'];
                 $customer->Business = $singleCustomer['Business'];
                 $customer->OrderDate = $singleCustomer['OrderDate'];
                 $customer->DeliveryDate = $singleCustomer['DeliveryDate'];

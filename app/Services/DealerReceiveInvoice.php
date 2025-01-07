@@ -30,7 +30,7 @@ class DealerReceiveInvoice
                         'MasterCode' => $userId,
                         'CustomerCode' => $invoice->CustomerCode,
                         'ReceiveDate' => Carbon::now()->format('Y-m-d H:i:s'),
-                        'DepotCode' => $invoice->DepotCode,
+                        'DepotCode' => 'H',
                         'DeliveryDate' => $invoice->DeliveryDate,
                         'DeliveryTime' => $invoice->DeliveryTime
                     ]);
@@ -45,17 +45,20 @@ class DealerReceiveInvoice
                             $q->on('idb.Invoiceno','invd.Invoiceno')
                                 ->on('invd.ProductCode','idb.ProductCode');
                         })
-                        ->join('StockBatch as sb',function ($q) use ($invoice){
+                        ->leftjoin('StockBatch as sb',function ($q) use ($invoice){
                             $q->on('sb.BatchNo','idb.BatchNo')
                                 ->on('idb.ProductCode','sb.ProductCode')
                                 ->where('sb.DepotCode',$invoice->DepotCode);
                         })
+
                         ->where('invd.Invoiceno',$invoiceNo)
                         ->where('idb.quantity','>',0)
-                        ->select('p.ProductCode','idb.Quantity','invd.SalesTP','invd.SalesVat','sb.BatchNo','sb.EngineNo','p.Color','p.FuelUsed',
+                        ->select('p.ProductCode','idb.Quantity','invd.SalesTP','invd.SalesVat','idb.BatchNo','idb.EngineNo','p.Color','p.FuelUsed',
                             'p.HorsePower','p.RPM','p.CubicCapacity','p.WheelBase','p.Weight','p.TireSizeFront','p.TireSizeRear','P.Manufacturer','P.Origin',
                             'idb.Quantity','sb.DepotCode')
                         ->get();
+
+
                     if (count($invoiceDetails) > 0) {
                         foreach ($invoiceDetails as $row) {
                             $receiving = array_filter($orderDetails,function ($item) use ($row) {
