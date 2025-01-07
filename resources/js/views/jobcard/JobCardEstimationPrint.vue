@@ -8,14 +8,13 @@
                 <tr>
                     <th style="text-align: left; width: 33%;">
                         <a :href="`${baseUrl}`">
-                            <img :src="`${baseUrl+'public/assets/images/yamahalogo.jpg'}`">
+                            <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/reLogo.png'}`" style="height: 100px;width: 100px">
                         </a>
                     </th>
                     <th style="width: 33%;color:#000000; text-align: center;"><h2>ESTIMATED JOB CARD</h2></th>
                     <th style="text-align: right; width: 33%;">
                         <a :href="`${baseUrl}`">
-                            <img :src="`${baseUrl+'public/assets/images/service.png'}`">
-                            <img :src="`${baseUrl+'public/assets/images/aci.jpg'}`">
+                            <img :src="`${'https://dms.ifadmotors.com'+'/assets/images/logo-svg.png'}`" style="height: 30px;width: 100px">
                         </a>
                     </th>
                 </tr>

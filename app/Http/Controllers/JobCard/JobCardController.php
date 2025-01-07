@@ -798,6 +798,7 @@ class JobCardController extends Controller
 
         $roleId = Auth::user()->RoleId;
 
+
         if (empty($request->CustomerCode) && $roleId !== 'admin') {
             $CustomerCode = Auth::user()->UserId;
         }
@@ -807,6 +808,7 @@ class JobCardController extends Controller
         }
 
         $sql = "exec usp_doLoadJobCardReport2 '$dateFrom','$dateTo','$CustomerCode','$JobStatus','$JobType',$PerPage,$CurrentPage";
+
 
         $conn = DB::connection('sqlsrvread');
         $pdo = $conn->getPdo()->prepare($sql);

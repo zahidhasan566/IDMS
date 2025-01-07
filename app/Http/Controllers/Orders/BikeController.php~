@@ -20,7 +20,7 @@ class BikeController extends Controller
 
         $order = DB::table('OrderInvoiceMaster as om')->select('om.OrderNo',DB::raw('Convert(date,om.OrderDate) as OrderDate'),
             'u.UserName','d.ProductCode','p.ProductName','d.Quantity', 'd.UnitPrice',
-            'd.Vat',DB::raw('((d.UnitPrice +d.Vat) * d.Quantity) as TotalPrice'),
+            'd.Vat',DB::raw('m((d.UnitPrice +d.Vat) * d.Quantity) as TotalPrice'),
             DB::raw("Case when om.Level1Approved ='Y' then 'Yes' when om.Level1Approved='N' then 'No' when om.Level1Approved='C' then 'Cancel' END Level1Approved"),
             DB::raw("Case when om.Level2Approved ='Y' then 'Yes' when om.Level2Approved='N' then 'No' when om.Level2Approved='C' then 'Cancel' END Level2Approved"),
             DB::raw("Case when om.Level3Approved ='Y' then 'Yes' when om.Level3Approved='N' then 'No' when om.Level3Approved='C' then 'Cancel' END Level3Approved"))
