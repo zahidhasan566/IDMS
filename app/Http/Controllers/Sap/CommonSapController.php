@@ -221,7 +221,9 @@ class CommonSapController extends Controller
                         $user->UserId = $singleCustomer['CustomerCode'];
                         $user->UserName = $singleCustomer['CustomerName'];
                         $user->Designation = 'Dealer';
-                        $user->Password = DB::select("SELECT dbo.ufn_PasswordEncode(?) as EncodedPassword", [$password])[0]->EncodedPassword;
+                        $password = DB::select("SELECT dbo.ufn_PasswordEncode(?) as EncodedPassword", [$password])[0]->EncodedPassword;
+                        $password = str_replace('?','',$password);
+                        $user->Password = $password;
                         $user->RoleId = 'customer';
                         $user->Active = 0;
                         $user->save();
