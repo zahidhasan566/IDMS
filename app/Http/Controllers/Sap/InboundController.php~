@@ -45,6 +45,13 @@ class InboundController extends Controller
     public function getSparePartsOrder(Request $request){
         $dateFrom =$request->dateFrom;
         $dateTo = $request->dateTo . ' 23:59:59';
+        $validator = Validator::make($request->all(), [
+            'dateFrom' => 'required',
+            'dateTo' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 401, 'error' => $validator->errors()]);
+        }
 
         $sparePartsOrder = DB::table('OrderInvoiceMaster as om')
             ->select('om.OrderNo','om.MasterCode as CustomerCode',DB::raw('Convert(date,om.OrderDate) as OrderDate'),
@@ -66,10 +73,16 @@ class InboundController extends Controller
     }
 
     public function getPaymentInfo(Request $request){
-
         $dateFrom =$request->dateFrom;
         $dateTo = $request->dateTo . ' 23:59:59';
         $business = 'C';
+        $validator = Validator::make($request->all(), [
+            'dateFrom' => 'required',
+            'dateTo' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 401, 'error' => $validator->errors()]);
+        }
 
 
         $payment = DB::table('PaymentTempOnline as PTO')->Select(

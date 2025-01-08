@@ -34,7 +34,7 @@ class InboundController extends Controller
             ->join('UserManager as u','u.UserID','=','om.MasterCode')
             ->join('Product as p','p.ProductCode','=','d.ProductCode')
             ->where('p.Business','=','C')
-            ->where('om.Level3Approved','=','Y')
+            ->where('om.Level2Approved','=','Y')
             ->wherebetween('OrderDate',[$dateFrom,$dateTo]);
 
         return response()->json([
@@ -64,7 +64,7 @@ class InboundController extends Controller
             ->join('UserManager as u','u.UserID','=','om.MasterCode')
             ->join('Product as p','p.ProductCode','=','d.ProductCode')
             ->where('p.Business','=','P')
-            ->where('om.Level3Approved','=','Y')
+            ->where('om.Level2Approved','=','Y')
             ->wherebetween('OrderDate',[$dateFrom,$dateTo]);
 
         return response()->json([
