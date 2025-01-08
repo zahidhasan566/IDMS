@@ -215,12 +215,13 @@ class CommonSapController extends Controller
                         DB::commit();
 
                         $customerCode= $singleCustomer['CustomerCode'];
+                        $password = '123456@';
 
                         $user = new User();
                         $user->UserId = $singleCustomer['CustomerCode'];
                         $user->UserName = $singleCustomer['CustomerName'];
                         $user->Designation = 'Dealer';
-                        $passwordData = DB::select("select dbo.ufn_PasswordEncode('$customerCode') as RawPass");
+                        $passwordData = DB::select("select dbo.ufn_PasswordEncode('$password') as RawPass");
                         $user->Password = $passwordData[0]->RawPass;;
                         $user->RoleId = 'customer';
                         $user->Active = 0;
