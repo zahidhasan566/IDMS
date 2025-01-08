@@ -212,7 +212,7 @@ class CommonSapController extends Controller
                         $customer->OwnerType = '';
                         $customer->SubBusinessCode = '';
                         $customer->save();
-                        DB::commit();
+
 
                         $customerCode= $singleCustomer['CustomerCode'];
                         $password = '123456@';
@@ -233,6 +233,7 @@ class CommonSapController extends Controller
                         $customerMapping->CustomerCode = $singleCustomer['CustomerCode'];
                         $customerMapping->Business = 'C';
                         $customerMapping->save();
+                        DB::commit();
 
                     }
                 } else {
