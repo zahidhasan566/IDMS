@@ -19,6 +19,23 @@ trait CodeGeneration
             return $userId.'-00001';
         }
     }
+
+    public function generateAdvanceMoneyReceipt($customerCode)
+    {
+        $combinedCode = 'RE'.$customerCode.Carbon::now()->format('y');
+        $combinedLength = strlen($combinedCode);
+        $maxCode = DB::select(DB::raw("select MAX(MoneyRecNo) as MaxNo FROM AdvanceMoneyReceipt WHERE LEFT(MoneyRecNo,'$combinedLength') = '$combinedCode'"));
+        $maxCode = $maxCode[0]->MaxNo;
+        if ($maxCode === null) {
+            $nextCode = $combinedCode.'000001';
+        } else {
+            $nextCode = substr($maxCode,$combinedLength);
+            $nextCodeInc = $nextCode + 1;
+            $nextCode = sprintf("%0".strlen($nextCode)."d", $nextCodeInc);
+            $nextCode = $combinedCode.$nextCode;
+        }
+        return $nextCode;
+    }
     public function generateJobCardInvoiceNo()
     {
         $userId  = Auth::user()->UserId;
