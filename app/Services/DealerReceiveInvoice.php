@@ -178,7 +178,7 @@ class DealerReceiveInvoice
                 DealerStock::where('MasterCode', $userId)
                     ->where('ProductCode', $productCode)
                     ->update([
-                        'ReceiveQuantity' => $dealerStock->Quantity + $quantity,
+                        'ReceiveQuantity' => $dealerStock->ReceiveQuantity + $quantity,
                         'CurrentStock' => $dealerStock->CurrentStock + $quantity
                     ]);
             } else {
