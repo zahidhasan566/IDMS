@@ -73,6 +73,7 @@ class CommonSapController extends Controller
                         $product->UnitPrice = $singleProduct['UnitPrice'];
                         $product->VAT = $singleProduct['VAT'];
                         $product->MRP = $singleProduct['MRP'];
+                        $product->Color = $singleProduct['Color'];
                         $product->SalesUnit = $singleProduct['SalesUnit'];
                         $product->MaterialGroup = $singleProduct['MaterialGroup'];
                         $product->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
@@ -273,6 +274,7 @@ class CommonSapController extends Controller
         $checkExisting->UnitPrice = $singleProduct['UnitPrice'];
         $checkExisting->VAT = $singleProduct['VAT'];
         $checkExisting->MRP = $singleProduct['MRP'];
+        $checkExisting->Color = $singleProduct['Color'];
         $checkExisting->SalesUnit = $singleProduct['SalesUnit'];
         $checkExisting->MaterialGroup = $singleProduct['MaterialGroup'];
         $checkExisting->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
