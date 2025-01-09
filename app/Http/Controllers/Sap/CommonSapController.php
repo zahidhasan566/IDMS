@@ -212,16 +212,18 @@ class CommonSapController extends Controller
                         $customer->OwnerType = '';
                         $customer->SubBusinessCode = '';
                         $customer->save();
-                        DB::commit();
+
 
                         $customerCode= $singleCustomer['CustomerCode'];
+                        $password = '123456@';
 
                         $user = new User();
                         $user->UserId = $singleCustomer['CustomerCode'];
                         $user->UserName = $singleCustomer['CustomerName'];
                         $user->Designation = 'Dealer';
-                        $passwordData = DB::select("select dbo.ufn_PasswordEncode('$customerCode') as RawPass");
-                        $user->Password = $passwordData[0]->RawPass;;
+                        $password = DB::select("SELECT dbo.ufn_PasswordEncode(?) as EncodedPassword", [$password])[0]->EncodedPassword;
+                        $password = str_replace('?','',$password);
+                        $user->Password = $password;
                         $user->RoleId = 'customer';
                         $user->Active = 0;
                         $user->save();
@@ -232,6 +234,7 @@ class CommonSapController extends Controller
                         $customerMapping->CustomerCode = $singleCustomer['CustomerCode'];
                         $customerMapping->Business = 'C';
                         $customerMapping->save();
+                        DB::commit();
 
                     }
                 } else {

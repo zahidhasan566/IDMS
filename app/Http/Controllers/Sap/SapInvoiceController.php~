@@ -93,7 +93,7 @@ class SapInvoiceController extends Controller
                     else{
                         $detailsBatch = new InvoiceDetailsBatch();
                         $detailsBatch->Invoiceno = $singleCustomer['InvoiceNo'];
-                        $detailsBatch->ProductCode = !empty($singleCustomer['ProductCode'])?$singleCustomer['ProductCode']: $singleCustomer['InvoiceDetails'][$key]['ProductCode'];
+                        $detailsBatch->ProductCode =  $singleCustomer['InvoiceDetails'][$key]['ProductCode'];
                         $detailsBatch->BatchNo = $invoiceDetailsBatch['BatchNo'];
                         $detailsBatch->EngineNo = !empty($invoiceDetailsBatch['EngineNo']) ? $invoiceDetailsBatch['EngineNo'] : '';
                         $detailsBatch->Quantity = $invoiceDetailsBatch['Quantity'];
