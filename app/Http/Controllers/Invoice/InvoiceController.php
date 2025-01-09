@@ -278,7 +278,7 @@ class InvoiceController extends Controller
 
             }
         }catch (\Exception $e){
-            file_put_contents(public_path('log/invoice_create.txt'), $e->getMessage()."\n",FILE_APPEND);
+//            file_put_contents(public_path('log/invoice_create.txt'), $e->getMessage()."\n",FILE_APPEND);
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
