@@ -151,6 +151,11 @@ import ReportPreBook from "../views/reports/reportPreBook.vue"
 import PostDeliveryChecklist from "../views/post-delivery/Checklist.vue"
 import CreatePostDeliveryChecklist from "../views/post-delivery/Create.vue"
 
+import MoneyReceiptAdvance from "../views/money-receipt/advance.vue"
+import AdvancePrint from "../views/money-receipt/AdvancePrint.vue"
+
+
+
 Vue.use(VueRouter);
 
 const config = () => {
@@ -654,6 +659,16 @@ const routes = [
                 path: baseurl + 'post-delivery/checklist/print/:inquiryId',
                 name: 'PostDeliveryPrint',
                 component: PostDeliveryPrint
+            },
+            {
+                path: baseurl + 'money-receipt/advance',
+                name: 'MoneyReceiptAdvance',
+                component: MoneyReceiptAdvance
+            },
+            {
+                path: baseurl + 'money-receipt/:moneyRecNo',
+                name: 'AdvancePrint',
+                component: AdvancePrint
             }
         ],
         beforeEnter(to, from, next) {

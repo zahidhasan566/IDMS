@@ -106,6 +106,7 @@ Vue.component('add-edit-brta-registration', require('./components/logistics/Brta
 Vue.component('add-edit-product', require('./components/product/ProductAddEditModal.vue').default);
 Vue.component('add-edit-scrap-product', require('./components/Scrap/ScrapAddEditModal.vue').default);
 Vue.component('add-edit-jobCard-csi', require('./components/JobCard/JobCardCSIAddEdit.vue').default);
+Vue.component('advance-money-receipt', require('./components/money-receipt/AddModal.vue').default);
 
 
 const app = new Vue({
