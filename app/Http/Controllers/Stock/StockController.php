@@ -69,8 +69,6 @@ class StockController extends Controller
         $productCode = 'C';
         $customer = $request->customer ? $request->customer : $userId ;
         $list = DB::select("exec usp_reportProductStock '$customer','','$productCode','$userId','20','%'");
-        //dd("exec usp_reportProductStock '$customer','','$productCode','$userId','20','%'");
-
 
         if ($request->type === 'export') {
             return response()->json([
