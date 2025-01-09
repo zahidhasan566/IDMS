@@ -35,6 +35,7 @@ class SapInvoiceController extends Controller
                 $customer = new Invoice();
                 $customer->InvoiceNo = $singleCustomer['InvoiceNo'];
                 $customer->InvoicePeriod = $singleCustomer['InvoicePeriod'];
+                $customer->InvoiceDate = $singleCustomer['InvoiceDate'];
                 $customer->Business = $singleCustomer['Business'];
                 $customer->OrderDate = $singleCustomer['OrderDate'];
                 $customer->DeliveryDate = $singleCustomer['DeliveryDate'];
@@ -92,9 +93,9 @@ class SapInvoiceController extends Controller
                     else{
                         $detailsBatch = new InvoiceDetailsBatch();
                         $detailsBatch->Invoiceno = $singleCustomer['InvoiceNo'];
-                        $detailsBatch->ProductCode = $invoiceDetails['ProductCode'];
+                        $detailsBatch->ProductCode =  $singleCustomer['InvoiceDetails'][$key]['ProductCode'];
                         $detailsBatch->BatchNo = $invoiceDetailsBatch['BatchNo'];
-                        $detailsBatch->EngineNo = $invoiceDetailsBatch['EngineNo'];
+                        $detailsBatch->EngineNo = !empty($invoiceDetailsBatch['EngineNo']) ? $invoiceDetailsBatch['EngineNo'] : '';
                         $detailsBatch->Quantity = $invoiceDetailsBatch['Quantity'];
                         $detailsBatch->SalesQTY = $invoiceDetailsBatch['SalesQTY'];
                         $detailsBatch->Description = $invoiceDetailsBatch['Description'];
