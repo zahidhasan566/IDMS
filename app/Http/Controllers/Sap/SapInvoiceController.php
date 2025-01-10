@@ -199,7 +199,7 @@ class SapInvoiceController extends Controller
                 $invoice->save();
                 DB::commit();
 
-                return response()->json(['message' => 'Invoice created successfully!', 'InvoiceNo' => $singleCustomer['InvoiceNo']], 201);
+                return response()->json(['status' => 'Success','message' => 'Invoice created successfully!', 'InvoiceNo' => $singleCustomer['InvoiceNo']], 201);
 
             }
             else{
