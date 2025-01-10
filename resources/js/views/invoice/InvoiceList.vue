@@ -61,7 +61,7 @@
                 <table class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm small">
                   <thead class="thead-dark">
                   <tr>
-                    <th v-for="(item, index) in headers">
+                    <th v-for="(item, index) in headers" v-if="index !== 0">
                       {{formatHeading(item.toString())}}
                     </th>
                     <th>Action</th>
@@ -69,7 +69,7 @@
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in contents" >
-                      <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' ">
+                      <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 0">
                         {{ item[item2] }}
                       </td>
                       <td>

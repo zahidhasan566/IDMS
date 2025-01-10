@@ -489,11 +489,9 @@
                                                                      v-html="form.errors.get('Photo')"/>
                                                             </div>
                                                         </div>
-                                                        <ValidationProvider name="MonthlyIncome" mode="eager"
-                                                                            rules="required" v-slot="{ errors }">
                                                             <div class="form-group row" style="padding-bottom: 10px">
                                                                 <label class="col-lg-7 col-form-label text-right">Monthly
-                                                                    Income<span style="color: red">*</span></label>
+                                                                    Income</label>
                                                                 <div class="col-lg-5 text-left">
                                                                     <select name="MonthlyIncome" class="form-control"
                                                                             v-model="form.MonthlyIncome"
@@ -509,7 +507,6 @@
                                                                     <span class="error-message"> {{ errors[0] }}</span>
                                                                 </div>
                                                             </div>
-                                                        </ValidationProvider>
                                                         <ValidationProvider name="ProductIntroducingMedia" mode="eager"
                                                                             rules="required" v-slot="{ errors }">
                                                             <div class="form-group row" style="padding-bottom: 10px">
