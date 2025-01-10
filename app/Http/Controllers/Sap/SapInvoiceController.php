@@ -192,7 +192,7 @@ class SapInvoiceController extends Controller
                 $invoice->EngineType = $singleCustomer['EngineType'] ?? null;
                 $invoice->NumberOfCylinders = $singleCustomer['NumberOfCylinders'] ?? null;
                 $invoice->ImportYear = $singleCustomer['ImportYear'] ?? null;
-                $invoice->CreatedAt = Carbon::now();
+                $invoice->CreatedAt = $singleCustomer['CreatedAt'] ?? null;
 
                 $invoice->save();
                 DB::commit();
