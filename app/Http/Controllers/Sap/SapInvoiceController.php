@@ -152,9 +152,9 @@ class SapInvoiceController extends Controller
             ){
                 // Create a new record for each field
                 $invoice = new FlagshipInvoiceBRTA();
-                $invoice->InvoiceNo = $singleCustomer['InvoiceNo'];
+                $invoice->InvoiceNo =    $singleCustomer['InvoiceNo'];
                 $invoice->FlagshipCode = $singleCustomer['FlagshipCode'] ?? null;
-                $invoice->MasterCode = $singleCustomer['FlagshipCode'] ?? null;
+                $invoice->MasterCode =   $singleCustomer['FlagshipCode'] ?? null;
                 $invoice->CustomerCode = $singleCustomer['FlagshipCode'] ?? null;
                 $invoice->CustomerName = $singleCustomer['CustomerName'];
                 $invoice->FatherName = $singleCustomer['FatherName'] ?? null;
