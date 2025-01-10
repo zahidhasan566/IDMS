@@ -241,6 +241,7 @@ export default {
   },
   methods: {
     onSubmit(){
+      console.log('ok')
       this.PreLoader = true;
       this.form.post(baseurl + "api/settings/customer-store", this.config()).then(response => {
         this.$toaster.success(response.data.message);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Invoice;
 
+use App\Models\FlagshipInvoiceBRTA;
 use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Customer;
@@ -34,27 +35,31 @@ class InvoiceController extends Controller
         $ChassisNo  = $request->ChassisNo;
         $isAdmin    = Auth::user()->grpSup;
         $MasterCode = Auth::user()->UserId;
+        $RoleId = Auth::user()->RoleId;
 
         $CurrentPage = $request->pagination['current_page'];
         $PerPage     = 20;
         $Export      = $request->Export;
 
         $DateFrom = $request->DateFrom;
-        $DateTo   = $request->DateTo;
+        $DateTo   = $request->DateTo. ' 23:59:59.000';
+        $DateTo   = date('Y-m-d H:i:s',strtotime($DateTo));
 
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
+        if ($RoleId == 'FlagshipDealer'){
+            $sql = "EXEC SP_FlagshipInvoiceBRTAList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
+        }else{
+            $sql = "EXEC SP_BikeInvoiceList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
+        }
 
-        $sql = "EXEC SP_BikeInvoiceList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
-
-       // dd($sql);
-        //return $sql;
         $invoice = $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
 
         return response()->json([
             'invoice' => $invoice,
             'isAdmin' => $isAdmin,
+            'iSFlagshipDealer' => $RoleId,
         ]);
     }
 
@@ -287,6 +292,22 @@ class InvoiceController extends Controller
         }
     }
 
+    public function invoiceEdit($InvoiceNo){
+        $flagshipInvoiceBRTA = FlagshipInvoiceBRTA::query()->where('InvoiceNo',$InvoiceNo)->first();
+        return response()->json([
+            'flagshipInvoiceBRTA' => $flagshipInvoiceBRTA,
+        ]);
+    }
+
+    public function invoiceUpdate(Request $request){
+        $data = $request->except('Id','InvoiceNo'); // Exclude 'Id' from the update
+        FlagshipInvoiceBRTA::query()->where('InvoiceNo', $request->InvoiceNo)->update($data);
+        return response()->json([
+            'status'    => 'success',
+            'message'   => 'Successfully Updated'
+        ]);
+    }
+
     public function invoiceDelete($invoiceID){
         try {
             DB::beginTransaction();
@@ -390,26 +411,43 @@ class InvoiceController extends Controller
     }
 
     public function getSingleInvoice($invoiceId){
-        $invoice = DB::table('DealarInvoiceMaster as DIM')
-            ->select("DIM.InvoiceId","DIM.invoiceno", DB::raw("FORMAT(DIM.invoicedate,'yyyy-MM-dd') as InvoiceDate"), "DIM.invoicetime", "DIM.customercode", "DIM.customername",
-                "DIM.fathername", "DIM.mothername", "DIM.preaddress", "DIM.peraddress", "DIM.mobileno", "DIM.EMail",
-                "DIM.nid", "DID.productcode", "p.productname", "DID.quantity", "DID.unitprice",
-                "DID.chassisno", "DID.engineno", "DID.color", "DID.fuelused", "DID.horsepower", "DID.rpm",
-                "DID.cubiccapacity", "DID.discount", "DID.wheelbase", "DID.weight", "DID.tiresizefront",
-                "DID.tiresizerear", "DID.seats", "DID.nooftyre", "DID.noofaxel", "DID.classofvehicle",
-                "DID.makername", "DID.makercountry", "DID.enginetype", "DID.numberofcylinders",
-                "C.CustomerCode", "C.CustomerName", "C.Add1", "P.Standee", "DIM.DateOfBirth", "P.BodyType", "P.WeightMax", "P.ManufacturingYear","P.ManufacturingCountry",
-                "P.TireSizeFront", "P.TireSizeRear","P.ProductCode",DB::raw('isnull(YEAR(R.Inv_PODate),DID.importyear) AS importyear'),"DIM.gender","DIM.ownertype")
-            ->join('DealarInvoiceDetails as DID','DID.InvoiceID','=','DIM.InvoiceID')
-            ->leftJoin('ReceiveDetails as RD',function ($join){
-                $join->on('RD.Batchno','=','DID.ChassisNo');
-                $join->on('RD.ProductCode','=','DID.ProductCode');
-            })
-            ->leftJoin('Receive as R','RD.ReceiveNo','=','R.ReceiveNo')
-            ->join('Product as P','DID.Productcode','=','P.Productcode')
-            ->join('Customer as C','C.CustomerCode','=','DIM.MasterCode')
-            ->where('DIM.InvoiceID',$invoiceId)
-            ->first();
+        $RoleId = Auth::user()->RoleId;
+        if ($RoleId == 'FlagshipDealer'){
+            $invoice = DB::table('FlagshipInvoiceBRTA as DIM')
+                ->select("DIM.Id", "DIM.invoiceno", "DIM.CustomerCode as customercode", "DIM.CustomerName as customername",
+                    "DIM.FatherName as fathername", "DIM.MotherName as mothername", "DIM.PreAddress as preaddress", "DIM.PerAddress as peraddress", "DIM.MobileNo as mobileno",
+                    "DIM.EMail", "DIM.NID as nid", "DIM.ChassisNo as chassisno", "DIM.EngineNo as engineno", "DIM.Color as color", "DIM.FuelUsed as fuelused",
+                    "DIM.HorsePower as horsepower", "DIM.RPM as rpm", "DIM.CubicCapacity as cubiccapacity", "DIM.WheelBase as wheelbase", "DIM.Weight as weight",
+                    "DIM.TireSizeFront as tiresizefront", "DIM.TireSizeRear as tiresizerear", "DIM.Seats as seats", "DIM.NoOfTyre as nooftyre", "DIM.NoOfAxel as noofaxel",
+                    "DIM.ClassOfVehicle as classofvehicle",
+                    "DIM.MakerName as makername", "DIM.MakerCountry as makercountry", "DIM.EngineType as enginetype", "DIM.NumberOfCylinders as numberofcylinders",
+                    "DIM.Standee", "DIM.DateOfBirth",  "DIM.WeightMax", "DIM.MakerCountry as ManufacturingCountry",
+                    "DIM.TireSizeFront", "DIM.TireSizeRear", "DIM.ImportYear AS importyear", "DIM.Gender as gender", "DIM.OwnerType as ownertype")
+                ->where('InvoiceNo',$invoiceId)->first();
+        }else {
+            $invoice = DB::table('DealarInvoiceMaster as DIM')
+                ->select("DIM.InvoiceId", "DIM.invoiceno", DB::raw("FORMAT(DIM.invoicedate,'yyyy-MM-dd') as InvoiceDate"), "DIM.invoicetime",
+                    "DIM.customercode", "DIM.customername",
+                    "DIM.fathername", "DIM.mothername", "DIM.preaddress", "DIM.peraddress", "DIM.mobileno", "DIM.EMail",
+                    "DIM.nid", "DID.productcode", "p.productname", "DID.quantity", "DID.unitprice",
+                    "DID.chassisno", "DID.engineno", "DID.color", "DID.fuelused", "DID.horsepower", "DID.rpm",
+                    "DID.cubiccapacity", "DID.discount", "DID.wheelbase", "DID.weight", "DID.tiresizefront",
+                    "DID.tiresizerear", "DID.seats", "DID.nooftyre", "DID.noofaxel", "DID.classofvehicle",
+                    "DID.makername", "DID.makercountry", "DID.enginetype", "DID.numberofcylinders",
+                    "C.CustomerCode", "C.CustomerName", "C.Add1", "P.Standee", "DIM.DateOfBirth", "P.BodyType", "P.WeightMax", "P.ManufacturingYear", "P.ManufacturingCountry",
+                    "P.TireSizeFront", "P.TireSizeRear", "P.ProductCode", DB::raw('isnull(YEAR(R.Inv_PODate),DID.importyear) AS importyear'), "DIM.gender", "DIM.ownertype")
+                ->join('DealarInvoiceDetails as DID', 'DID.InvoiceID', '=', 'DIM.InvoiceID')
+                ->leftJoin('ReceiveDetails as RD', function ($join) {
+                    $join->on('RD.Batchno', '=', 'DID.ChassisNo');
+                    $join->on('RD.ProductCode', '=', 'DID.ProductCode');
+                })
+                ->leftJoin('Receive as R', 'RD.ReceiveNo', '=', 'R.ReceiveNo')
+                ->join('Product as P', 'DID.Productcode', '=', 'P.Productcode')
+                ->join('Customer as C', 'C.CustomerCode', '=', 'DIM.MasterCode')
+                ->where('DIM.InvoiceID', $invoiceId)
+                ->first();
+        }
+
         return response([
            'invoice' => $invoice
         ]);

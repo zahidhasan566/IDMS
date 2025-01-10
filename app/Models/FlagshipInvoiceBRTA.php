@@ -11,6 +11,7 @@ class FlagshipInvoiceBRTA extends Model
 
     protected $table = "FlagshipInvoiceBRTA";
     public $primaryKey = 'InvoiceNo';
+    protected $keyType = 'string';
     protected $guarded = [];
     public $timestamps = false;
 
