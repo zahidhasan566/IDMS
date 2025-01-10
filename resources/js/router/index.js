@@ -7,6 +7,9 @@ import Users from '../views/users/Index';
 import AdjustmentsUnadjusted from "../views/reports/general/Unadjusted";
 import AdjustmentsAdjusted from "../views/reports/general/Adjusted";
 import ProductIndex from "../views/product/ProductIndex.vue";
+import EditApproved from "../components/dashboard/pendingOrderEditApproved.vue";
+import PostDeliveryPrint from "../views/post-delivery/PostDeliveryPrint.vue";
+
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
 import WorkIndex from "../views/jobcard/WorkIndex.vue";
@@ -37,6 +40,9 @@ import ReportDetails from "../views/evaluation/detailsReport.vue";
 import service4pDetailsPart2 from "../views/evaluation/Service4pDetailsPart2.vue";
 import ReceiveReport from "../views/logistics/ReceiveReport.vue";
 import ReceiveSummaryReport from "../views/logistics/ReceiveSummaryReport.vue";
+import InvoiceScrapReturn from "../views/invoice/InvoiceScrapReturn.vue";
+import InvoiceApproveScrapProduct from "../views/invoice/InvoiceApproveScrapProduct.vue";
+import ReportScrapProducts from "../views/reports/reportScrapProducts.vue";
 
 //logistics
 import DealerDocumentAdd from "../views/logistics/DealerDocumentStore.vue";
@@ -55,10 +61,8 @@ import inquiryConversionSummaryReport from "../views/inquiry/InquiryConversionSu
 import TestRideAgentList from "../views/TestRide/AgentIndex";
 import TestRiderList from "../views/TestRide/RiderIndex.vue";
 import NotificationList from "../views/notification/NotificationIndex.vue";
+import inquiryPrint from "../views/inquiry/InquiryPrint.vue";
 
-//iHelpBD
-import SendYamahaCall from "../views/iHelpBD/SendYamahaCall.vue";
-import SendFotonCall from "../views/iHelpBD/SendFotonCall.vue";
 
 //reportSalesSummary
 import reportSalesSummary from "../views/reports/SalesSummaryReport.vue";
@@ -84,6 +88,7 @@ import InvoiceList from "../views/invoice/InvoiceList.vue";
 import InvoiceCreate from "../views/invoice/InvoiceCreate.vue";
 import InvoicePrint from "../views/invoice/InvoicePrint.vue";
 import InvoiceShow from "../views/invoice/InvoiceShow.vue";
+import InvoiceEdit from "../views/invoice/InvoiceEdit.vue";
 import BRTAInvoicePrint from "../views/invoice/BRTAInvoicePrint.vue";
 import InvoiceSpareParts from "../views/invoice/InvoiceSpareParts.vue";
 import InvoiceSparePartsReturn from "../views/invoice/InvoiceSparePartsReturn.vue";
@@ -134,15 +139,23 @@ import ProgressCard from "../components/inquiry/ProgressCard.vue";
 // SDMS REPORT
 import SdmsInvoiceList from "../views/sdms/SdmsInvoiceList.vue"
 import SdmsCustomerLedger from "../views/sdms/SdmsCustomerLedger.vue"
-import CustomerWiseProductSold from "../views/sdms/CustomerWiseProductSold.vue";
-import CustomerWiseProductSoldPrint from "../views/sdms/CustomerWiseProductSoldPrint.vue";
-import SdmsDayWiseSalesSummaryReport from "../views/sdms/SdmsDayWiseSalesSummaryReport.vue";
+import CustomerWiseProductSold from "../views/sdms/CustomerWiseProductSold.vue"
+import CustomerWiseProductSoldPrint from "../views/sdms/CustomerWiseProductSoldPrint.vue"
+import SdmsDayWiseSalesSummaryReport from "../views/sdms/SdmsDayWiseSalesSummaryReport.vue"
 import SdmsCustomerLedgerPrint from "../views/sdms/SdmsCustomerLedgerPrint.vue"
-
-
 import DealerUser from "../views/users/DealerUsers.vue"
-import DealerOffer from "../views/sdms/DealerOffer.vue";
-import DealerOfferList from "../views/sdms/DealerOfferList.vue";
+import DealerOffer from "../views/sdms/DealerOffer.vue"
+import DealerOfferList from "../views/sdms/DealerOfferList.vue"
+import JobCardCSI from "../views/jobcard/JobCardCSI.vue"
+import ReportPreBook from "../views/reports/reportPreBook.vue"
+
+import PostDeliveryChecklist from "../views/post-delivery/Checklist.vue"
+import CreatePostDeliveryChecklist from "../views/post-delivery/Create.vue"
+
+import MoneyReceiptAdvance from "../views/money-receipt/advance.vue"
+import AdvancePrint from "../views/money-receipt/AdvancePrint.vue"
+
+
 
 Vue.use(VueRouter);
 
@@ -181,6 +194,8 @@ const routes = [
                 name: 'Dashboard',
                 component: Dashboard
             },
+
+
             //ADMIN ROUTE | SHOW USER LIST
             {
                 path: baseurl + 'users/list',
@@ -233,7 +248,8 @@ const routes = [
             {
                 path: baseurl + 'jobcard/display',
                 name: 'JobCardDisplay',
-                component: JobCardDisplay
+                component: JobCardDisplay,
+                meta: { hideTopBar: true, hideSideMenu: true }
             },
             {
                 path: baseurl + 'jobcard/report',
@@ -280,6 +296,11 @@ const routes = [
                 name: 'PaidServiceSchedule',
                 component: PaidServiceSchedule
             },
+            {
+                path: baseurl + 'jobcard/csiList',
+                name: 'JobCardCSI',
+                component: JobCardCSI
+            },
 
 
             //ORDERS | SPARE PARTS
@@ -293,6 +314,7 @@ const routes = [
             { path: baseurl + 'invoice-create', name: 'InvoiceCreate', component: InvoiceCreate },
             { path: baseurl + 'invoice-print/:InvoiceId', name: 'InvoicePrint', component: InvoicePrint },
             { path: baseurl + 'invoice-show/:InvoiceId', name: 'InvoiceShow', component: InvoiceShow },
+            { path: baseurl + 'invoice-edit/:InvoiceNo', name: 'InvoiceEdit', component: InvoiceEdit },
             { path: baseurl + 'brta-invoice-print/:InvoiceId', name: 'BRTAInvoicePrint', component: BRTAInvoicePrint },
             //Service | CLAIM WARRANTY
             { path: baseurl + 'service/claim-warranty-list', name: 'ClaimWarrantyList', component: ClaimWarrantyList },
@@ -324,6 +346,16 @@ const routes = [
                 path: baseurl + 'invoice/return',
                 name: 'InvoiceSparePartsReturn',
                 component: InvoiceSparePartsReturn
+            },
+            {
+                path: baseurl + 'invoice/return-scrap-products',
+                name: 'InvoiceScrapReturn',
+                component: InvoiceScrapReturn
+            },
+            {
+                path: baseurl + 'invoice/approve-scrap-products',
+                name: 'InvoiceApproveScrapProduct',
+                component: InvoiceApproveScrapProduct
             },
             //ORDERS | BIKE
             {
@@ -369,16 +401,6 @@ const routes = [
                 path: baseurl + 'logistics/dealerdocument/report',
                 name: 'DealerDocumentReport',
                 component: DealerDocumentReport
-            },
-            {
-                path: baseurl + 'ihelp-bd/send-yamaha-call',
-                name: 'SendYamahaCall',
-                component: SendYamahaCall
-            },
-            {
-                path: baseurl + 'ihelp-bd/send-foton-call',
-                name: 'SendFotonCall',
-                component: SendFotonCall
             },
             {
                 path: baseurl + 'logistics/lostdocument',
@@ -477,6 +499,8 @@ const routes = [
             { path: baseurl + 'report/customer-bike-sales-feedBack', name: 'reportCustomerBikeSalesFeedBack', component: reportCustomerBikeSalesFeedBack },
             { path: baseurl + 'report/claim-warranty-summary', name: 'ClaimWarrantySummary', component: ClaimWarrantySummary },
             { path: baseurl + 'report/service-summary', name: 'reportServiceSummary', component: reportServiceSummary },
+            { path: baseurl + 'report/scrap-product', name: 'ReportScrapProducts', component: ReportScrapProducts },
+            { path: baseurl + 'prebook/list', name: 'ReportPreBook', component: ReportPreBook },
 
             // SDMS REPORT
             {
@@ -610,10 +634,44 @@ const routes = [
                 path: baseurl + 'settings/product',
                 name: 'ProductIndex',
                 component: ProductIndex
+            },
+            //pending order
+            {
+                path: baseurl + 'dashboard/edit-approve',
+                name: 'EditApproved',
+                component: EditApproved
+            },
+            //Inquiry Print
+            {
+                path: baseurl + 'inquiry-print',
+                name: 'inquiryPrint',
+                component: inquiryPrint
+            },
+            {
+                path: baseurl + 'post-delivery/checklist',
+                name: 'PostDeliveryChecklist',
+                component: PostDeliveryChecklist
+            },
+            {
+                path: baseurl + 'post-delivery/checklist/create',
+                name: 'CreatePostDeliveryChecklist',
+                component: CreatePostDeliveryChecklist
+            },
+            {
+                path: baseurl + 'post-delivery/checklist/print/:inquiryId',
+                name: 'PostDeliveryPrint',
+                component: PostDeliveryPrint
+            },
+            {
+                path: baseurl + 'money-receipt/advance',
+                name: 'MoneyReceiptAdvance',
+                component: MoneyReceiptAdvance
+            },
+            {
+                path: baseurl + 'money-receipt/:moneyRecNo',
+                name: 'AdvancePrint',
+                component: AdvancePrint
             }
-
-
-
         ],
         beforeEnter(to, from, next) {
             checkToken(to, from, next);

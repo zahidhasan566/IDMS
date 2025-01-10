@@ -73,6 +73,7 @@ Vue.component('add-edit-user',require('./components/users/AddEditModal').default
 Vue.component('add-edit-dealer-user',require('./components/dealerusers/AddEditModal.vue').default)
 Vue.component('add-survey-modal',require('./components/dashboard/SurveyModal.vue').default)
 Vue.component('receive-details-modal',require('./components/dashboard/ReceiveDetailsModal.vue').default)
+Vue.component('damage-receive-modal',require('./components/dashboard/DamageReceiveModal.vue').default)
 Vue.component('order-details-modal',require('./components/dashboard/OrderDetailsModal.vue').default)
 Vue.component('reset-password',require('./components/users/Editpassword').default)
 //Job Card
@@ -89,6 +90,7 @@ Vue.component('add-edit-user-customer', require('./components/jobCard/UserCustom
 Vue.component('add-edit-paid-service-schedule', require('./components/jobCard/PaidServiceAddEditModal.vue').default);
 //credit payment
 Vue.component('add-credit-payment', require('./components/creditPayment/creditPaymentModal.vue').default);
+Vue.component('credit-payment', require('./views/payment/paymentList.vue').default);
 
 //custom pagination component
 Vue.component('pagination', require('./components/partial/PaginationComponent.vue').default);
@@ -102,6 +104,11 @@ Vue.component('add-edit-testrider', require('./components/testRide/TestRiderAddE
 Vue.component('add-edit-notify', require('./components/transportNotification/NotificationAddEditModal.vue').default);
 Vue.component('add-edit-brta-registration', require('./components/logistics/BrtaRegistrationStatusAddEditModal.vue').default);
 Vue.component('add-edit-product', require('./components/product/ProductAddEditModal.vue').default);
+Vue.component('add-edit-scrap-product', require('./components/Scrap/ScrapAddEditModal.vue').default);
+Vue.component('add-edit-jobCard-csi', require('./components/JobCard/JobCardCSIAddEdit.vue').default);
+Vue.component('advance-money-receipt', require('./components/money-receipt/AddModal.vue').default);
+
+
 const app = new Vue({
     el: '#app',
     store: store,

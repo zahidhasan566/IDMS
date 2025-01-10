@@ -61,7 +61,7 @@
                       :dataSets="dataSets"
                   ></piechart>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" v-if="claim_warranty.length>0">
                   <table class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm small">
                     <thead class="thead-dark">
                     <tr>

@@ -11,12 +11,12 @@
           </div>
           <div class="row">
             <div class="col-md-1">
-              <img :src="`${mainOrigin}assets/images/logo-svg.png`" style="width:90px;height: 90px;"/>
+              <img :src="`${mainOrigin}assets/images/reLogo.png`" style="width:90px;height: 90px;"/>
             </div>
             <div class="col-md-4 head">
-              <p style="font-weight: bold;font-size: 16px;">ACI Limited</p>
-              <p>Head Office: ACI Centre, 245 Tejgaon Industrial Area</p>
-              <p>Dhaka-1208, Bangladesh</p>
+              <p style="font-weight: bold;font-size: 16px;">Ifad Motors Limited</p>
+              <p>IFAD Tower</p>
+              <p>Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208</p>
             </div>
             <div class="offset-4 col-md-3 head">
               <p>Invoice No: {{invoice.InvoiceNo}}</p>

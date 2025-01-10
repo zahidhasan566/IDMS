@@ -58,14 +58,9 @@
                                             <select class="form-control" name="userType"
                                                     v-model="userType">
                                                 <option value="">Select</option>
-                                               <option value="RSM">Regional Sales Manager</option>
-                                                <option value="TM">Territory Manager</option>
-                                                <option value="TO">Territory Officer</option>
-                                                <option value="SE">Service Engineer</option>
-                                                <option value="SEZ">Zonal Service Manager</option>
-
-                                            </select>
-                                          <span class="error-message"> {{ errors[0] }}</span>
+                                                <option :value="singleCustomer.RoleId" v-for="(singleCustomer , index) in roles"
+                                                        :key="index">{{ singleCustomer.RoleName }}</option>
+                                              </select>
 
                                         </ValidationProvider>
                                     </div>
@@ -113,6 +108,7 @@ export default {
             actionType: '',
             buttonShow: false,
             errors: [],
+            roles: [],
             userId:'',
             customerCode:'',
             region:'',
@@ -140,6 +136,8 @@ export default {
             }
             $("#add-edit-dept").modal("toggle");
         })
+
+      this.getAllRoles()
     },
     destroyed() {
         bus.$off('add-edit-user-customer')
@@ -148,6 +146,12 @@ export default {
         closeModal() {
             $("#add-edit-dept").modal("toggle");
         },
+      getAllRoles() {
+        this.axiosGet('jobCard/get-all-roles',(response) => {
+          console.log(response.data)
+          this.roles = response.data
+        })
+      },
         onSubmit() {
                 this.$store.commit('submitButtonLoadingStatus', true);
                 let url = '';

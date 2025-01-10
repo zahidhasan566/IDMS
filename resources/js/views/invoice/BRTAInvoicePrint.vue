@@ -325,7 +325,7 @@
             border: 1px solid;
             width: 134px;
             margin: 0 auto;
-            height: 150px;"></p>
+            height: 150px;">Passport Size Photo 4 Copy</p>
           </div>
         </div>
         <br>
@@ -338,13 +338,13 @@
           <div style="width: 48%" class="sign">
             <p style="text-align: center;border: 1px solid;
             padding: 21px;
-            width: 226px;
+            width: 300px;
             margin: 0 auto;"></p>
           </div>
           <div style="width: 48%" class="sign">
             <p style="text-align: center;border: 1px solid;
             padding: 21px;
-            width: 226px;
+            width: 300px;
             margin: 0 auto;"></p>
           </div>
         </div>
@@ -356,13 +356,13 @@
           <div style="width: 48%" class="sign">
             <p style="text-align: center;border: 1px solid;
             padding: 21px;
-            width: 226px;
+            width: 300px;
             margin: 0 auto;"></p>
           </div>
           <div style="width: 48%" class="sign">
             <p style="text-align: center;border: 1px solid;
             padding: 21px;
-            width: 226px;
+            width: 300px;
             margin: 0 auto;"></p>
           </div>
         </div>

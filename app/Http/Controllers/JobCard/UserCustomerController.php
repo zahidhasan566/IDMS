@@ -5,6 +5,7 @@ namespace App\Http\Controllers\JobCard;
 use App\Http\Controllers\Controller;
 use App\Models\TestRide\TestRideAgents;
 use App\Models\UserCustomer;
+use App\Traits\CommonTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,9 +14,12 @@ use Ramsey\Uuid\Exception\UnableToBuildUuidException;
 
 class UserCustomerController extends Controller
 {
+    use CommonTrait;
     public function index(Request $request){
         $take = $request->take;
         $search = $request->search;
+        $roleId = Auth::user()->RoleId;
+        $userId = Auth::user()->UserId;
 
         $user =DB::table('UserCustomer as u')
             ->select(
@@ -34,14 +38,16 @@ class UserCustomerController extends Controller
                         'u.RegionName',
                         'u.RegionName',
                 DB::raw("CASE WHEN ActiveStatus ='Y' THEN 'YES' ELSE 'NO' END  as Active"))
-            ->join('Customer as c','c.CustomerCode','=','u.CustomerCode')
-            ->where('c.Business','=','C')
+            ->leftjoin('Customer as c','c.CustomerCode','=','u.CustomerCode')
+//            ->where('c.Business','=','C')
             ->where(function ($q) use ($search) {
                 $q->where('u.UserId', 'like', '%' . $search . '%');
                 $q->Orwhere('c.CustomerName', 'like', '%' . $search . '%');
                 $q->Orwhere('c.CustomerCode', 'like', '%' . $search . '%');
             });
-
+        if ($roleId !== 'admin') {
+            $user->where('u.CustomerCode', $userId);
+        }
         if ($request->type === 'export') {
             return response()->json([
                 'data' => $user->get(),
@@ -69,6 +75,7 @@ class UserCustomerController extends Controller
         $region = $request->region;
         $active = $request->active;
         $userType = $request->userType;
+
         try{
             //Store USER CUSTOMER
             $exist = UserCustomer::where('UserId','=',$userId)->where('CustomerCode','=',$customerCode)->where('RegionName','=',$region)->first();
@@ -106,5 +113,13 @@ class UserCustomerController extends Controller
             $id = $request->row['UserCustomerId'];
             UserCustomer::where('UserCustomerId', $id)->delete();
             return response()->json(['message' => "User Customer deleted successfully"]);
+    }
+
+    public function getAllRole()
+    {
+        $roles = $this->roleList();
+        return response()->json([
+            'data'=>$roles
+        ]);
     }
 }

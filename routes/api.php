@@ -91,7 +91,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         //Bike Order
         Route::get('bike-list', [BikeController::class,'index']);
         Route::post('store-bike', [BikeController::class,'storeBikeOrder']);
-        Route::get('search-product', [CommonController::class,'bikeList']);
+        Route::get('search-product', [CommonController::class,'searchProduct']);
         Route::get('get-bike-by-product-code', [CommonController::class,'getBikeByProductCode']);
 
     //Spare Parts
@@ -129,6 +129,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('store-allocation', [StockController::class,'storeRackAllocation']);
         Route::post('allocation', [StockController::class,'allocationList']);
         Route::get('get-all-stock-product/{productCode}', [StockController::class,'getAllStockProduct']);
+        Route::post('get-spare-parts-receive-history', [StockController::class,'getSparePartsHistory']);
+
     });
 
     Route::group(['prefix' => 'reports'],function () {
@@ -154,6 +156,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('invoice-survey-report-data',          [ReportController::class,'getInvoiceSurveyReportData']);
         Route::post('dealer-invoice-survey-report-data',   [ReportController::class,'getDealerInvoiceSurveyReportData']);
         Route::post('service-summary',                     [ReportController::class,'getServiceSummaryReport']);
+        Route::post('scrap-products',        [ReportController::class,'getScrapProductsReport']);
     });
     //JOB CARD
     Route::group(['prefix' => 'jobCard'],function () {
@@ -199,8 +202,10 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('jobCard-update', [\App\Http\Controllers\JobCard\JobCardController::class,'updateTechnician']);
         Route::get('job-report-supporting-data',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getJobReportSupportingData']);
         Route::post('job-card-report',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getJobReportData']);
+        Route::post('job-card-csi-data',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getJobCSIData']);
         Route::post('job-card-booking-report',[\App\Http\Controllers\JobCard\AllJobCardReportController::class,'getBookingReportData']);
-
+        Route::get('csi-supporting-data', [\App\Http\Controllers\JobCard\JobCardController::class,'csiSupportingData']);
+        Route::post('csi-add-data', [\App\Http\Controllers\JobCard\JobCardController::class,'csiAddData']);
         //Job Card Estimation List
         Route::post('estimation-list', [\App\Http\Controllers\JobCard\JobCardEstimationController::class,'index']);
         Route::post('job-estimation-add', [\App\Http\Controllers\JobCard\JobCardEstimationController::class,'store']);
@@ -224,6 +229,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('user-customer',[UserCustomerController::class,'index']);
         Route::post('user-customer/store',[UserCustomerController::class,'store']);
         Route::post('user-customer/delete',[UserCustomerController::class,'delete']);
+        Route::get('get-all-roles',[UserCustomerController::class,'getAllRole']);
     });
 
     Route::group(['prefix' => 'logistics'],function () {
@@ -270,8 +276,9 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::get('search-product/{product}', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'searchProduct']);
         Route::post('progress-card-add', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'addProgressCard']);
         Route::post('update-follow-up', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'updateFollowUp']);
-        Route::get('load-supportingData', [\App\Http\Controllers\inquiry\InquiryFollowUpReportController::class, 'supportingData']);
-        Route::post('conversion-summary-report', [\App\Http\Controllers\inquiry\InquiryFollowUpReportController::class, 'report']);
+        Route::get('load-supportingData', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'supportingData']);
+        Route::post('conversion-summary-report', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'report']);
+        Route::get('get/print-data/{inquiryId}', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'existingInquiry']);
     });
     //Inquiry
     Route::group(['prefix' => 'test-ride'],function () {
@@ -333,6 +340,12 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('product-update',                    [\App\Http\Controllers\Settings\ProductController::class,'updateProduct']);
 
     });
+
+    Route::group(['prefix' => 'prebook'],function () {
+        Route::get('supporting-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookSupportingData']);
+        Route::post('prebook-report-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookingReport']);
+    });
+
 
 });
 

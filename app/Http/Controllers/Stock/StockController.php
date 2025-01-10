@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Stock;
 
 use App\Http\Controllers\Controller;
+use App\Models\DealarReceiveInvoiceDetails;
 use App\Models\Logistics\DealerDocument;
 use App\Traits\CommonTrait;
 use Dompdf\Dompdf;
@@ -25,12 +26,16 @@ class StockController extends Controller
             $business = 'P';
             $list = DB::table('DealarStock as d')
                 ->select(DB::raw("ROW_NUMBER() Over (Order by P.ProductCode) As SL "),
-                    'd.ProductCode','p.ProductName','p.PartNo','r.RackName',
+                    'd.ProductCode',
+                    'd.MasterCode',
+                    'customer.CustomerName',
+                    'p.ProductName','p.PartNo','r.RackName',
                     DB::raw("Convert(numeric(18,2), p.MRP) as MRP,
                     Convert(numeric(18,2), d.CurrentStock) as CurrentStock,
                     Convert(numeric(18,2), p.UnitPrice) as UnitPrice,
                     Convert(numeric(18,2), ((p.UnitPrice +p.Vat)*d.CurrentStock)) as TotalPrice"))
                 ->join('Product as p','p.ProductCode','=','d.ProductCode')
+                ->join('Customer','Customer.CustomerCode','d.MasterCode')
                 ->leftjoin("ProductRackAllocation as r",function($join){
                     $join->on("r.CustomerCode","=","d.MasterCode")
                         ->on("r.ProductCode","=","p.ProductCode");
@@ -65,7 +70,6 @@ class StockController extends Controller
         $customer = $request->customer ? $request->customer : $userId ;
         $list = DB::select("exec usp_reportProductStock '$customer','','$productCode','$userId','20','%'");
 
-
         if ($request->type === 'export') {
             return response()->json([
                 'data' => $list,
@@ -83,13 +87,14 @@ class StockController extends Controller
         $search = $request->search;
         $customerCode=Auth::user()->UserId;
         $allocation = DB::table("ProductRackAllocation as A")
-            ->select("A.ProductCode","P.ProductName","A.RackName")
+            ->select("A.ProductCode","P.ProductName","A.RackName","A.BinNumber")
             ->join("Product as P ","P.ProductCode","=","A.ProductCode")
             ->where("A.CustomerCode","=",$customerCode)
             ->where(function ($q) use ($search) {
                 $q->where('P.ProductCode', 'like', '%' . $search . '%');
                 $q->Orwhere('A.RackName', 'like', '%' . $search . '%');
                 $q->Orwhere('P.ProductName', 'like', '%' . $search . '%');
+                $q->Orwhere('A.BinNumber', 'like', '%' . $search . '%');
 
             });
 
@@ -125,8 +130,9 @@ class StockController extends Controller
             $productCode = $product['productcode'];
 
             $rackName = $request->rackName;
+            $binNo = $request->binNo;
 //            return "exec usp_doInsertRackAllocation '$userId', '$productCode', '$rackName'";
-            $rack =DB::select(DB::raw("exec usp_doInsertRackAllocation '$userId', '$productCode', '$rackName' "));
+            $rack =DB::select(DB::raw("exec usp_doInsertRackAllocation '$userId', '$productCode', '$rackName','$binNo' "));
 
             return response()->json([
                 'status' => 'Success',
@@ -163,5 +169,18 @@ class StockController extends Controller
                 'data' => $msl,
             ]);
         }
+    }
+
+    public function getSparePartsHistory(Request $request){
+
+        $receiveHistory = DealarReceiveInvoiceDetails::select('DealarReceiveInvoiceMaster.*','DealarReceiveInvoiceDetails.*',)
+            ->join('DealarReceiveInvoiceMaster','DealarReceiveInvoiceMaster.ReceiveID','DealarReceiveInvoiceDetails.ReceiveID')
+            ->where('DealarReceiveInvoiceDetails.ProductCode', '=', $request->ProductCode)
+            ->where('DealarReceiveInvoiceMaster.MasterCode', '=', $request->MasterCode)
+           ->get();
+
+        return response()->json([
+            'receiveHistory' => $receiveHistory,
+        ],200);
     }
 }

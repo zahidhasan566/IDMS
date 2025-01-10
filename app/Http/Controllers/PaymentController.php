@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\CustomerMapping;
-use App\Models\OrderInvoiceDetails;
-use App\Models\Payment;
 use App\Models\PaymentTempOnline;
 use App\Traits\CodeGeneration;
-use App\Traits\CodeGeneratiorTrait;
 use App\Traits\CommonTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
-use PhpParser\Node\Stmt\DeclareDeclare;
 
 class PaymentController extends Controller
 {
@@ -51,7 +48,7 @@ class PaymentController extends Controller
             )
             ->join('Banks as b','b.BankCode','PTO.BankCode')
             ->join('Business as bs','bs.Business','PTO.Business')
-            ->join('Depot as d','d.DepotCode','PTO.DepotCode')
+            ->leftJoin('Depot as d','d.DepotCode','PTO.DepotCode')
             ->leftjoin('Customer as c','c.CustomerCode','PTO.CustomerCode')
             ->where('PTO.Business',$business)
             ->whereNotNull('PTO.ChequeImage')
@@ -62,14 +59,6 @@ class PaymentController extends Controller
             if ($roleId !== 'admin') {
                 $payment->where('PTO.CustomerCode', Auth::user()->UserId);
             }
-//             if($admin ===0){
-//                 $payment->where(function ($q) use ($customerCode){
-//                     $q->where('PTO.CustomerCode', $customerCode );
-//                 });
-//             }else{
-//                 $payment ->whereNotNull('PTO.CustomerCode');
-//             }
-
             return response()->json([
                 'data'=>$payment->get()
             ]);
@@ -89,7 +78,7 @@ class PaymentController extends Controller
         ]);
     }
     public function getCustomerCode(){
-        $customers= $this->customerInfo();
+        $customers= $this->loadCustomer();
         return response([
             'data'=>$customers
         ]);
@@ -112,9 +101,10 @@ class PaymentController extends Controller
             $customerID ='%';
 
         }
-        $customerList= $this->allCustomer($customerID);
-        return response([
-            'data'=>$customerList
+        $customerList= $this->loadCustomer();
+
+        return response()->json([
+            'data' => $customerList,
         ]);
     }
 
@@ -142,11 +132,13 @@ class PaymentController extends Controller
             }
         }
 
-        $depotCode = $request->customer['DepotCode'];
-        $business = $request->customer['Business'];
-        $SalesType = $request->customer['PaymentMode'];
+        $customer = Customer::where('CustomerCode',$request->customer['CustomerCode'])->first();
+
+        $depotCode = $customer->DepotCode;
+        $business = $customer->Business;
+        $SalesType =$customer->PaymentMode;
         $CustomerCode = $request->customer['CustomerCode'];
-        $CustomerMasterCode = $request->customer['CustomerMasterCode'];
+        $CustomerMasterCode = $request->customer['CustomerCode'];
         $PreparedDate =Carbon::now()->format('Y-m-d');
         $bankCode =$request->bankCode['BankCode'];
         $paymentAmount = $request->payment;
@@ -174,13 +166,13 @@ class PaymentController extends Controller
 
                     $image = $request->chequeImage;
                     $name = uniqid() . time() . '.' . explode('/', explode(':', substr($image, 0, strpos($image, ';')))[1])[1];
-                    Image::make($image)->resize('800', '700')->save(public_path('uploads/payment/') . $name);
+                    $img=Image::make($image)->resize('900')->save(public_path('uploads/payment/') . $name);
                 } else {
                     $name = 'not_found.jpg';
                 }
                 $payment = new PaymentTempOnline();
                 $payment->MoneyRecNoTemp = $moneyReceiptNo;
-                $payment->DepotCode = $depotCode;
+                $payment->DepotCode = '';
                 $payment->Business = $business;
                 $payment->PaymentDate = $PaymentDate ;
                 $payment->SalesType = $SalesType;

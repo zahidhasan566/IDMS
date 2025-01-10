@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inquiry;
 
 use App\Http\Controllers\Controller;
+use App\Models\Inquiry\CompetitorCompany;
 use App\Models\Inquiry\InquiryCustomerCategory;
 use App\Models\Inquiry\InquiryDocument;
 use App\Models\Inquiry\InquiryDocumentCategory;
@@ -28,56 +29,19 @@ class InquiryProgressAndFollowUpController extends Controller
 {
     use CommonTrait,CodeGeneration;
     public function index(Request $request){
-        $take = $request->take;
-        $search = $request->search;
-        $userId  = Auth::user()->UserId;
-        $currentDate=  Carbon::now()->format('Y-m-d');
+        $userId = Auth::user()->UserId;
+        $export = $request->Export;
 
-        $subQuery = InquiryStatus::select('InquiryId', DB::raw('MAX((EntryDate)) as latest_timestamp'))
-                    ->where('InquiryStatus.EntryBy', $userId)->groupBy('InquiryStatus.InquiryId');
+        $currentPage = $request->pagination['current_page'] ?? 1;
+        $perPage = 20;
 
-        $followUpList =  InquiryStatus::select(
-            'InquiryStatus.InquiryId',
-            'InquiryStatus.VisitResultId',
-            DB::raw("CASE WHEN convert(date,InquiryStatus.NextDelivery,112) = convert(date,GETDATE(),112) THEN 'Today Call' ELSE 'Missed Call' End As Inquiry_Status") ,
-            DB::raw("CASE WHEN InquiryStatus.NextDelivery IS NULL THEN '' ELSE CONVERT(VARCHAR(11), InquiryStatus.NextDelivery, 106) END  Next_Visit"),
-            DB::raw("CASE WHEN InquiryStatus.ExpectedDelivery IS NULL THEN '' ELSE CONVERT(VARCHAR(11), InquiryStatus.ExpectedDelivery, 106) END Expected_Delivery"),
-            'Product.ProductName',
-            'InquiryMaster.CustomerName',
-            'InquiryMaster.ContactNo',
-            'InquiryMaster.ConvenientTimeToCall',
-            'InquiryMaster.Add1 as Address',
-            'InquiryMaster.Age',
-            'InquiryMaster.Gender',
-            'InquiryOccupation.OccupationName',
-            'InquiryMaster.Current2Wheeler',
-            'InquiryCustomerCategory.CustomerCategoryName as Customer_Category',
-            'InquiryMaster.InquiryRemark',
-            'InquiryMaster.EntryBy'
-            )
-//            ->joinSub($subQuery,'latest_updates',function ($join){
-//                $join->on('InquiryStatus.EntryDate', '=', 'latest_updates.latest_timestamp');
-//                })
-            ->join('InquiryMaster','InquiryMaster.InquiryId','InquiryStatus.InquiryId')
-            ->join('InquiryOccupation','InquiryOccupation.OccupationId','InquiryMaster.OccupationId')
-            ->join('InquiryCustomerCategory','InquiryCustomerCategory.CustomerCategoryId','InquiryMaster.CustomerCategoryId')
-            ->join('InquiryMainUser','InquiryMainUser.InquiryMainUserId','InquiryMaster.InquiryMainUserId')
-            ->join('Product','Product.ProductCode','InquiryStatus.ProductCode')
-            ->where(function ($q) use ($search) {
-                $q->where('InquiryStatus.InquiryId', '=', $search);
-                $q->Orwhere('InquiryMaster.CustomerName', 'like', '%' . $search . '%');
-            })
-            //->where('InquiryStatus.NextDelivery','>', $currentDate)
-            ->orderBy( 'InquiryStatus.InquiryId','desc');
-
-
-        if ($request->type === 'export') {
-            return response()->json([
-                'data' => $followUpList->get(),
-            ]);
-        } else {
-            return $followUpList->paginate($take);
+        if ($export == 'Y'){
+            $currentPage = '%';
         }
+
+        $sql = " exec usp_doLoadInquiryFollowUpAndProgressCard '$userId', '$perPage' ,'$currentPage' ";
+
+        return $this->getReportData($sql, $perPage, $currentPage, $export);
     }
 
     public function getSupportingData(){
@@ -88,6 +52,7 @@ class InquiryProgressAndFollowUpController extends Controller
         $inquiryLevel = InquiryLevel::where('Active',1)->get();
         $inquiryDocumentCategory = InquiryDocumentCategory::where('Active',1)->get();
         $visitResults =  VisitResult::all();
+        $competitorCompany =  CompetitorCompany::all();
 
 
         return response()->json([
@@ -98,6 +63,7 @@ class InquiryProgressAndFollowUpController extends Controller
             'inquiryLevelSupportingData'=>$inquiryLevel,
             'inquiryDocumentCategory'=>$inquiryDocumentCategory,
             'visitResults'=>$visitResults,
+            'competitorCompany'=>$competitorCompany,
         ]);
     }
     public function searchProduct($product){
@@ -133,6 +99,8 @@ class InquiryProgressAndFollowUpController extends Controller
             $inquiryMaster->UserCurrent2Wheeler = $request->userCurrentTwoWheeler;
             $inquiryMaster->ModelSuggested = $request->modelSuggested;
             $inquiryMaster->OfferTestRide = $request->testRiderOffer;
+            $inquiryMaster->PurposeOfRoyal = $request->purposeOfRoyal;
+            $inquiryMaster->AppralsAccessories = $request->appralsAccessories;
             $inquiryMaster->ProductCode = $request->product?$request->product['id']:'';
             $inquiryMaster->ModelYear = $request->modelYear;
             $inquiryMaster->ExpectedValue = $request->expectedValue;
@@ -203,41 +171,53 @@ class InquiryProgressAndFollowUpController extends Controller
         }
     }
     public function updateFollowUp(Request $request){
-
         try{
             $userId  = Auth::user()->UserId;
-
+//            dd($request->product['id']);
             //check already exist or not
             $checkInquiry=  InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->first();
 
-            if($checkInquiry){
-                InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
-                        'VisitResultId'=>$request->visitType,
-                        'ExpectedDelivery'=>$request->expectedDelivery,
-                        'NextDelivery'=>$request->nextVisit,
-                        'EntryBy'=>$userId,
-                        'EntryDate'=>Carbon::now(),
-                ]);
-            }
-            else{
+
+//            if($checkInquiry){
+//                InquiryStatus::where('InquiryId',$request->inquiryId)->where('ProductCode',$request->product['id'])->update([
+//                        'VisitResultId'=>$request->visitType,
+//                        'CompetitorCompanyId'=>$request->competitorCompany,
+//                        'ReceivedAmount'=>$request->receivedAmount,
+//                        'BikeModel'=>$request->bikeModel,
+//                        'ExpectedDelivery'=>$request->expectedDelivery,
+//                        'NextDelivery'=>$request->nextVisit,
+//                        'EntryBy'=>$userId,
+//                        'EntryDate'=>Carbon::now(),
+//                ]);
+//            }
+//            else{
+
                 $inquiryStatus = new InquiryStatus();
                 $inquiryStatus->InquiryId=$request->inquiryId;
                 $inquiryStatus->VisitResultId=$request->visitType;
                 $inquiryStatus->ProductCode=$request->product? $request->product['id']:'';
                 $inquiryStatus->ExpectedDelivery=$request->expectedDelivery;
-                //$inquiryStatus->DeliveryPriority=$request
+//                $inquiryStatus->DeliveryPriority=$request
                 $inquiryStatus->NextDelivery=$request->nextVisit;
+                $inquiryStatus->CompetitorCompanyId=$request->competitorCompanies;
+                $inquiryStatus->BikeModel=$request->bikeModel;
+                $inquiryStatus->ReceivedAmount=$request->receivedAmount;
                 $inquiryStatus->EntryBy=$userId;
                 $inquiryStatus->EntryDate=Carbon::now();
                 $inquiryStatus->save();
-            }
+//            }
 
-            return response()->json(['message' => "successfully updated"]);
+            return response()->json([
+                'status' => 'Success',
+                'message' => "Successfully updated"
+            ]);
 
         } catch (\Exception $exception) {
             return $exception->getMessage();
         }
     }
+
+
 
 
 

@@ -118,10 +118,10 @@ class NotificationController extends Controller
                 );
 
                     if (Notification::create($input)) {
-                        $message = "A truck has been released at your destination. Probable delivery schedule :{$request->DeliveryTime}.%0D%0ADriver Information. %0D%0A%0D%0ADriver mobile : {$request->DriverContactNo }. %0D%0ATruck No : {$request->TruckNo}. %0D%0A%0D%0AFor more information please log in YAMAHA DMS. %0D%0A%0D%0AThanks %0D%0AACI Motors ";
+                        $message = "A truck has been released at your destination. Probable delivery schedule :{$request->DeliveryTime}.%0D%0ADriver Information. %0D%0A%0D%0ADriver mobile : {$request->DriverContactNo }. %0D%0ATruck No : {$request->TruckNo}. %0D%0A%0D%0AFor more information please log in IFAD DMS. %0D%0A%0D%0AThanks %0D%0AACI Motors ";
                         $this->sendSmsQ(
-                            $number, 8809617614917, 'Yamaha-DMS', 'Transport Notification',
-                            'Yamaha',$userId, 'smsq', $message
+                            $number, 8809617614917, 'IFAD-DMS', 'Transport Notification',
+                            'IFAD',$userId, 'smsq', $message
                         );
                         return response()->json([
                             'status' => 'Success',
@@ -143,10 +143,10 @@ class NotificationController extends Controller
                     ['TransportID'     => $request->TransportID],
                 );
                 if (Notification::where('NotificationID', $NotificationID)->update($updateArray)) {
-                    $message = "A truck has been released at your destination. Probable delivery schedule :{$request->DeliveryTime}.%0D%0ADriver Information. %0D%0A%0D%0ADriver mobile : {$request->DriverContactNo }. %0D%0ATruck No : {$request->TruckNo}. %0D%0A%0D%0AFor more information please log in YAMAHA DMS. %0D%0A%0D%0AThanks %0D%0AACI Motors ";
+                    $message = "A truck has been released at your destination. Probable delivery schedule :{$request->DeliveryTime}.%0D%0ADriver Information. %0D%0A%0D%0ADriver mobile : {$request->DriverContactNo }. %0D%0ATruck No : {$request->TruckNo}. %0D%0A%0D%0AFor more information please log in IFAD DMS. %0D%0A%0D%0AThanks %0D%0AACI Motors ";
                     $this->sendSmsQ(
-                        $number, 8809617614917, 'Yamaha-DMS', 'Transport Notification',
-                        'Yamaha',$userId, 'smsq', $message
+                        $number, 8809617614917, 'IFAD-DMS', 'Transport Notification',
+                        'IFAD',$userId, 'smsq', $message
                     );
                     return response()->json([
                         'status' => 'Success',

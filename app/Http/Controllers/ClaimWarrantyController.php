@@ -219,38 +219,49 @@ class ClaimWarrantyController extends Controller
             $res[] = $rows;
         } while ($pdo->nextRowset());
 
-        $data = [];
-        $data['JobCardDetails']     = $res[0];
-        $data['PartsDetails']       = $res[1];
-        $data['WorkDetails']        = $res[2];
-        $data['ChassisNo']          = $res[0][0]['ChassisNo'];
-        $data['CustomerDetails']    = DB::select("exec usp_LoadCustomerDetails '".$data['ChassisNo']."'");
-        $data['maxMileage']         = DB::select("select ISNULL(max(CONVERT(NUMERIC(18,0),Mileage)) + 1,0) AS max from DealarWarrantyClaim where ChassisNo = '".$data['ChassisNo']."' and ISNUMERIC(Mileage)  = 1");
+        if (empty($res[0])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Job Card Not Found',
+            ], 200);
+        }
+        else{
+            $data = [];
+            $data['JobCardDetails']     = $res[0];
+            $data['PartsDetails']       = $res[1];
+            $data['WorkDetails']        = $res[2];
+            $data['ChassisNo']          = $res[0][0]['ChassisNo'];
+            $data['CustomerDetails']    = DB::select("exec usp_LoadCustomerDetails '".$data['ChassisNo']."'");
+            $data['maxMileage']         = DB::select("select ISNULL(max(CONVERT(NUMERIC(18,0),Mileage)) + 1,0) AS max from DealarWarrantyClaim where ChassisNo = '".$data['ChassisNo']."' and ISNUMERIC(Mileage)  = 1");
 
-        $UserId                     = strtoupper(trim($data['JobCardDetails'][0]['DealarCode']));
-        $data['PartsList']          = $this->loadParstList($JobCardNo, 'Parts', $UserId);
-        $partsDataFormat               = $this->partsDataFormat($data['PartsList']);
+            $UserId                     = strtoupper(trim($data['JobCardDetails'][0]['DealarCode']));
+            $data['PartsList']          = $this->loadParstList($JobCardNo, 'Parts', $UserId);
+            $partsDataFormat               = $this->partsDataFormat($data['PartsList']);
 
-        $data ['FinalDataSet'] = [
-          'JobCardNo'       =>  $JobCardNo,
-          'Picture'           =>  [],
-          'ChassisNo'       => $data['ChassisNo'],
-          'EngineNo'        => $data['CustomerDetails'][0]->engineno,
-          'InvoiceNo'       => $data['CustomerDetails'][0]->invoiceno,
-          'CustomerName'    => $data['CustomerDetails'][0]->customername,
-          'ProductName'     => $data['CustomerDetails'][0]->productname,
-          'Color'           => $data['CustomerDetails'][0]->color,
-          'Status'          => $data['CustomerDetails'][0]->serviceleft,
-          'Days'            => $data['CustomerDetails'][0]->days,
-          'Mileage'         => (int)$data['JobCardDetails'][0]['Mileage'],
-          'ProblemName'     => $data['JobCardDetails'][0]['ProblemDetails'],
-          'TechnicianName'  => $data['JobCardDetails'][0]['TechnicianName'],
-          'fieldsData'      => $partsDataFormat,
-        ];
+            $data ['FinalDataSet'] = [
+                'JobCardNo'       =>  $JobCardNo,
+                'Picture'           =>  [],
+                'ChassisNo'       => $data['ChassisNo'],
+                'EngineNo'        => $data['CustomerDetails'][0]->engineno,
+                'InvoiceNo'       => $data['CustomerDetails'][0]->invoiceno,
+                'CustomerName'    => $data['CustomerDetails'][0]->customername,
+                'ProductName'     => $data['CustomerDetails'][0]->productname,
+                'Color'           => $data['CustomerDetails'][0]->color,
+                'Status'          => $data['CustomerDetails'][0]->serviceleft,
+                'Days'            => $data['CustomerDetails'][0]->days,
+                'Mileage'         => (int)$data['JobCardDetails'][0]['Mileage'],
+                'ProblemName'     => $data['JobCardDetails'][0]['ProblemDetails'],
+                'TechnicianName'  => $data['JobCardDetails'][0]['TechnicianName'],
+                'fieldsData'      => $partsDataFormat,
+            ];
 
-        return response()->json([
-            'data' => $data ['FinalDataSet'],
-        ]);
+            return response()->json([
+                'status' => 'success',
+                'data' => $data ['FinalDataSet'],
+            ]);
+        }
+
+
     }
 
     public function filterParts(Request $request){

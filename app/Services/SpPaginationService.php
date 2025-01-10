@@ -26,7 +26,26 @@ class SpPaginationService
     public static function paginate2($sp,$take='',$offset='')
     {
         $dataSet = SpPaginationService::getPdoResult($sp);
-        $countData = count($dataSet[0]) > 0 ? $dataSet[1][0]['CountData']:0;
+        $countData = count($dataSet[0]) > 0 ? $dataSet[0][0]['CountData']:0;
+        $dataSet[] = count($dataSet[0]) > 0 ? [['CountData' => intval($countData)]]:[['CountData' => 0]];
+        if ($take !== '' && $offset !== '') {
+            $from = $offset + 1;
+            $to = ($offset + $take) <= intval($countData) ? $offset + $take : intval($countData);
+        } else {
+            $from = '';
+            $to = '';
+        }
+        return response()->json([
+            'data' => $dataSet,
+            'from' => $from,
+            'to' => $to
+        ]);
+    }
+
+    public static function paginate3($sp,$take='',$offset='')
+    {
+        $dataSet = SpPaginationService::getPdoResult($sp);
+        $countData = count($dataSet[0]) > 0 ? $dataSet[1][0]['PageNo']:0;
         $dataSet[] = count($dataSet[0]) > 0 ? [['CountData' => intval($countData)]]:[['CountData' => 0]];
         if ($take !== '' && $offset !== '') {
             $from = $offset + 1;

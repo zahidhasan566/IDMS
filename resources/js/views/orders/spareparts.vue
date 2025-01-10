@@ -32,6 +32,9 @@
                       <th>Unit Price</th>
                       <th>Vat</th>
                       <th>Total Price</th>
+                      <th>Level1 Approved</th>
+                      <th>Level2 Approved</th>
+                      <th>Level3 Approved</th>
 
                     </tr>
                     </thead>
@@ -45,6 +48,9 @@
                       <td class="text-right">{{ order.UnitPrice }}</td>
                       <td class="text-right">{{ order.VAT }}</td>
                       <td class="text-right">{{ order.TotalPrice }}</td>
+                      <td class="text-right">{{ order.Level1Approved }}</td>
+                      <td class="text-right">{{ order.Level2Approved }}</td>
+                      <td class="text-right">{{ order.Level3Approved }}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -112,6 +118,7 @@
                           <th>Part No<span class="required-field">*</span></th>
                           <th>Vat(%)<span class="required-field">*</span></th>
                           <th>Unit Price<span class="required-field">*</span></th>
+                            <th>Per Unit TP<span class="required-field">*</span></th>
                           <th>Current Stock<span class="required-field">*</span></th>
                           <th>Quantity<span class="required-field">*</span></th>
                           <th>Total Price<span class="required-field">*</span></th>
@@ -143,6 +150,10 @@
                           <td>
                             {{ product.UnitPrice }}
                           </td>
+                            <td>
+
+                                {{ parseFloat(product.Vat)  +  parseFloat(product.UnitPrice)}}
+                            </td>
                           <td>
                             {{ product.CurrentStock }}
                           </td>
@@ -151,7 +162,7 @@
                                    placeholder="Qty" type="number"
                                    v-model="product.Quantity"
                                    @keydown.enter="nextRow(i)"
-                                   @keyup="calculate(i)"  min="1">
+                                   @input="calculate(i)"  min="1">
 
                           </td>
                           <td>
@@ -163,7 +174,7 @@
                           </td>
                         </tr>
                         <tr>
-                          <td colspan="7">
+                          <td colspan="8">
                             <b>Total Amount</b>
                           </td>
                           <td class="text-right" colspan="1">
@@ -317,33 +328,47 @@ export default {
       }
     },
     setProduct(index) {
-      let productCode = this.form.products[index].ProductCode.ProductCode
-      this.form.products[index].ProductName = ''
-      this.form.products[index].PartNo = ''
-      this.form.products[index].Vat = 0
-      this.form.products[index].UnitPrice = 0
-      this.form.products[index].Quantity = 0
-      this.form.products[index].CurrentStock = 0
-      this.form.products[index].TotalPrice = 0
-      this.axiosGet('orders/get-parts-by-product-code?ProductCode=' + productCode,(response) => {
-        this.form.products[index].ProductCode = productCode
-        this.form.products[index].ProductName = response.ProductName
-        this.form.products[index].PartNo = response.PartNo
-        this.form.products[index].Vat = parseFloat(response.Vat)
-        this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
-        this.form.products[index].CurrentStock = parseInt(response.CurrentStock)
-      },(error) => {
-        this.errorNoti(error);
-      })
 
+      if (this.form.products[index].ProductCode !== null && this.form.products[index].ProductCode.ProductCode !== undefined) {
+        let productCode = this.form.products[index].ProductCode.ProductCode
+        this.form.products[index].ProductName = ''
+        this.form.products[index].PartNo = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].CurrentStock = 0
+        this.form.products[index].TotalPrice = 0
+        this.axiosGet('orders/get-parts-by-product-code?ProductCode=' + productCode, (response) => {
+          this.form.products[index].ProductCode = productCode
+          this.form.products[index].ProductName = response.ProductName
+          this.form.products[index].PartNo = response.PartNo
+          this.form.products[index].Vat = parseFloat(response.Vat)
+          this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+          this.form.products[index].CurrentStock = parseInt(response.CurrentStock)
+        }, (error) => {
+          this.errorNoti(error);
+        })
+        this.grandTotal();
+      } else {
+        this.form.products[index].ProductCode = ''
+        this.form.products[index].ProductName = ''
+        this.form.products[index].PartNo = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].CurrentStock = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].TotalPrice = 0
+        this.grandTotal();
+      }
     },
-    changeProductPrice(e,index) {
-      let qty =  e.target.value;
-      this.form.products[index].TotalPrice = (parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat)) * qty
+    changeProductPrice(e, index) {
+      let qty = e.target.value;
+      let sum = parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat) * qty
+      this.form.products[index].TotalPrice = parseInt(sum)
       this.form.products[index].parts = [];
     },
     calculate(i) {
-      this.form.products[i].TotalPrice = (Number(this.form.products[i].UnitPrice) + Number(this.form.products[i].Vat)) * Number(this.form.products[i].Quantity)
+      this.form.products[i].TotalPrice = parseFloat((Number(this.form.products[i].UnitPrice) + Number(this.form.products[i].Vat)) * Number(this.form.products[i].Quantity)).toFixed(2)
       this.grandTotal()
     },
     grandTotal() {
@@ -351,10 +376,10 @@ export default {
       this.GrossTotalPrice = 0
       if (this.form.products.length > 0) {
         this.form.products.forEach((item) => {
-          grandTotal += (parseFloat(item.UnitPrice) + parseFloat(item.Vat) ) * item.Quantity
+          grandTotal += (parseFloat(item.UnitPrice) + parseFloat(item.Vat)) * item.Quantity
         })
 
-        this.GrossTotalPrice =parseInt(grandTotal)
+        this.GrossTotalPrice = parseInt(grandTotal)
       }
       // console.log(parseFloat(this.GrossTotalPrice))
     },
@@ -508,9 +533,6 @@ export default {
           if (response.products.length > 0) {
             this.form.products.splice(0, 1)
             this.form.products = data.concat(response.products)
-
-            // this.importStatus =true
-            // this.changeProductPriceCommon(response.data.products)
             this.grandTotal();
           }
         });

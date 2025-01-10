@@ -32,6 +32,9 @@
                       <th>Quantity</th>
                       <th>Vat</th>
                       <th>Total Price</th>
+                      <th>Level1 Approved</th>
+                      <th>Level2 Approved</th>
+                      <th>Level3 Approved</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -44,6 +47,9 @@
                       <td class="text-right">{{ order.Quantity }}</td>
                       <td class="text-right">{{ order.Vat }}</td>
                       <td class="text-right">{{ order.TotalPrice }}</td>
+                      <td class="text-right">{{ order.Level1Approved }}</td>
+                      <td class="text-right">{{ order.Level2Approved }}</td>
+                      <td class="text-right">{{ order.Level3Approved }}</td>
                     </tr>
                     </tbody>
                   </table>
@@ -101,6 +107,7 @@
                     <th>Product Name<span class="required-field">*</span></th>
                     <th>Vat(%)<span class="required-field">*</span></th>
                     <th>Unit Price<span class="required-field">*</span></th>
+                    <th>Per Unit TP<span class="required-field">*</span></th>
                     <th>Quantity<span class="required-field">*</span></th>
                     <th>Total Price<span class="required-field">*</span></th>
                     <th>Action</th>
@@ -122,11 +129,15 @@
                     <td>
                       {{ product.UnitPrice }}
                     </td>
+                      <td>
+
+                          {{ parseFloat(product.Vat)  +  parseFloat(product.UnitPrice)}}
+                    </td>
                     <td class="text-center">
                         <input type="number" id="qty"
                                placeholder="Qty"
                                v-model="product.Quantity"
-                               @keyup="calculate(i)" min="1" step="1">
+                               @input="calculate(i)" min="1" step="1">
 
                     </td>
                     <td>
@@ -138,7 +149,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                       <b>Total Amount</b>
                     </td>
                     <td class="text-right" colspan="1">
@@ -279,31 +290,68 @@ export default {
       })
     },
 
-    searchProduct() {
-        axios.get(baseurl + 'api/orders/search-product'
-            , this.config()).then((response) => {
-          this.parts = response.data;
-        }).catch((error) => {
+    searchProduct(val) {
+      let productCode = val;
+      axios.get(baseurl + 'api/orders/search-product?ProductCode=' + productCode, this.config()).then((response) => {
+        this.parts = response.data;
+      }).catch((error) => {
 
-        })
-
-    },
-    setProduct(index) {
-      let productCode = this.form.products[index].ProductCode.ProductCode
-      this.form.products[index].ProductName = ''
-      this.form.products[index].Vat = 0
-      this.form.products[index].UnitPrice = 0
-      this.form.products[index].Quantity = 0
-      this.form.products[index].TotalPrice = 0
-      this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
-        this.form.products[index].ProductName = response.ProductName
-        this.form.products[index].Vat = parseInt(response.Vat)
-        this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
-        this.grandTotal();
-      },(error) => {
-        this.errorNoti(error);
       })
     },
+    setProduct(index) {
+      if (this.form.products[index].ProductCode !== null && this.form.products[index].ProductCode.ProductCode !== undefined) {
+        let productCode = this.form.products[index].ProductCode.ProductCode
+        this.form.products[index].ProductName = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].TotalPrice = 0
+        this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
+          this.form.products[index].ProductName = response.ProductName
+          this.form.products[index].Vat = parseInt(response.Vat)
+          this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+          this.grandTotal();
+        },(error) => {
+          this.errorNoti(error);
+        })
+        this.grandTotal();
+      }else {
+        this.form.products[index].ProductCode = ''
+        this.form.products[index].ProductName = ''
+        this.form.products[index].Vat = 0
+        this.form.products[index].UnitPrice = 0
+        this.form.products[index].Quantity = 0
+        this.form.products[index].TotalPrice = 0
+        this.grandTotal();
+      }
+
+    },
+
+    // searchProduct() {
+    //     axios.get(baseurl + 'api/orders/search-product'
+    //         , this.config()).then((response) => {
+    //       this.parts = response.data;
+    //     }).catch((error) => {
+    //
+    //     })
+    //
+    // },
+    // setProduct(index) {
+    //   let productCode = this.form.products[index].ProductCode.ProductCode
+    //   this.form.products[index].ProductName = ''
+    //   this.form.products[index].Vat = 0
+    //   this.form.products[index].UnitPrice = 0
+    //   this.form.products[index].Quantity = 0
+    //   this.form.products[index].TotalPrice = 0
+    //   this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
+    //     this.form.products[index].ProductName = response.ProductName
+    //     this.form.products[index].Vat = parseInt(response.Vat)
+    //     this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+    //     this.grandTotal();
+    //   },(error) => {
+    //     this.errorNoti(error);
+    //   })
+    // },
     changeProductPrice(e,index) {
       let qty =  e.target.value;
       this.form.products[index].TotalPrice = (parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat)) * qty

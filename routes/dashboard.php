@@ -17,4 +17,9 @@ Route::group(['middleware' => 'jwt:api','prefix' => 'dashboard'], function () {
     //logistics
     Route::post('logistics', [DealerReceiveController::class,'getAllPendingDocument']);
     Route::post('update-document', [DealerReceiveController::class,'updateLogisticsDocument']);
+
+    //pendingOrders
+    Route::post('pending-orders', [DashboardController::class,'pendingOrders']);
+    Route::post('pending-orders/store',[DashboardController::class,'storeApproved']);
+    Route::get('edit-approve',[DashboardController::class,'editApproved']);
 });

@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\CustomerMapping;
 use App\Models\CustomerType;
+use App\Models\User;
 use App\Traits\CodeGeneration;
 use App\Traits\CommonTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -51,6 +54,7 @@ class CustomerController extends Controller
         }
 
         try {
+            DB::beginTransaction();
             $customer = new Customer();
             $customer->CustomerCode     = $request->CustomerCode;
             $customer->CustomerName     = $request->CustomerName;
@@ -65,8 +69,8 @@ class CustomerController extends Controller
             $customer->Mobile           = $request->Mobile;
             $customer->ThanaCode        = $request->ThanaCode;
             $customer->NID              = $request->NID;
-            $customer->Business         = $request->Business ? $request->Business : '';
-            $customer->DepotCode        = $request->DepotCode ? $request->DepotCode : '';
+            $customer->Business         = $request->Business ? $request->Business : 'C';
+            $customer->DepotCode        = $request->DepotCode ? $request->DepotCode : 'H';
             $customer->CustomerType     = $request->CustomerType;
             $customer->PaymentMode      = $request->PaymentMode;
             $customer->CreditDays       = '';
@@ -91,6 +95,27 @@ class CustomerController extends Controller
             $customer->OwnerType        = '';
             $customer->SubBusinessCode  = '';
             $customer->save();
+
+
+            $user = new User();
+            $user->UserId = $request->CustomerCode;
+            $user->UserName = $request->CustomerName;
+            $user->Designation = 'Dealer';
+            $passwordData = DB::select("select dbo.ufn_PasswordEncode('$request->CustomerCode') as RawPass");
+            $user->Password = $passwordData[0]->RawPass;;
+            $user->RoleId = 'customer';
+            $user->Active = 0;
+            $user->save();
+
+
+            $customerMapping = new CustomerMapping();
+            $customerMapping->CustomerMasterCode = $request->CustomerCode;
+            $customerMapping->CustomerCode = $request->CustomerCode;
+            $customerMapping->Business = 'C';
+            $customerMapping->save();
+
+
+            Db::commit();
 
             return response()->json([
                 'status'    => 'success',

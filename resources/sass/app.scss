@@ -23,10 +23,10 @@ body{
   color: #000000 !important;
 }
 
-.router-link-exact-active {
-  color: #b4c9de !important;
-  background-color: #05623a;
-}
+//.router-link-exact-active {
+//  color: #b4c9de !important;
+//  background-color: #05623a;
+//}
 
 a {
   color: rgb(52, 144, 220)
@@ -47,7 +47,7 @@ a {
   padding: 1px;
   background-size: cover !important;
   /*background: url(https://app.acibd.com/AMS/assets/images/creative-background.jpg) no-repeat top;*/
-  background: url("https://dms.yamahabd.com/assets/images/creative-background2.jpg");
+  background: url("https://dms.ifadmotors.com/assets/images/creative-background2.jpg");
   height: 100vh;
 }
 
@@ -109,9 +109,9 @@ a {
   color: antiquewhite !important;
 }
 
-.router-link-exact-active {
-  background-color: #05623a;
-}
+//.router-link-exact-active {
+//  background-color: #05623a;
+//}
 
 //table design
 //.table .thead-dark th {
@@ -137,5 +137,11 @@ a {
 @media (max-width: 1272px) {
   .pad-cus {
     display: none;
+  }
+}
+
+@media (max-width: 1200px) {
+  .wrapper-page {
+    left: 0
   }
 }

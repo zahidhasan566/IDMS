@@ -8,6 +8,9 @@
       </div>
     </div>
     <general-datatable :options="tableOptions" :customers="customers">
+        <template slot="action" slot-scope="row">
+            <router-link class="btn btn-primary" style="font-size: 12px;width:65px;padding: 2px 0px" target='_blank' :to="{path: `${baseurl}`+'inquiry-print?action_type=print&item='+encodeConvert(row.item.InquiryId)}"><i class="fa fa-print">Print</i></router-link>
+        </template>
     </general-datatable>
   </div>
 </template>
@@ -17,6 +20,7 @@ import {bus} from "../../app";
 import {Common} from "../../mixins/common";
 import moment from "moment";
 import General from "../../components/datatable/General.vue";
+import {baseurl} from "../../base_url";
 
 export default {
   components: {General},
@@ -27,22 +31,21 @@ export default {
       tableOptions: {
         source: 'inquiry/conversion-summary-report',
         search: false,
-        slots: [],
-        hideColumn: [],
-        slotsName: [],
+        slots: [15],
+        hideColumn: ['CountData'],
+        slotsName: ['action'],
         filterOption: true,
         showFilter: ['startDate','endDate','customers','products'],
         colSize: ['col-lg-2','col-lg-2','col-lg-2'],
         sortable: [],
         pages: [20, 50, 100],
-        addHeader: []
+        addHeader: ['Action'],
       },
       customers: [],
-
+      baseurl: baseurl
     }
   },
   mounted() {
-    this.getData()
     bus.$off('changeStatus',function () {
       this.changeStatus()
     })
@@ -54,6 +57,10 @@ export default {
         this.products = response.products
       })
     },
+      encodeConvert(val){
+          let convertVal = btoa(val);
+          return convertVal
+      },
     exportData() {
       bus.$emit('export-data','inquiry-conversion-summary-report-'+moment().format('YYYY-MM-DD'))
     }

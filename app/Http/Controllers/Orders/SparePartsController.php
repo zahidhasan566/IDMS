@@ -22,9 +22,14 @@ class SparePartsController extends Controller
         $search = $request->get('query');
         $prevsixmonth = date("Y-m-d", strtotime("-6 months"));
         $today = date("Y-m-d");
-        $order = DB::table('OrderInvoiceDetails AS od')->select('od.OrderNo', 'od.ProductCode', 'p.ProductName', DB::raw('CONVERT(int,od.Quantity) as Quantity'),
+        $order = DB::table('OrderInvoiceDetails AS od')
+            ->select('od.OrderNo', 'od.ProductCode', 'p.ProductName', DB::raw('CONVERT(int,od.Quantity) as Quantity'),
             DB::raw('CONVERT(int,od.UnitPrice) as UnitPrice'), DB::raw('CONVERT(int,od.VAT) as VAT'),
-            'u.UserName', DB::raw('CONVERT(date,m.OrderDate) as OrderDate'), DB::raw('CONVERT(INT,((od.UnitPrice +od.Vat) * od.Quantity)) as TotalPrice'))
+            'u.UserName', DB::raw('CONVERT(date,m.OrderDate) as OrderDate'),
+                DB::raw('CONVERT(INT,((od.UnitPrice +od.Vat) * od.Quantity)) as TotalPrice'),
+                DB::raw("Case when m.Level1Approved ='Y' then 'Yes' when m.Level1Approved='N' then 'No' when m.Level1Approved='C' then 'Cancel' END Level1Approved"),
+                DB::raw("Case when m.Level2Approved ='Y' then 'Yes' when m.Level2Approved='N' then 'No' when m.Level2Approved='C' then 'Cancel' END Level2Approved"),
+                DB::raw("Case when m.Level3Approved ='Y' then 'Yes' when m.Level3Approved='N' then 'No' when m.Level3Approved='C' then 'Cancel' END Level3Approved"))
             ->join('OrderInvoiceMaster as m ', 'm.OrderNo', 'od.OrderNo')
             ->join('UserManager as u', 'u.UserID', 'm.MasterCode')
             ->join('Product as p', 'p.ProductCode', 'od.ProductCode')
@@ -46,10 +51,17 @@ class SparePartsController extends Controller
         try {
 
             DB::beginTransaction();
-            $preparedArray = $request->products;
-
+            $products = $request->products;
+            foreach ($products as $key => $value){
+                if(empty($value['ProductCode'])){
+                    unset($products[$key]);
+                }
+            }
+            $products = array_values($products);
+            $preparedArray = $products;
             $unique_check = collect($preparedArray);
             $unique_check = $unique_check->pluck('ProductCode');
+
             $productCodes = [];
             foreach ($unique_check as $each) {
                 $productCodes[] = $each;
@@ -58,12 +70,12 @@ class SparePartsController extends Controller
 
             $unique_check = $unique_check->toArray();
 
-            $result = array_diff_key($unique_check, $unique);
+            $result = array_values(array_diff_key($unique_check, $unique));
 
             if ($result) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'You have added '.$result[1].' multiple times!'
+                    'message' => 'You have added '.$result[0].' multiple times!'
                 ]);
             }
             $bike = new OrderInvoiceMaster();
@@ -71,11 +83,13 @@ class SparePartsController extends Controller
             $bike->OrderDate = Carbon::now()->format("Y-m-d 00:00:00.000");
             $bike->OrderTime =   Carbon::now();
             $bike->InvoiceOK =   'N';
+
             $bike->SendTime =    Carbon::now();
             $bike->IPAddress =  $request->ip() ;
+
             if ($bike->save()){
                 foreach ($preparedArray as $key => $value){
-                    if ( $value['Quantity'] >0 ){
+                    if (  $value['Quantity'] >0 ){
                         $details = new OrderInvoiceDetails();
                         $details->OrderNo = $bike->OrderNo;
                         $details->ProductCode = $value['ProductCode'];
@@ -134,7 +148,6 @@ class SparePartsController extends Controller
             $ProductList = $request->products;
             foreach ($ProductList as $key => $singleData){
 
-                $total = ($singleData['Unit Price']+$singleData['Vat']) *(!empty($singleData['Quantity'])? $singleData['Quantity']:0);
                 if(!empty($singleData['Quantity']))
                 {
                     global $filterProductCode;
@@ -145,21 +158,26 @@ class SparePartsController extends Controller
                             return true;
                         }
                     }));
-                    $product =[];
-                    $product['PartName']  =  $singleData['Product Code'] .' - '.$filterProduct[0]['ProductName'];
-                    $product['ProductCode']  =  $filterProduct[0]['ProductCode'];
-                    $product['PartsCode']  =   $filterProduct[0]['PartNo'];
-                    $product['ProductName']  =  $filterProduct[0]['ProductName'];
-                    $product['Vat']  = $filterProduct[0]['VAT'];
-                    $product['UnitPrice']  = $filterProduct[0]['UnitPrice'];
-                    $product['Quantity']  =  $singleData['Quantity'];
-                    $product['CurrentStock']  =  $singleData['Current Stock'];
-                    $product['TotalPrice']  =  $total;
-                    $product['importStatus']  =  true;
-                    array_push($data,$product);
+                    if (!empty($filterProduct[0]['ProductName'])){
+                        $product =[];
+                        $product['PartName']  =  $singleData['Product Code'] .' - '.$filterProduct[0]['ProductName'];
+                        $product['ProductCode']  =  $filterProduct[0]['ProductCode'];
+                        $product['PartsCode']  =   $filterProduct[0]['PartNo'];
+                        $product['ProductName']  =  $filterProduct[0]['ProductName'];
+                        $product['Vat']  = $filterProduct[0]['VAT'];
+                        $product['UnitPrice']  = $filterProduct[0]['UnitPrice'];
+                        $product['Quantity']  =  $singleData['Quantity'];
+                        $product['CurrentStock']  =  $singleData['Current Stock'];
+                        $product['TotalPrice']  =  number_format(($filterProduct[0]['UnitPrice']+$filterProduct[0]['VAT']) *(!empty($singleData['Quantity'])? $singleData['Quantity']:0),2);
+                        $product['importStatus']  =  true;
+                        array_push($data,$product);
+                    }
+
+
                 }
 
             }
+
         }
         catch (\Exception $exception) {
             return $exception->getMessage();

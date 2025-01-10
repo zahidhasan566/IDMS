@@ -16,9 +16,17 @@
                                          style="margin-top: 5px;margin-bottom:0px !important;padding-bottom: 0px !important;">
                                         <h3 id="form-horizontal-h-3" tabindex="-1" class="title">Job Card
                                             information</h3>
+
                                         <fieldset id="form-horizontal-p-0" role="tabpanel"
                                                   aria-labelledby="form-horizontal-h-0" class="body current"
                                                   aria-hidden="false">
+
+                                            <div class="row">
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4"></div>
+                                            </div>
+
+
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <ValidationProvider name="job Card No" mode="eager"
@@ -68,7 +76,7 @@
                                                                              :options="allchassisNo"
                                                                              :multiple="false"
                                                                              :disabled="actionType==='edit'?true:false"
-                                                                             @search-change="checkChassisNo"
+                                                                             @search-change="checkChassisNo($event,'bi')"
                                                                              @input="setBikeInfo($event)"
                                                                              :close-on-select="true"
                                                                              :clear-on-select="false"
@@ -99,9 +107,11 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
+                                                    <ValidationProvider name="Customer Name" mode="eager" rules="required"
+                                                                        v-slot="{ errors }">
                                                     <div class="form-group row">
                                                         <label for="customerName" class="col-lg-3 col-form-label">Customer
-                                                            Name</label>
+                                                            Name <span class="error">*</span></label>
                                                         <div class="col-lg-9">
                                                             <input type="text" class="form-control"
                                                                    id="customerName"
@@ -109,8 +119,10 @@
                                                                    data-chassisNo="true"
                                                                    v-model="customerName" name="customerName"
                                                                    placeholder="Customer Name">
+                                                            <span class="error-message"> {{ errors[0] }}</span>
                                                         </div>
                                                     </div>
+                                                    </ValidationProvider>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <ValidationProvider name="Mobile No" mode="eager" rules="required"
@@ -204,15 +216,8 @@
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group row">
-                                                        <label class="col-lg-3 col-form-label">Booking No</label>
-                                                        <div class="col-lg-6">
-                                                            <input type="text" class="form-control"
-                                                                   data-index="4"
-                                                                   id="bookingNo"
-                                                                   data-chassisNo="true"
-                                                                   v-model="bookingNo" name="brand"
-                                                                   placeholder="bookingNo">
-                                                        </div>
+                                                        <label class="col-lg-3 col-form-label">Serial No <span
+                                                                class="error">*</span></label>
 
                                                         <div class="col-lg-3">
                                                             <ValidationProvider name="serial" mode="eager"
@@ -231,14 +236,15 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <ValidationProvider name="Mileage" mode="eager" rules="required"
+                                                    <ValidationProvider name="Mileage" mode="eager"
+                                                                        :rules="`required|min_value:1`"
                                                                         v-slot="{ errors }">
 
                                                         <div class="form-group row">
                                                             <label for="mileage" class="col-lg-3 col-form-label">Mileage
                                                                 <span class="error">*</span></label>
                                                             <div class="col-lg-9">
-                                                                <input type="text" class="form-control"
+                                                                <input type="number" class="form-control"
                                                                        data-index="6"
                                                                        @change="checkMillage($event)"
                                                                        id="mileage"
@@ -373,15 +379,14 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <ValidationProvider name="YDT status" mode="eager" rules="required"
+                                                    <ValidationProvider name="Diagnose status" mode="eager" rules="required"
                                                                         v-slot="{ errors }">
                                                         <div class="form-group row">
-                                                            <label for="ytdStatus" class="col-lg-3 col-form-label">YDT
+                                                            <label for="ytdStatus" class="col-lg-3 col-form-label">Diagnose
                                                                 status <span class="error">*</span></label>
                                                             <div class="col-lg-9">
                                                                 <select class="form-control" name="ytdStatus"
                                                                         data-index="12"
-                                                                        @change="setYdtNoReason($event)"
                                                                         v-model="ytdStatus">
                                                                     <option value="Y">Yes</option>
                                                                     <option value="N">No</option>
@@ -393,7 +398,7 @@
                                                 </div>
                                                 <div class="col-md-4" v-if="!ytdNoTag">
                                                     <div class="form-group row">
-                                                        <label for="ydTFile" class="col-lg-3 col-form-label">YDT
+                                                        <label for="ydTFile" class="col-lg-3 col-form-label">Diagnose
                                                             File</label>
                                                         <div class="col-lg-9">
                                                             <input type="file" class="form-control"
@@ -406,7 +411,7 @@
                                                 <div class="col-md-4" v-if="ytdNoTag">
                                                     <div class="form-group row">
                                                         <label for="failureAnalysis" class="col-lg-3 col-form-label">
-                                                            Reason of YDT <span class="error">*</span> </label>
+                                                            Reason of Diagnose <span class="error">*</span> </label>
                                                         <div class="col-lg-9">
                                                             <multiselect v-model="reasonOfYDT" :options="ytdNoReason"
                                                                          :multiple="false"
@@ -420,25 +425,25 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"
-                                                                        v-slot="{ errors }">
-                                                        <div class="form-group row">
-                                                            <label for="fiStatus" class="col-lg-3 col-form-label">FI
-                                                                Status
-                                                                <span class="error">*</span></label>
-                                                            <div class="col-lg-9">
-                                                                <select class="form-control" name="ytdStatus"
-                                                                        @change="setFiNoReason($event)"
-                                                                        v-model="fiStatus">
-                                                                    <option value="Y">Yes</option>
-                                                                    <option value="N">No</option>
-                                                                </select>
-                                                                <span class="error-message"> {{ errors[0] }}</span>
-                                                            </div>
-                                                        </div>
-                                                    </ValidationProvider>
-                                                </div>
+<!--                                                <div class="col-md-4">-->
+<!--                                                    <ValidationProvider name="FI Status" mode="eager" rules="required"-->
+<!--                                                                        v-slot="{ errors }">-->
+<!--                                                        <div class="form-group row">-->
+<!--                                                            <label for="fiStatus" class="col-lg-3 col-form-label">FI-->
+<!--                                                                Status-->
+<!--                                                                <span class="error">*</span></label>-->
+<!--                                                            <div class="col-lg-9">-->
+<!--                                                                <select class="form-control" name="ytdStatus"-->
+<!--                                                                        @change="setFiNoReason($event)"-->
+<!--                                                                        v-model="fiStatus">-->
+<!--                                                                    <option value="Y">Yes</option>-->
+<!--                                                                    <option value="N">No</option>-->
+<!--                                                                </select>-->
+<!--                                                                <span class="error-message"> {{ errors[0] }}</span>-->
+<!--                                                            </div>-->
+<!--                                                        </div>-->
+<!--                                                    </ValidationProvider>-->
+<!--                                                </div>-->
                                             </div>
                                             <div class="row" v-if="fiNoTag">
                                                 <div class="col-md-6">
@@ -595,45 +600,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!--                                            <div class="row">-->
-                                            <!--                                                <div class="col-md-3">-->
-                                            <!--                                                    <div class="form-group row">-->
-                                            <!--                                                        <label for="discountType" class="col-lg-6 col-form-label">Discount-->
-                                            <!--                                                            Type</label>-->
-                                            <!--                                                        <div class="col-lg-6">-->
-                                            <!--                                                            <select class="form-control" name="ytdStatus"-->
-                                            <!--                                                                    v-model="discountType">-->
-                                            <!--                                                                <option value="ACI Employee">ACI Employee</option>-->
-                                            <!--                                                                <option value="Campaign">Campaign</option>-->
-                                            <!--                                                            </select>-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                    </div>-->
-                                            <!--                                                </div>-->
-                                            <!--                                                <div class="col-md-3">-->
-                                            <!--                                                    <div class="form-group row">-->
-                                            <!--                                                        <label for="discount"-->
-                                            <!--                                                               class="col-lg-6 col-form-label">Discount(%)</label>-->
-                                            <!--                                                        <div class="col-lg-6">-->
-                                            <!--                                                            <input type="text" class="form-control"-->
-                                            <!--                                                                   id="discount"-->
-                                            <!--                                                                   v-model="discount"-->
-                                            <!--                                                                   name="discount">-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                    </div>-->
-                                            <!--                                                </div>-->
-                                            <!--                                                <div class="col-md-3">-->
-                                            <!--                                                    <div class="form-group row">-->
-                                            <!--                                                        <label for="staffId" class="col-lg-6 col-form-label">Staff-->
-                                            <!--                                                            id</label>-->
-                                            <!--                                                        <div class="col-lg-6">-->
-                                            <!--                                                            <input type="text" class="form-control"-->
-                                            <!--                                                                   id="staffId"-->
-                                            <!--                                                                   v-model="staffId"-->
-                                            <!--                                                                   name="staffId">-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                    </div>-->
-                                            <!--                                                </div>-->
-                                            <!--                                            </div>-->
                                         </fieldset>
                                         <h3 id="form-horizontal-h-3" class="title">Parts information</h3>
                                         <div class="card table-graphics" style="padding-top:0px">
@@ -677,9 +643,7 @@
                                                                              :preserve-search="true"
                                                                              placeholder="Select Parts"
                                                                              label="FullProduct" track-by="ProductCode">
-
                                                                 </multiselect>
-
                                                             </td>
                                                             <td style="text-align: end;">
                                                             <span style="background: rgb(2 164 153);
@@ -856,25 +820,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <h3 id="form-horizontal-h-3" class="title">Reference</h3>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-lg-3 col-form-label">Local Mechanics</label>
-                                                    <div class="col-lg-9">
-                                                        <multiselect v-model="reference" :options="allReference"
-                                                                     :multiple="false"
-                                                                     :close-on-select="true"
-                                                                     :clear-on-select="false"
-                                                                     :preserve-search="false"
-                                                                     placeholder="Local Mechanics"
-                                                                     label="MechanicsDetails" track-by="MechanicsCode">
-
-                                                        </multiselect>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="col-md-12" style="text-align: end;margin-top:10px">
                                         <submit-form v-if="buttonShow" :name="buttonText"/>
@@ -932,8 +877,14 @@
                                 </table>
                             </div>
                         </div>
+
                     </div>
                 </div>
+            </div>
+
+            <div>
+                <loader v-if="PreLoader" object="#ff9633" color1="#ffffff" color2="#17fd3d" size="5" speed="2"
+                        bg="#343a40" objectbg="#999793" opacity="80" name="circular"></loader>
             </div>
         </div>
         <!-- container-fluid -->
@@ -1008,6 +959,7 @@ export default {
             fiNoTag: false,
             reasonOfYDT: '',
             reasonOfFI: '',
+            PreLoader: false,
 
 
             read: true,
@@ -1141,12 +1093,17 @@ export default {
                         StatusName: existingJobCardInfo.JobStatus,
                         StatusCode: existingJobCardInfo.JobStatus
                     }
-                    setTimeout(() => {
-                        instance.jobType = {
-                            JobTypeName: existingJobCardInfo.JobTypeName,
-                            Id: existingJobCardInfo.JobTypeId
-                        }
-                    }, 500)
+                    // setTimeout(() => {
+                    //     instance.jobType = {
+                    //         JobTypeName: existingJobCardInfo.JobTypeName,
+                    //         Id: existingJobCardInfo.JobTypeId
+                    //     }
+                    // }, 500)
+
+                    instance.jobType = {
+                        JobTypeName: existingJobCardInfo.JobTypeName,
+                        Id: existingJobCardInfo.JobTypeId
+                    }
 
 
                     let updateJobCardServiceName = ''
@@ -1154,19 +1111,25 @@ export default {
                     if (existingJobCardInfo.ScheduleTitle != null && parseInt(existingJobCardInfo.FreeSScheduleID) !== 0) {
                         updateJobCardServiceName = existingJobCardInfo.ScheduleTitle
                         updateJobCardServiceId = existingJobCardInfo.FreeSScheduleID
-                        instance.checkLastServiceHistory(existingJobCardInfo.ChassisNo);
+                        //instance.checkLastServiceHistory(existingJobCardInfo.ChassisNo);
                         instance.childJobTypeStatusReadOnly = false
                     } else {
                         updateJobCardServiceName = existingJobCardInfo.JobTypeName
                         updateJobCardServiceId = existingJobCardInfo.JobTypeId
                         instance.childJobTypeStatusReadOnly = true
                     }
-                    setTimeout(() => {
-                        instance.ServiceNo = {
-                            JobTypeName: updateJobCardServiceName,
-                            Id: updateJobCardServiceId
-                        }
-                    }, 500)
+                    // setTimeout(() => {
+                    //     instance.ServiceNo = {
+                    //         JobTypeName: updateJobCardServiceName,
+                    //         Id: updateJobCardServiceId
+                    //     }
+                    // }, 500)
+
+
+                    instance.ServiceNo = {
+                        JobTypeName: updateJobCardServiceName,
+                        Id: updateJobCardServiceId
+                    }
 
                     instance.ytdStatus = existingJobCardInfo.YTD_status
                     if (existingJobCardInfo.YTD_status === 'N') {
@@ -1378,9 +1341,40 @@ export default {
                 this.fiNoTag = false
             }
         },
-        checkChassisNo(val) {
+        checkOnlineBooking(e) {
+            let onlineBookingNo = this.bookingNo
+            let instance = this
+
+            if (instance.bookingNo === '') {
+                instance.errorNoti('Please Enter Booking No')
+                return false
+            } else {
+                this.axiosGet('jobCard/check-online-booking-no/' + onlineBookingNo, function (response) {
+                    if (response.onlineBooking !== null) {
+                        instance.checkChassisNo(response.onlineBooking.ChassisNo)
+                    } else {
+                        instance.errorNoti('Online Booking Not Found');
+                        instance.chassisNo = ''
+                        instance.engineNo ='';
+                        instance.customerName = '';
+                        instance.brand = '';
+                        instance.model = '';
+                        instance.purchaseDate = '';
+                        instance.underWarrenty = '';
+                        instance.address = '';
+
+                    }
+
+                }, function (error) {
+                });
+            }
+
+
+        },
+        checkChassisNo(val,bi='') {
             let instance = this;
             instance.chassisNo = val;
+            this.allchassisNo = []
             if (val.length > 0) {
                 this.axiosGet('jobCard/check-chassis-no/' + instance.chassisNo, function (response) {
                     let onGoingStatusCheck = (response.onGoingStatusCheck === null) ? '' : response.onGoingStatusCheck.JobStatus
@@ -1393,6 +1387,12 @@ export default {
                     } else {
                         if (response) {
                             instance.allchassisNo = response.bikeList;
+                            if (bi !== 'bi') {
+                                instance.chassisNo = {
+                                    chassisno:  instance.chassisNo
+                                }
+                              instance.setBikeInfo(response.bikeList[0])
+                            }
                         } else {
                             instance.allchassisNo = []
                         }
@@ -1455,6 +1455,9 @@ export default {
                 });
             }
         },
+        setBikeEvent() {
+
+        },
         setBikeInfo(val) {
             let instance = this;
             let bikeInfo = val;
@@ -1473,10 +1476,16 @@ export default {
 
                 //Check las Service History
                 this.checkLastServiceHistory(bikeInfo.chassisno)
+               //  if (instance.actionType === 'add') {
+               //      // $("#add-edit-dept").modal("toggle");
+               //      $(`[data-index="${2}"]`).focus()
+               //  }
 
             }
         },
         checkLastServiceHistory(chassisNo) {
+            console.log(chassisNo)
+
             let instance = this;
             instance.freeServices = [];
             this.childJobType = []
@@ -1684,11 +1693,16 @@ export default {
             }
         },
         onSubmit() {
+            this.PreLoader = true;
+            this.$store.commit('submitButtonLoadingStatus', true);
+            this.buttonShow = false;
+
             this.checkPartsFieldValue()
             this.checkServiceFieldValue()
+
             // console.log('finalError', this.errors.length)
             // console.log('finalError2', this.duplicateErrors.length)
-            this.$store.commit('submitButtonLoadingStatus', true);
+
 
             if (this.duplicateErrors.length === 0 && this.errors.length === 0) {
                 let url = '';
@@ -1741,7 +1755,9 @@ export default {
                     serviceFields: this.serviceFields,
                     reference: this.reference
                 }, (response) => {
+                    this.PreLoader = false;
                     this.successNoti(response.message);
+                    this.buttonShow = true;
                     bus.$emit('refresh-datatable');
                     this.$store.commit('submitButtonLoadingStatus', false);
                     if (this.actionType === 'edit') {
@@ -1753,10 +1769,12 @@ export default {
                         location.reload();
                     }
                 }, (error) => {
+                    this.PreLoader = false;
                     this.errorNoti(error);
                     this.$store.commit('submitButtonLoadingStatus', false);
                 })
             } else {
+                this.PreLoader = false;
                 location.reload();
                 this.$store.commit('submitButtonLoadingStatus', false);
                 this.errorNoti('Check Stock And Mandatory Field');

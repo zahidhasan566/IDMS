@@ -4,10 +4,15 @@
       <breadcrumb :options="['Invoice Print']">
         <router-link :to="{name: 'InvoiceList'}" class="btn btn-primary btn-sm">Back</router-link>
       </breadcrumb>
+
       <div class="row">
         <div class="col-xl-12">
           <div class="row">
             <div class="col-md-12">
+                <div style="display: flex">
+                    <div class="col-md-6"> <img :src="`${baseUrl+'assets/images/reLogo.png'}`" style="height: auto;width: 100px"></div>
+                    <div class="col-md-6" style="text-align: end;"> <img :src="`${baseUrl+'assets/images/logo-svg.png'}`" style="height: auto;width: 100px"></div>
+                </div>
               <div class="first" style="margin-top: 200px">
                 <p style="text-align: center;font-weight: bold;border:1px solid;width: 400px; margin: 0 auto;border-radius: 15px;font-size: 22px">Money Receipt</p>
                 <br>
@@ -33,7 +38,7 @@
                       <p style="font-size: 20px">In Words : </p>
                     </div>
                     <div class="col-md-9">
-                      <span style="display: inline-block;border-bottom: 1px solid;width: 650px;font-size: 20px">{{inWords(parseInt(invoice.unitprice - invoice.discount))}}</span>
+                      <span style="display: inline-block;border-bottom: 1px solid;width: 650px;font-size: 20px">{{inWords(parseInt(invoice.unitprice - invoice.discount)).toUpperCase()}}</span>
                     </div>
                   </div>
                   <div style="display:flex;">
@@ -266,7 +271,7 @@
                         </tr>
                         </tfoot>
                       </table>
-                      <p>In word: {{inWords(parseInt(invoice.unitprice - invoice.discount))}}</p>
+                      <p>In word: {{inWords(parseInt(invoice.unitprice - invoice.discount)).toUpperCase()}}</p>
                     </div>
                   </div>
                   <br>
@@ -301,8 +306,8 @@
                 <p style="margin: 0">Assistant Director</p>
                 <p style="margin: 0">BRTA</p>
                 <p>Sub: Regarding new Motor cycle Registration</p>
-                <p style="margin: 0">Sir, We hereby declare that the under mentioned {{invoice.productname}} {{invoice.cubiccapacity}}, CC model Yamaha Motorcycle
-                  is imported by ACI Ltd. 245, Tejgaon I/A, Dhaka-1208. The motorcycle has been sold to Name - {{invoice.customername}},
+                <p style="margin: 0">Sir, We hereby declare that the under mentioned {{invoice.productname}} 350 CC model Royel Enfield Motorcycle
+                  is imported by IFAD Motors Ltd. Plot 7 (new), Tejgaon Industrial Area, Dhaka-1208. The motorcycle has been sold to Name - {{invoice.customername}},
                   Father Name - {{invoice.fathername}}, Address - {{invoice.preaddress}} through our registered dealer {{invoice.CustomerName}}. We request you to register this motorcycle against our commercial invoice no. {{invoice.invoiceno}}. The
                   information about this vehicle is mentioned below :</p>
                 <br>
@@ -554,7 +559,7 @@
                           <td class="text-left">
                             <span style="text-align: left;font-weight: bold" >Name : {{invoice.productname}}</span><br>
                             <span style="font-weight: bold">E/N : {{invoice.engineno}}</span><br>
-                            <span style="font-weight: bold">C/N : {{invoice.chassisno}}</span><br>
+                            <span style="font-weight: bold;color: #2196f3">C/N : {{invoice.chassisno}}</span><br>
                           </td>
                           <td class="text-center">1</td>
                           <td class="text-center">{{invoice.unitprice}}</td>
@@ -604,7 +609,8 @@ export default {
   mixins: [Common],
   data() {
     return {
-      invoice: {}
+      invoice: {},
+        baseUrl: baseurl,
     }
   },
   created() {

@@ -20,7 +20,7 @@
                                                 <label>Dealer <span class="error">*</span></label>
                                                 <select name="dealerCode" class="form-control" v-model="dealerCode" style="margin: 0">
                                                     <option :value="singleCustomer.CustomerCode" v-for="(singleCustomer , index) in customers"
-                                                            :key="index">{{ singleCustomer.CustomerName }}</option>
+                                                            :key="index">{{ singleCustomer.CustomerCode }}-{{ singleCustomer.CustomerName }}</option>
                                                 </select>
                                                 <span class="error-message"> {{ errors[0] }}</span>
                                             </div>

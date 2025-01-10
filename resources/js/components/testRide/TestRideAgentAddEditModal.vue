@@ -47,7 +47,7 @@
                                     <ValidationProvider name="bank" mode="eager" rules="required"
                                                         v-slot="{ errors }">
                                       <div class="form-group">
-                                        <label for="yrcRegion">YRC Region <span class="error">*</span></label>
+                                        <label for="yrcRegion">IFAD Region <span class="error">*</span></label>
                                         <multiselect v-model="defaultYRCRegion" :options="yrcRegions"
                                                      :multiple="false"
                                                      :close-on-select="true"

@@ -9,6 +9,7 @@ use App\Models\CustomerMapping;
 use App\Models\JobCard\TblWorkSetup;
 use App\Models\Menu;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\TestRide\TestRideAgents;
 use App\Services\BusinessService;
 use App\Services\DepartmentService;
@@ -30,7 +31,10 @@ trait CommonTrait
             'allSubMenus' => Menu::whereNotIn('MenuID',['Dashboard','Users'])->with('allSubMenus')->orderBy('MenuOrder','asc')->get()
         ]);
     }
-
+    public function roleList(){
+        $list = Role::Select('RoleId','RoleName')->get();
+        return  $list;
+    }
     public function searchProduct(Request $request){
         $ProductCode = $request->ProductCode;
         $products= Product::select('ProductCode','ProductName')->where('Business','C')->where('Active','Y')->where('MRP','>','0')->where('UnitPrice','>','10')
@@ -124,11 +128,12 @@ trait CommonTrait
 
     public function customerInfo(){
         $business = 'C';
-        $customers = CustomerMapping::select('CustomerMapping.*','c.CustomerName','c.DepotCode','c.PaymentMode','b.BusinessName')
+        $customers = DB::table('CustomerMapping')->select('CustomerMapping.*','c.CustomerName','c.DepotCode','c.PaymentMode','b.BusinessName')
             ->join('Customer as c ','c.CustomerCode','CustomerMapping.CustomerCode')
             ->join('Business as b','b.Business','CustomerMapping.Business')
             ->where('CustomerMapping.CustomerMasterCode', Auth::user()->UserId)
             ->where('c.Business',$business)->orderBy('CustomerMapping.CustomerCode','ASC')->get();
+
         return $customers;
 
     }
@@ -141,10 +146,17 @@ trait CommonTrait
     }
 
     public function allCustomer($customerId){
+
 //        $sql ="SELECT * FROM Customer WHERE CustomerCode LIKE '$customerId' AND CustomerType IN ('E','D','R') AND LEFT(CustomerCode,2)='HC'";
         $customerList = Customer::where('CustomerCode','like',$customerId)
             ->whereIn('CustomerType',['E','D','R'])
-            ->where('CustomerCode','like','%'.'HC'.'%')->get();
+            ->where(function ($q) {
+                $q->where('CustomerCode','like','%'.'HC'.'%');
+                $q->Orwhere('CustomerCode','like','%'.'RE'.'%');
+            })
+
+           ->toSql();
+        dd($customerList);
         return $customerList;
     }
 
@@ -395,5 +407,20 @@ trait CommonTrait
                 'message' => 'No Customer Found!'
             ], 500);
         }
+    }
+
+    public function imageUpload($image, $namePrefix, $destination)
+    {
+
+        list($type, $file) = explode(';', $image);
+        list(, $extension) = explode('/', $type);
+        list(, $file) = explode(',', $file);
+        $fileNameToStore = $namePrefix . strtotime(date('Y-m-d')) . rand(0, 100000000) . '.' . $extension;
+        $source = fopen($image, 'r');
+        $destination = fopen($destination . $fileNameToStore, 'w');
+        stream_copy_to_stream($source, $destination);
+        fclose($source);
+        fclose($destination);
+        return $fileNameToStore;
     }
 }

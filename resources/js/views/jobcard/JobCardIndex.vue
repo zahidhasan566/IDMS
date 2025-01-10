@@ -11,7 +11,6 @@
                 </div>
             </div>
                 <advanced-datatable :options="tableOptions">
-
                     <template slot="jobStatus" slot-scope="row">
                           <span v-if="row.item.JobStatus==='Close'" style="background: #ffa9a9; padding: 4px 5px; border-radius: 4px;font-weight: bold; border: 1px solid #ffa9a9">
                               {{row.item.JobStatus}}
@@ -31,7 +30,6 @@
 
                     </template>
                     <template slot="action" slot-scope="row">
-<!--                        <a href="javascript:" title="Edit"   style="color: #101010;"  @click="addModal(row.item)">  </a> |-->
                         <span v-if="row.item.JobStatus==='Close'">
                         <router-link class="btn btn-primary" style="font-size: 12px;width:65px;padding: 2px 0px" :to="{path: `${baseUrl}`+'job-card-print?action_type=print&jobCardNo='+encodeConvert(row.item.JobCardNo)}"><i class="fa fa-print">Print</i></router-link>
                         </span>
@@ -42,6 +40,9 @@
 
                     </template>
                 </advanced-datatable>
+          <div>
+            <loader v-if="PreLoader" object="#ff9633" color1="#ffffff" color2="#17fd3d" size="5" speed="2" bg="#343a40" objectbg="#999793" opacity="80" name="circular"></loader>
+          </div>
             </div>
     </div>
 </template>
@@ -70,7 +71,8 @@ export default {
             cpLoading: false,
             tagLoading:false,
             // baseUrl: Object.freeze(baseurl)
-            baseUrl: baseurl
+            baseUrl: baseurl,
+            PreLoader:false
         }
     },
     mounted() {
@@ -101,13 +103,17 @@ export default {
             })
         },
         postData(jobCardNo){
+          //preloader
+            this.PreLoader = true;
             let  submitUrl = 'jobCard/job-close';
             this.axiosPost(submitUrl, {
                 jobCardNo: jobCardNo,
             }, (response) => {
+              this.PreLoader = false;
                 this.successNoti(response.message);
                 bus.$emit('refresh-datatable');
             }, (error) => {
+              this.PreLoader = true;
                 this.errorNoti(error);
             })
         },

@@ -32,15 +32,19 @@ class InvoiceSparePartsController extends Controller
         if ($user->RoleId === 'customer') {
             $query->where('DealarInvoiceMaster.MasterCode',$user->UserId);
         }
-        return $query->select('DealarInvoiceMaster.InvoiceID','DealarInvoiceMaster.InvoiceNo','InvoiceTime','CustomerName','MobileNo as CustomerMobile',
-                DB::raw("SUM(DealarInvoiceDetails.Quantity) as Quantity"),
-                DB::raw("SUM(DealarInvoiceDetails.UnitPrice) as TotalUnitPrice"),
-                DB::raw("SUM(DealarInvoiceDetails.VAT) as TotalVAT"),
-                DB::raw("SUM(DealarInvoiceDetails.Discount) as TotalDiscountPercentage"),
+        $invoices = $query->select('DealarInvoiceMaster.InvoiceID','DealarInvoiceMaster.InvoiceNo','InvoiceTime','CustomerName','MobileNo as CustomerMobile',
+            DB::raw("SUM(DealarInvoiceDetails.Quantity) as Quantity"),
+            DB::raw("SUM(DealarInvoiceDetails.UnitPrice) as TotalUnitPrice"),
+            DB::raw("SUM(DealarInvoiceDetails.VAT) as TotalVAT"),
+            DB::raw("SUM(DealarInvoiceDetails.Discount) as TotalDiscountPercentage"),
             DB::raw("SUM(((DealarInvoiceDetails.UnitPrice + DealarInvoiceDetails.VAT) * DealarInvoiceDetails.Quantity) - ((DealarInvoiceDetails.UnitPrice + DealarInvoiceDetails.VAT) * DealarInvoiceDetails.Quantity) * (1/100)) as TotalPrice"))
             ->groupBy('DealarInvoiceMaster.InvoiceID','DealarInvoiceMaster.InvoiceNo','InvoiceTime','CustomerName','MobileNo')
-            ->orderBy('InvoiceTime','desc')
-            ->paginate($take);
+            ->orderBy('InvoiceTime','desc');
+
+        //dd($invoices->toSql());
+        return $invoices->paginate($take);
+
+
     }
 
     public function getSparePartsSupportingData()
@@ -142,6 +146,37 @@ class InvoiceSparePartsController extends Controller
             ],500);
         }
     }
+    public function getScrappedInvoiceData(Request $request)
+    {
+        $request->validate([
+            'invoiceNo' => 'required'
+        ]);
+        try {
+            $invoiceNo = $request->invoiceNo;
+            $userId = Auth::user()->UserId;
+            return response()->json(InvoiceSparePartsService::getScrapInvoiceDetails($invoiceNo,$userId));
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!' .$exception->getMessage().$exception->getLine()
+            ],500);
+        }
+    }
+
+    public function getCustomerByChassis(Request $request)
+    {
+        if (empty($request->chassisNo)) {
+            return response()->json([
+                'message' => 'No customer'
+            ]);
+        }
+        $chassis = $request->chassisNo;
+        return DealarInvoiceMaster::join('DealarInvoiceDetails as dd','dd.InvoiceId','DealarInvoiceMaster.InvoiceID')
+            ->where('dd.ChassisNo',$chassis)
+            ->orderBy('InvoiceID','desc')
+            ->select('CustomerName')
+            ->first();
+    }
 
     public function returnInvoice(Request $request)
     {
@@ -171,7 +206,34 @@ class InvoiceSparePartsController extends Controller
             ]);
         }
     }
-
+    public function returnScrapedInvoice(Request $request)
+    {
+        $request->validate([
+            'invoiceNo' => 'required',
+            'invoiceDetails' => 'required'
+        ]);
+        $error = 0;
+        if (count($request->invoiceDetails)) {
+            foreach ($request->invoiceDetails as $detail) {
+                if (intval($detail['rQuantity']) > 0) {
+                    if (!InvoiceSparePartsService::returnScrap($detail,$request->invoiceNo)) {
+                        $error += 1;
+                    }
+                }
+            }
+        }
+        if ($error > 0) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Something went wrong!'
+            ],500);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Scraped Invoice has been returned successfully'
+            ]);
+        }
+    }
     public function sparePartsInvoicePrint($invoiceId)
     {
         $invoice = DealarInvoiceMaster::leftJoin('Customer','Customer.CustomerCode','DealarInvoiceMaster.MasterCode')

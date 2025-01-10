@@ -10,8 +10,7 @@ class InvoiceDetails extends Model
     use HasFactory;
 
     protected $table = "InvoiceDetails";
-    public $primaryKey = 'Invoiceno';
+   // public $primaryKey = '';
     protected $guarded = [];
     public $timestamps = false;
-    protected $keyType = 'string';
 }

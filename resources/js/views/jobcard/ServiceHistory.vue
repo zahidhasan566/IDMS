@@ -95,7 +95,6 @@
                                     <th class="text-center">Schedule Title</th>
                                     <th class="text-center">Mileage</th>
                                     <th class="text-center">Print</th>
-                                    <th class="text-center">YTD File</th>
                                     <th class="text-center" v-if="me.RoleId==='sa'">Action</th>
                                 </tr>
                                 </thead>
@@ -111,9 +110,6 @@
                                                  :to="{path: `${baseUrl}`+'job-card-print?action_type=print&jobCardNo='+encodeConvert(service.JobCardNo)}">
                                         <i class="fa fa-print">Print</i>
                                     </router-link>
-                                </td>
-                                <td class="text-center">
-                                    <a :href="`https://dms.yamahabd.com/uploads/JobCardYdt/${service.YTD_File}`">{{ service.YTD_File }}</a>
                                 </td>
                                 <td class="text-center" v-if="me.RoleId==='sa'">
 

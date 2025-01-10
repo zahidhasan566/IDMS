@@ -51,18 +51,6 @@
                       </div>
                     </ValidationProvider>
                   </div>
-
-                  <div class="col-12 col-md-4" >
-                    <ValidationProvider name="paymentMode" mode="eager" rules="required" v-slot="{ errors }" >
-                      <div class="form-group">
-                        <label for="tagNo">Sales Type</label>
-                        <select data-required="true" readonly name="paymentMode" class="form-control">
-                          <option  v-for="(item, index) in sales" :key="index">{{ item.PaymentMode }} : {{ item.CustomerName }}</option>
-                        </select>
-                        <span class="error-message"> {{ errors[0] }}</span>
-                      </div>
-                    </ValidationProvider>
-                  </div>
                   <div class="col-12 col-md-4">
                     <ValidationProvider name="reference" mode="eager" rules="required"
                                         v-slot="{ errors }">
@@ -98,7 +86,7 @@
                   <div class="col-12 col-md-4" >
                     <ValidationProvider name="chequeNo" mode="eager" v-slot="{ errors }">
                       <div class="form-group">
-                        <label for="Cheque">Cheque No<span class="error">*</span></label>
+                        <label for="Cheque">Cheque No/Transection No<span class="error">*</span></label>
                         <input type="text" class="form-control"
                                id="chequeNo"
                                :required="false"
@@ -112,7 +100,7 @@
                     <ValidationProvider name="Cheque Date" rules="required"
                                         mode="eager" v-slot="{ errors }">
                       <label for="chequeDate">Deposited / Cheque Date <span class="error">*</span></label>
-                      <input type="date" class="form-control"  data-required="true" v-model="chequeDate" name="toDate">
+                      <input type="date" class="form-control" :max="maxDate"  data-required="true" v-model="chequeDate" name="toDate">
                       <span class="error-message"> {{ errors[0] }}</span>
                     </ValidationProvider>
                   </div>
@@ -209,6 +197,7 @@ export default {
       buttonShow: false,
       selected: false,
       requiredStatus: true,
+      maxDate: this.getTodayDate(), // Max date for input
 
       errors: [],
     }
@@ -246,9 +235,17 @@ export default {
         this.requiredStatus = true
       }
     },
+      getTodayDate() {
+          const today = new Date();
+          const year = today.getFullYear();
+          const month = String(today.getMonth() + 1).padStart(2, '0');
+          const day = String(today.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+      },
     getCustomer() {
       let instance = this;
       this.axiosGet('payment/get-customer-list', function (response) {
+          console.log(response)
         instance.customers = response.data;
       }, function (error) {
       });
@@ -280,9 +277,7 @@ export default {
     fileUpload(e) {
       var input = e.target
       var file = input.files[0]
-      if (file.size > 5000000) {
-        this.errorNoti('Maximum file size 5 MB for Event')
-      } else {
+      if (file.size) {
         this.processImage(file)
       }
     },
@@ -322,8 +317,8 @@ export default {
         active: this.active,
       }, (response) => {
         this.successNoti(response.message);
-        // $("#add-credit-modal").modal("toggle");
-        // bus.$emit('refreshDatatable');
+        $("#add-credit-modal").modal("toggle");
+        bus.$emit('refreshDatatable');
         this.$store.commit('submitButtonLoadingStatus', false);
       }, (error) => {
         this.errorNoti(error);
