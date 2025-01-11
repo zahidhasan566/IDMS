@@ -72,7 +72,7 @@
                       <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 0">
                         {{ item[item2] }}
                       </td>
-                      <td>
+                      <td style="width: 200px;">
                         <router-link :to="`invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-primary btn-sm small" v-if="iSFlagshipDealer !== 'FlagshipDealer'">
                           <i class="mdi mdi-printer"></i>
                         </router-link>
@@ -340,5 +340,8 @@ td {
 }
 th {
   background: #000000;
+}
+td a {
+  margin: 2px;
 }
 </style>
