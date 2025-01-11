@@ -70,7 +70,11 @@ class DealerReceiveInvoice
                                 if (intval($receiving['ReceiveQty']) > 0) {
                                     if ($this->insertIntoDealerReceiveInvoiceDetails($receiveInvoiceMaster,$row,$receiving['ReceiveQty'])) {
                                         if ($invoice->Business === 'P') {
-                                            $this->doUpdateStock($userId,$row->ProductCode,$receiving['ReceiveQty']);
+                                            if (!$this->doUpdateStock($userId,$row->ProductCode,$receiving['ReceiveQty'])) {
+                                                DB::rollBack();
+                                                Log::error('Stock update failed. See the detail log.');
+                                                return false;
+                                            }
                                         }
                                     } else {
                                         DB::rollBack();
