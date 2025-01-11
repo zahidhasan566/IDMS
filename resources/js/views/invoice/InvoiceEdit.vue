@@ -480,7 +480,7 @@ export default {
               NoOfTyre: '',
               NoOfAxel: '',
               ClassOfVehicle: '',
-              MakerName: '',
+              MakerName: ' IFAD MOTORS LIMITED',
               MakerCountry: '',
               EngineType: '',
               NumberOfCylinders: '',
