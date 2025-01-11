@@ -327,9 +327,10 @@
                                                             <div class="form-group row" style="padding-bottom: 10px">
                                                                 <label class="col-lg-7 col-form-label text-right">Owner Type</label>
                                                                 <div class="col-lg-5 text-left">
-                                                                  <input name="Email" type="text" class="form-control" v-model="form.OwnerType"/>
-                                                                    <div class="error" v-if="form.errors.has('OwnerType')" v-html="form.errors.get('OwnerType')"/>
-                                                                    <span class="error-message"> {{ errors[0] }}</span>
+                                                                  <select class="form-control" v-model="form.OwnerType">
+                                                                    <option value="Private">Private</option>
+                                                                    <option value="Organization">Organization</option>
+                                                                  </select>
                                                                 </div>
                                                             </div>
                                                         </ValidationProvider>

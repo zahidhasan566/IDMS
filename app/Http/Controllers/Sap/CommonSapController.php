@@ -73,7 +73,7 @@ class CommonSapController extends Controller
                         $product->UnitPrice = $singleProduct['UnitPrice'];
                         $product->VAT = $singleProduct['VAT'];
                         $product->MRP = $singleProduct['MRP'];
-                        $product->Color = $singleProduct['Color'];
+                        $product->Color = $singleProduct['InspMemo'];
                         $product->SalesUnit = $singleProduct['SalesUnit'];
                         $product->MaterialGroup = $singleProduct['MaterialGroup'];
                         $product->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
@@ -92,6 +92,28 @@ class CommonSapController extends Controller
                         $product->Business = $singleProduct['Business'];
                         $product->Active = 'Y';
                         $product->MaterialType = $singleProduct['MaterialType'];
+
+                        $product->FuelUsed = $singleProduct['FuelUsed'];
+                        $product->HorsePower = $singleProduct['HorsePower'];
+                        $product->RPM = $singleProduct['RPM'];
+                        $product->CubicCapacity = $singleProduct['CubicCapacity'];
+                        $product->WheelBase = $singleProduct['WheelBase'];
+                        $product->Weight = $singleProduct['Weight'];
+                        $product->WeightMax = $singleProduct['WeightMax'];
+                        $product->Standee = $singleProduct['Standee'];
+                        $product->TireSizeFront = $singleProduct['TireSizeFront'];
+                        $product->TireSizeRear = $singleProduct['TireSizeRear'];
+                        $product->Seats = $singleProduct['Seats'];
+                        $product->NoOfTyre = $singleProduct['NoOfTyre'];
+                        $product->NoOfAxel = $singleProduct['NoOfAxel'];
+                        $product->ClassOfVehicle = $singleProduct['ClassOfVehicle'];
+                        $product->Manufacturer = $singleProduct['Manufacturer'];
+                        $product->ManufacturingCountry = $singleProduct['ManufacturingCountry'];
+                        $product->EngineType = $singleProduct['EngineType'];
+                        $product->NumberOfCylinders = $singleProduct['NumberOfCylinders'];
+                        $product->ImportYear = $singleProduct['ImportYear'];
+                        $product->ManufacturingYear = $singleProduct['ManufacturingYear'];
+
                         $product->save();
                         DB::commit();
                     }
