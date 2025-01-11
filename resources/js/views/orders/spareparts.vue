@@ -116,7 +116,7 @@
                           <th style="width:250px">Code <span class="required-field">*</span></th>
                           <th>Product Name<span class="required-field">*</span></th>
                           <th>Part No<span class="required-field">*</span></th>
-                          <th>Vat(%)<span class="required-field">*</span></th>
+                          <th>Vat(Amount)<span class="required-field">*</span></th>
                           <th>Unit Price<span class="required-field">*</span></th>
                             <th>Per Unit TP<span class="required-field">*</span></th>
                           <th>Current Stock<span class="required-field">*</span></th>
