@@ -189,7 +189,7 @@
                                                     <div class="form-group row" style="padding-bottom: 10px">
                                                       <label class="col-lg-7 col-form-label text-right">MakerName</label>
                                                       <div class="col-lg-5 text-left">
-                                                        <input name="MakerName" type="text" class="form-control" v-model="form.MakerName"/>
+                                                        IFAD MOTORS LIMITED
                                                         <div class="error" v-if="form.errors.has('MakerName')" v-html="form.errors.get('MakerName')"/>
                                                         <span class="error-message"> {{ errors[0] }}</span>
                                                       </div>
@@ -480,7 +480,7 @@ export default {
               NoOfTyre: '',
               NoOfAxel: '',
               ClassOfVehicle: '',
-              MakerName: ' IFAD MOTORS LIMITED',
+              MakerName: 'IFAD MOTORS LIMITED',
               MakerCountry: '',
               EngineType: '',
               NumberOfCylinders: '',
