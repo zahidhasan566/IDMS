@@ -296,7 +296,7 @@ class CommonSapController extends Controller
         $checkExisting->UnitPrice = $singleProduct['UnitPrice'];
         $checkExisting->VAT = $singleProduct['VAT'];
         $checkExisting->MRP = $singleProduct['MRP'];
-        $checkExisting->Color = $singleProduct['Color'];
+        $checkExisting->Color = $singleProduct['InspMemo'];
         $checkExisting->SalesUnit = $singleProduct['SalesUnit'];
         $checkExisting->MaterialGroup = $singleProduct['MaterialGroup'];
         $checkExisting->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
@@ -315,6 +315,25 @@ class CommonSapController extends Controller
         $checkExisting->Business = $singleProduct['Business'];
         $checkExisting->Active = 'Y';
         $checkExisting->MaterialType = $singleProduct['MaterialType'];
+        $checkExisting->FuelUsed = $singleProduct['FuelUsed'];
+        $checkExisting->HorsePower = $singleProduct['HorsePower'];
+        $checkExisting->RPM = $singleProduct['RPM'];
+        $checkExisting->CubicCapacity = $singleProduct['CubicCapacity'];
+        $checkExisting->Weight = $singleProduct['Weight'];
+        $checkExisting->WeightMax = $singleProduct['WeightMax'];
+        $checkExisting->Standee = $singleProduct['Standee'];
+        $checkExisting->TireSizeFront = $singleProduct['TireSizeFront'];
+        $checkExisting->TireSizeRear = $singleProduct['TireSizeRear'];
+        $checkExisting->Seats = $singleProduct['Seats'];
+        $checkExisting->NoOfTyre = $singleProduct['NoOfTyre'];
+        $checkExisting->NoOfAxel = $singleProduct['NoOfAxel'];
+        $checkExisting->ClassOfVehicle = $singleProduct['ClassOfVehicle'];
+        $checkExisting->Manufacturer = $singleProduct['Manufacturer'];
+        $checkExisting->ManufacturingCountry = $singleProduct['ManufacturingCountry'];
+        $checkExisting->EngineType = $singleProduct['EngineType'];
+        $checkExisting->NumberOfCylinders = $singleProduct['NumberOfCylinders'];
+        $checkExisting->ImportYear = $singleProduct['ImportYear'];
+        $checkExisting->ManufacturingYear = $singleProduct['ManufacturingYear'];
         $checkExisting->save();
     }
 
