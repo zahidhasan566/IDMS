@@ -115,9 +115,9 @@
         <br>
         <div style="display: flex;justify-content:space-between;">
           <div style="width: 48%">
-            <p style="font-size: 18px;margin: 0">32. No. of types : 2 </p>
+            <p style="font-size: 18px;margin: 0">32. No. of tyres : 2 </p>
             <br>
-            <p style="font-size: 18px;margin: 0">34. No. of axle : 2 </p>
+            <p style="font-size: 18px;margin: 0">34. No. of axle : </p>
           </div>
           <div style="width: 48%">
             <p style="font-size: 18px;margin: 0">33. Tyres size : <span style="font-weight: bold">Front : {{invoice.TireSizeFront}}</span>
