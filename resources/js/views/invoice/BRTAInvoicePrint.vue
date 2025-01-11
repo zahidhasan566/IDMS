@@ -97,7 +97,7 @@
           </div>
           <div style="width: 48%">
             <p style="margin: 0;font-size: 18px">15. Prev. Regn. No. (if any): </p>
-            <p style="margin: 0;font-size: 18px">15a. Maker's name : <span style="font-weight: bold">{{invoice.makername}}</span></p>
+            <p style="margin: 0;font-size: 18px">15a. Maker's name : <span style="font-weight: bold"> IFAD MOTORS LIMITED</span></p>
             <p style="margin: 0;font-size: 18px">17. Maker's Country : <span style="font-weight: bold">{{invoice.ManufacturingCountry}}</span></p>
             <p style="margin: 0;font-size: 18px">19. Year of manufacture :  <span style="font-weight: bold">2023</span></p>
             <p style="margin: 0;font-size: 18px">21. Chassis number : <span style="font-weight: bold">{{invoice.chassisno}}</span></p>
