@@ -105,7 +105,7 @@
                   <tr>
                     <th>Code <span class="required-field">*</span></th>
                     <th>Product Name<span class="required-field">*</span></th>
-                    <th>Vat(Amount)<span class="required-field">*</span></th>
+                    <th>Vat(15%)<span class="required-field">*</span></th>
                     <th>Unit Price<span class="required-field">*</span></th>
                     <th>Per Unit TP<span class="required-field">*</span></th>
                     <th>Quantity<span class="required-field">*</span></th>
@@ -131,7 +131,7 @@
                     </td>
                       <td>
 
-                          {{ parseFloat(product.Vat)  +  parseFloat(product.UnitPrice)}}
+                          {{ (parseFloat(product.Vat)  +  parseFloat(product.UnitPrice)).toFixed(2)}}
                     </td>
                     <td class="text-center">
                         <input type="number" id="qty"
@@ -308,8 +308,8 @@ export default {
         this.form.products[index].TotalPrice = 0
         this.axiosGet('orders/get-bike-by-product-code?ProductCode=' + productCode,(response) => {
           this.form.products[index].ProductName = response.ProductName
-          this.form.products[index].Vat = parseInt(response.Vat)
-          this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
+          this.form.products[index].Vat = parseFloat(response.Vat)
+          this.form.products[index].UnitPrice = parseFloat(response.UnitPrice)
           this.grandTotal();
         },(error) => {
           this.errorNoti(error);
@@ -382,7 +382,7 @@ export default {
       this.getAllOrderBikeList();
     },
     calculate(i) {
-      this.form.products[i].TotalPrice = (Number(this.form.products[i].UnitPrice) + Number(this.form.products[i].Vat)) * Number(this.form.products[i].Quantity)
+      this.form.products[i].TotalPrice = (parseFloat(this.form.products[i].UnitPrice) + parseFloat(this.form.products[i].Vat)) * Number(this.form.products[i].Quantity)
       this.grandTotal()
     },
     grandTotal() {

@@ -116,7 +116,7 @@
                           <th style="width:250px">Code <span class="required-field">*</span></th>
                           <th>Product Name<span class="required-field">*</span></th>
                           <th>Part No<span class="required-field">*</span></th>
-                          <th>Vat(Amount)<span class="required-field">*</span></th>
+                          <th>Vat(15%)<span class="required-field">*</span></th>
                           <th>Unit Price<span class="required-field">*</span></th>
                             <th>Per Unit TP<span class="required-field">*</span></th>
                           <th>Current Stock<span class="required-field">*</span></th>
@@ -343,8 +343,8 @@ export default {
           this.form.products[index].ProductName = response.ProductName
           this.form.products[index].PartNo = response.PartNo
           this.form.products[index].Vat = parseFloat(response.Vat)
-          this.form.products[index].UnitPrice = parseInt(response.UnitPrice)
-          this.form.products[index].CurrentStock = parseInt(response.CurrentStock)
+          this.form.products[index].UnitPrice = parseFloat(response.UnitPrice)
+          this.form.products[index].CurrentStock = parseFloat(response.CurrentStock)
         }, (error) => {
           this.errorNoti(error);
         })
@@ -363,8 +363,8 @@ export default {
     },
     changeProductPrice(e, index) {
       let qty = e.target.value;
-      let sum = parseInt(this.form.products[index].UnitPrice) + parseInt(this.form.products[index].Vat) * qty
-      this.form.products[index].TotalPrice = parseInt(sum)
+      let sum = parseFloat(this.form.products[index].UnitPrice) + parseFloat(this.form.products[index].Vat) * qty
+      this.form.products[index].TotalPrice = parseFloat(sum)
       this.form.products[index].parts = [];
     },
     calculate(i) {
@@ -379,7 +379,7 @@ export default {
           grandTotal += (parseFloat(item.UnitPrice) + parseFloat(item.Vat)) * item.Quantity
         })
 
-        this.GrossTotalPrice = parseInt(grandTotal)
+        this.GrossTotalPrice = parseFloat(grandTotal)
       }
       // console.log(parseFloat(this.GrossTotalPrice))
     },
