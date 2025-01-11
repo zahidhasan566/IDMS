@@ -484,7 +484,7 @@ export default {
               MakerCountry: '',
               EngineType: '',
               NumberOfCylinders: '',
-              ImportYear: '',
+              ImportYear: '2024',
             }),
             errors: [],
             isLoading: false,

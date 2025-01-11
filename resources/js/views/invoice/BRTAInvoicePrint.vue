@@ -316,7 +316,7 @@
             <p style="font-size: 20px">8. GUARDIAN'S NAME : </p>
             <p style="font-size: 20px">9. CHASSIS NO. : <span style="font-weight: bold">{{invoice.chassisno}}</span></p>
             <p style="font-size: 20px">10. ENGINE NO. : <span style="font-weight: bold">{{invoice.engineno}}</span></p>
-            <p style="font-size: 20px">11. YEAR OF MFG : {{invoice.importyear}}</p>
+            <p style="font-size: 20px">11. YEAR OF MFG : </p>
             <p style="font-size: 20px">12. REGN. NO. (IF ANY) : </p>
             <p style="font-size: 20px">13. P.O./BANK : </p>
           </div>
