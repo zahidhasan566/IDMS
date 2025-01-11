@@ -315,16 +315,20 @@ class CommonSapController extends Controller
         $checkExisting->Business = $singleProduct['Business'];
         $checkExisting->Active = 'Y';
         $checkExisting->MaterialType = $singleProduct['MaterialType'];
+
         $checkExisting->FuelUsed = $singleProduct['FuelUsed'];
         $checkExisting->HorsePower = $singleProduct['HorsePower'];
         $checkExisting->RPM = $singleProduct['RPM'];
         $checkExisting->CubicCapacity = $singleProduct['CubicCapacity'];
+        $checkExisting->WheelBase = $singleProduct['WheelBase'];
         $checkExisting->Weight = $singleProduct['Weight'];
         $checkExisting->WeightMax = $singleProduct['WeightMax'];
         $checkExisting->Standee = $singleProduct['Standee'];
         $checkExisting->TireSizeFront = $singleProduct['TireSizeFront'];
         $checkExisting->TireSizeRear = $singleProduct['TireSizeRear'];
         $checkExisting->Seats = $singleProduct['Seats'];
+
+
         $checkExisting->NoOfTyre = $singleProduct['NoOfTyre'];
         $checkExisting->NoOfAxel = $singleProduct['NoOfAxel'];
         $checkExisting->ClassOfVehicle = $singleProduct['ClassOfVehicle'];
