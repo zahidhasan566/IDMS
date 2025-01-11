@@ -153,7 +153,7 @@
                       <b>Total Amount</b>
                     </td>
                     <td class="text-right" colspan="1">
-                      {{GrossTotalPrice}}
+                      {{GrossTotalPrice.toFixed(2)}}
 
                     </td>
                     <td class="text-right" colspan="1">
