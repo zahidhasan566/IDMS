@@ -111,8 +111,10 @@ class UserController extends Controller
             $user->UserId = $request->userId;
             $user->UserName = $request->userName;
             $user->Designation = $request->designation;
-            $passwordData = DB::select("select dbo.ufn_PasswordEncode('$request->password') as RawPass");
-            $user->Password = $passwordData[0]->RawPass;;
+            $password = $request->password;
+            $password = DB::select("SELECT dbo.ufn_PasswordEncode(?) as EncodedPassword", [$password])[0]->EncodedPassword;
+            $password = str_replace('?','',$password);
+            $user->Password = $password;
             $user->RoleId = $request->role;
             $user->Active = 0;
             $user->save();
@@ -170,7 +172,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return response()->json(['message' => $validator->errors()], 400);
             }
-            $user = User::find($request->staffId)->UserId;;
+            $user = User::find($request->staffId)->UserId;
             $sql = "update UserManager set Password = dbo.ufn_PasswordEncode('".$request->password."')
                     where UserId = '".$user."'";
             DB::statement($sql);

@@ -165,9 +165,9 @@
                                                       </div>
                                                     </div>
                                                   </ValidationProvider>
-                                                  <ValidationProvider name="NoOfAxel" mode="eager" rules="required" v-slot="{ errors }">
+                                                  <ValidationProvider name="NoOfAxel" mode="eager" rules="" v-slot="{ errors }">
                                                     <div class="form-group row" style="padding-bottom: 10px">
-                                                      <label class="col-lg-7 col-form-label text-right">NoOfAxel<span style="color: red">*</span></label>
+                                                      <label class="col-lg-7 col-form-label text-right">NoOfAxel</label>
                                                       <div class="col-lg-5 text-left">
                                                         <input name="NoOfAxel" type="text" class="form-control" v-model="form.NoOfAxel"/>
                                                         <div class="error" v-if="form.errors.has('NoOfAxel')" v-html="form.errors.get('NoOfAxel')"/>
@@ -185,9 +185,9 @@
                                                       </div>
                                                     </div>
                                                   </ValidationProvider>
-                                                  <ValidationProvider name="MakerName" mode="eager" rules="required" v-slot="{ errors }">
+                                                  <ValidationProvider name="MakerName" mode="eager" rules="" v-slot="{ errors }">
                                                     <div class="form-group row" style="padding-bottom: 10px">
-                                                      <label class="col-lg-7 col-form-label text-right">MakerName<span style="color: red">*</span></label>
+                                                      <label class="col-lg-7 col-form-label text-right">MakerName</label>
                                                       <div class="col-lg-5 text-left">
                                                         <input name="MakerName" type="text" class="form-control" v-model="form.MakerName"/>
                                                         <div class="error" v-if="form.errors.has('MakerName')" v-html="form.errors.get('MakerName')"/>
@@ -300,9 +300,9 @@
                                                                 <span class="error-message"> {{ errors[0] }}</span>
                                                             </div>
                                                         </div>
-                                                        <ValidationProvider name="EMail" mode="eager" rules="" v-slot="{ errors }">
+                                                        <ValidationProvider name="EMail" mode="eager" rules="required" v-slot="{ errors }">
                                                             <div class="form-group row" style="padding-bottom: 10px">
-                                                                <label class="col-lg-4 col-form-label text-right">Email</label>
+                                                                <label class="col-lg-4 col-form-label text-right">Email<span style="color: red">*</span></label>
                                                                 <div class="col-lg-8">
                                                                     <input name="EMail" type="text" class="form-control" v-model="form.EMail"/>
                                                                     <div class="error" v-if="form.errors.has('EMail')" v-html="form.errors.get('EMail')"/>
@@ -323,9 +323,9 @@
                                                     </div>
 
                                                     <div class="col-md-7">
-                                                        <ValidationProvider name="OwnerType" mode="eager" rules="required" v-slot="{ errors }">
+                                                        <ValidationProvider name="OwnerType" mode="eager" rules="" v-slot="{ errors }">
                                                             <div class="form-group row" style="padding-bottom: 10px">
-                                                                <label class="col-lg-7 col-form-label text-right">Owner Typ<span style="color: red">*</span></label>
+                                                                <label class="col-lg-7 col-form-label text-right">Owner Type</label>
                                                                 <div class="col-lg-5 text-left">
                                                                   <input name="Email" type="text" class="form-control" v-model="form.OwnerType"/>
                                                                     <div class="error" v-if="form.errors.has('OwnerType')" v-html="form.errors.get('OwnerType')"/>
@@ -356,7 +356,7 @@
                                                             </div>
                                                         </ValidationProvider>
                                                         <div class="form-group row" style="padding-bottom: 10px">
-                                                            <label class="col-lg-7 col-form-label text-right">Emergency Mobile<span style="color: red">*</span></label>
+                                                            <label class="col-lg-7 col-form-label text-right">Emergency Mobile</label>
                                                             <div class="col-lg-5" style="display: flex;align-items: center;overflow: hidden">
 <!--                                                                <span style=" background-color: #f7f7f7;font-size: 14px;padding: 0 8px;">+88</span>-->
                                                                 <input name="EmergencyMobile" type="text" class="form-control" v-model="form.EmergencyMobile"
@@ -366,7 +366,7 @@
                                                               <span class="error-message"> {{ errors[0] }}</span>
                                                             </div>
                                                         </div>
-                                                        <ValidationProvider name="NID" mode="eager" rules="" v-slot="{ errors }">
+                                                        <ValidationProvider name="NID" mode="eager" rules="required" v-slot="{ errors }">
                                                             <div class="form-group row" style="padding-bottom: 10px">
                                                                 <label class="col-lg-7 col-form-label text-right">N.I.D<span style="color: red">*</span></label>
                                                                 <div class="col-lg-5 text-left">

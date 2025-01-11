@@ -64,7 +64,7 @@
                     <th v-for="(item, index) in headers" v-if="index !== 0">
                       {{formatHeading(item.toString())}}
                     </th>
-                    <th>Action</th>
+                    <th style="width:200px">Action</th>
                   </tr>
                   </thead>
                   <tbody>
