@@ -55,8 +55,13 @@ export default {
             this.loading = false
         },
         openPdf(file) {
-          const pdfUrl = AWS_S3_COMMON_DOCUMENT_LINK  +file;
-          window.open(pdfUrl, '_blank');
+            const mainOrigin = window.location.origin; // Get the current origin (e.g., http://localhost)
+
+            // Dynamically determine the base path (e.g., '/idms' or '')
+            const basePath = window.location.pathname.split('/')[1];
+            const pdfUrl = `${mainOrigin}/${basePath}/uploads/dealerdocument/${file}`; // Construct the dynamic URL
+
+            window.open(pdfUrl, '_blank'); // Open the PDF in a new tab
         },
         exportData() {
             bus.$emit('export-data','bay-list-'+moment().format('YYYY-MM-DD'))
