@@ -1227,7 +1227,7 @@
                               <div class="col-lg-3">
                                 <input type="number" name="SwipRate"
                                        class="form-control" :id="`SwipRate${i}`"
-                                       v-model="tender.SwipeCharge"/>
+                                       :value="tender.SwipeCharge"/>
                                 <div class="error" v-if="form.errors.has('SwipRate')"
                                      v-html="form.errors.get('SwipRate')"/>
                                 <span class="error-message"> {{ errors[0] }}</span>
