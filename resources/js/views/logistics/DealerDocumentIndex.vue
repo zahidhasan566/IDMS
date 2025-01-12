@@ -59,7 +59,8 @@ export default {
 
             // Dynamically determine the base path (e.g., '/idms' or '')
             const basePath = window.location.pathname.split('/')[1];
-            const pdfUrl = `${mainOrigin}/${basePath}/uploads/dealerdocument/${file}`; // Construct the dynamic URL
+            // const pdfUrl = `${mainOrigin}/${basePath}/uploads/dealerdocument/${file}`; // Construct the dynamic URL
+            const pdfUrl = `https://dms.ifadmotors.com/uploads/dealerdocument/${file}`; // Construct the dynamic URL
 
             window.open(pdfUrl, '_blank'); // Open the PDF in a new tab
         },

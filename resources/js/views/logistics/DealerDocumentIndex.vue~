@@ -55,8 +55,12 @@ export default {
             this.loading = false
         },
         openPdf(file) {
-            const mainOrigin = this.baseUrl; // Get the current origin dynamically
-            const pdfUrl = `${mainOrigin}/uploads/dealerdocument/${file}`; // Construct the full URL
+            const mainOrigin = window.location.origin; // Get the current origin (e.g., http://localhost)
+
+            // Dynamically determine the base path (e.g., '/idms' or '')
+            const basePath = window.location.pathname.split('/')[1];
+            const pdfUrl = `${mainOrigin}/${basePath}/uploads/dealerdocument/${file}`; // Construct the dynamic URL
+
             window.open(pdfUrl, '_blank'); // Open the PDF in a new tab
         },
         exportData() {
