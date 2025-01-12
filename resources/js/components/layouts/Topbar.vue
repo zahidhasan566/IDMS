@@ -3,7 +3,7 @@
     <!-- LOGO -->
     <div class="topbar-left">
       <router-link :to="{name: 'Dashboard'}" class="logo">
-        <span><img :src="`${mainOrigin}assets/images/logo-svg.png`" alt="" height="80%" /> </span><i><img :src="`${mainOrigin}assets/images/logo-svg.png`" alt="" height="22" /></i>
+<!--        <span><img :src="`${mainOrigin}assets/images/logo-svg.png`" alt="" height="80%" /> </span><i><img :src="`${mainOrigin}assets/images/logo-svg.png`" alt="" height="22" /></i>-->
       </router-link>
     </div>
     <nav class="navbar-custom">
