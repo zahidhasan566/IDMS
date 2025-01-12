@@ -61,25 +61,31 @@
                 <table class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm small">
                   <thead class="thead-dark">
                   <tr>
-                    <th v-for="(item, index) in headers">
+                    <th v-for="(item, index) in headers" v-if="index !== 0">
                       {{formatHeading(item.toString())}}
                     </th>
-                    <th style="width: 12%">Action</th>
+                    <th style="width:200px">Action</th>
                   </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in contents" >
-                      <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' ">
+                      <td v-for="(item2, index) in headers" v-bind:class="isInt(item[item2]) === true ? 'text-right' : '' " v-if="index !== 0">
                         {{ item[item2] }}
                       </td>
-                      <td>
-                        <router-link :to="`invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-primary btn-sm small">
+                      <td style="width: 200px;">
+                        <router-link :to="`invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-primary btn-sm small" v-if="iSFlagshipDealer !== 'FlagshipDealer'">
                           <i class="mdi mdi-printer"></i>
                         </router-link>
-                        <router-link :to="`invoice-show/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm">
+                        <router-link :to="`invoice-show/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm" v-if="iSFlagshipDealer !== 'FlagshipDealer'">
                           <i class="mdi mdi-eye"></i>
                         </router-link>
-                        <router-link :to="`brta-invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm">
+                        <router-link :to="`invoice-edit/${item.InvoiceNo}`" style="padding: 0px;width:50px;text-align: left" class="btn btn-info btn-sm" v-if="iSFlagshipDealer === 'FlagshipDealer'">
+                          <i class="mdi mdi-square-edit-outline"></i> Edit
+                        </router-link>
+                        <router-link :to="`brta-invoice-print/${item.InvoiceNo}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm" v-if="iSFlagshipDealer === 'FlagshipDealer'">
+                          <i class="mdi mdi-printer"></i> H Form(BRTA)
+                        </router-link>
+                        <router-link :to="`brta-invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm" v-if="iSFlagshipDealer !== 'FlagshipDealer'">
                           <i class="mdi mdi-printer"></i> H Form(BRTA)
                         </router-link>
                         <button @click="destroy(item.InvoiceID)" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-danger btn-sm" v-if="isAdmin === '1'"><i class="fas fa-trash"></i></button>
@@ -149,6 +155,7 @@ export default {
         Export :'',
       }),
       isAdmin : '',
+      iSFlagshipDealer : '',
     }
   },
   created() {
@@ -171,6 +178,7 @@ export default {
           this.headers = Object.keys(invoice.data[0])
           this.contents = invoice.data
           this.isAdmin = response.data.isAdmin
+          this.iSFlagshipDealer = response.data.iSFlagshipDealer
           this.exportShow = false;
           this.isLoading = false
         }else {
@@ -332,5 +340,8 @@ td {
 }
 th {
   background: #000000;
+}
+td a {
+  margin: 2px;
 }
 </style>

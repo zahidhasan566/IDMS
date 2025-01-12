@@ -8,4 +8,5 @@ Route::group(['middleware' => ['jwt:api'],'prefix' => 'money-receipt'], function
     Route::get('get-advance-types',[AdvanceController::class,'getAdvanceTypes']);
     Route::post('create-payment',[AdvanceController::class,'createPayment']);
     Route::get('{moneyRecNo}',[AdvanceController::class,'getById']);
+    Route::get('by-rec-no/{moneyRecNo}',[AdvanceController::class,'getByMoneyReceipt']);
 });

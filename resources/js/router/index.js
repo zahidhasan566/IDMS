@@ -88,6 +88,7 @@ import InvoiceList from "../views/invoice/InvoiceList.vue";
 import InvoiceCreate from "../views/invoice/InvoiceCreate.vue";
 import InvoicePrint from "../views/invoice/InvoicePrint.vue";
 import InvoiceShow from "../views/invoice/InvoiceShow.vue";
+import InvoiceEdit from "../views/invoice/InvoiceEdit.vue";
 import BRTAInvoicePrint from "../views/invoice/BRTAInvoicePrint.vue";
 import InvoiceSpareParts from "../views/invoice/InvoiceSpareParts.vue";
 import InvoiceSparePartsReturn from "../views/invoice/InvoiceSparePartsReturn.vue";
@@ -313,6 +314,7 @@ const routes = [
             { path: baseurl + 'invoice-create', name: 'InvoiceCreate', component: InvoiceCreate },
             { path: baseurl + 'invoice-print/:InvoiceId', name: 'InvoicePrint', component: InvoicePrint },
             { path: baseurl + 'invoice-show/:InvoiceId', name: 'InvoiceShow', component: InvoiceShow },
+            { path: baseurl + 'invoice-edit/:InvoiceNo', name: 'InvoiceEdit', component: InvoiceEdit },
             { path: baseurl + 'brta-invoice-print/:InvoiceId', name: 'BRTAInvoicePrint', component: BRTAInvoicePrint },
             //Service | CLAIM WARRANTY
             { path: baseurl + 'service/claim-warranty-list', name: 'ClaimWarrantyList', component: ClaimWarrantyList },

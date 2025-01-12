@@ -73,6 +73,7 @@ class CommonSapController extends Controller
                         $product->UnitPrice = $singleProduct['UnitPrice'];
                         $product->VAT = $singleProduct['VAT'];
                         $product->MRP = $singleProduct['MRP'];
+                        $product->Color = $singleProduct['InspMemo'];
                         $product->SalesUnit = $singleProduct['SalesUnit'];
                         $product->MaterialGroup = $singleProduct['MaterialGroup'];
                         $product->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
@@ -91,6 +92,28 @@ class CommonSapController extends Controller
                         $product->Business = $singleProduct['Business'];
                         $product->Active = 'Y';
                         $product->MaterialType = $singleProduct['MaterialType'];
+
+                        $product->FuelUsed = $singleProduct['FuelUsed'];
+                        $product->HorsePower = $singleProduct['HorsePower'];
+                        $product->RPM = $singleProduct['RPM'];
+                        $product->CubicCapacity = $singleProduct['CubicCapacity'];
+                        $product->WheelBase = $singleProduct['WheelBase'];
+                        $product->Weight = $singleProduct['Weight'];
+                        $product->WeightMax = $singleProduct['WeightMax'];
+                        $product->Standee = $singleProduct['Standee'];
+                        $product->TireSizeFront = $singleProduct['TireSizeFront'];
+                        $product->TireSizeRear = $singleProduct['TireSizeRear'];
+                        $product->Seats = $singleProduct['Seats'];
+                        $product->NoOfTyre = $singleProduct['NoOfTyre'];
+                        $product->NoOfAxel = $singleProduct['NoOfAxel'];
+                        $product->ClassOfVehicle = $singleProduct['ClassOfVehicle'];
+                        $product->Manufacturer = $singleProduct['Manufacturer'];
+                        $product->ManufacturingCountry = $singleProduct['ManufacturingCountry'];
+                        $product->EngineType = $singleProduct['EngineType'];
+                        $product->NumberOfCylinders = $singleProduct['NumberOfCylinders'];
+                        $product->ImportYear = $singleProduct['ImportYear'];
+                        $product->ManufacturingYear = $singleProduct['ManufacturingYear'];
+
                         $product->save();
                         DB::commit();
                     }
@@ -273,6 +296,7 @@ class CommonSapController extends Controller
         $checkExisting->UnitPrice = $singleProduct['UnitPrice'];
         $checkExisting->VAT = $singleProduct['VAT'];
         $checkExisting->MRP = $singleProduct['MRP'];
+        $checkExisting->Color = $singleProduct['InspMemo'];
         $checkExisting->SalesUnit = $singleProduct['SalesUnit'];
         $checkExisting->MaterialGroup = $singleProduct['MaterialGroup'];
         $checkExisting->MaterialGroupTwo = $singleProduct['MaterialGroupTwo'];
@@ -291,6 +315,29 @@ class CommonSapController extends Controller
         $checkExisting->Business = $singleProduct['Business'];
         $checkExisting->Active = 'Y';
         $checkExisting->MaterialType = $singleProduct['MaterialType'];
+
+        $checkExisting->FuelUsed = $singleProduct['FuelUsed'];
+        $checkExisting->HorsePower = $singleProduct['HorsePower'];
+        $checkExisting->RPM = $singleProduct['RPM'];
+        $checkExisting->CubicCapacity = $singleProduct['CubicCapacity'];
+        $checkExisting->WheelBase = $singleProduct['WheelBase'];
+        $checkExisting->Weight = $singleProduct['Weight'];
+        $checkExisting->WeightMax = $singleProduct['WeightMax'];
+        $checkExisting->Standee = $singleProduct['Standee'];
+        $checkExisting->TireSizeFront = $singleProduct['TireSizeFront'];
+        $checkExisting->TireSizeRear = $singleProduct['TireSizeRear'];
+        $checkExisting->Seats = $singleProduct['Seats'];
+
+
+        $checkExisting->NoOfTyre = $singleProduct['NoOfTyre'];
+        $checkExisting->NoOfAxel = $singleProduct['NoOfAxel'];
+        $checkExisting->ClassOfVehicle = $singleProduct['ClassOfVehicle'];
+        $checkExisting->Manufacturer = $singleProduct['Manufacturer'];
+        $checkExisting->ManufacturingCountry = $singleProduct['ManufacturingCountry'];
+        $checkExisting->EngineType = $singleProduct['EngineType'];
+        $checkExisting->NumberOfCylinders = $singleProduct['NumberOfCylinders'];
+        $checkExisting->ImportYear = $singleProduct['ImportYear'];
+        $checkExisting->ManufacturingYear = $singleProduct['ManufacturingYear'];
         $checkExisting->save();
     }
 

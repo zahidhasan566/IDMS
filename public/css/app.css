@@ -39,8 +39,12 @@ a {
 .background {
   padding: 1px;
   background-size: cover !important;
+<<<<<<< HEAD
   /*background: url(https://app.acibd.com/AMS/assets/images/creative-background.jpg) no-repeat top;*/
   background: url("https://dms.ifadmotors.com/assets/images/creative-background2.jpg");
+=======
+  background: url("https://dms.ifadmotors.com/assets/images/creative-background3.jpg");
+>>>>>>> 2d9aed456e36a2a941e7f161923e4478431c23d3
   height: 100vh;
 }
 

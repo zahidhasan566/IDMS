@@ -12,6 +12,7 @@ Route::group(['middleware' => 'jwt:api'], function () {
     Route::post('sap-customer-add', [\App\Http\Controllers\Sap\CommonSapController::class, 'storeSapCustomer']);
     Route::post('prebooking-add', [\App\Http\Controllers\Sap\PrebookingController::class, 'storePreBookingCustomer']);
     Route::post('sap-invoice-add', [\App\Http\Controllers\Sap\SapInvoiceController::class, 'storeSapInvoice']);
+    Route::post('sap-brta-invoice-add', [\App\Http\Controllers\Sap\SapInvoiceController::class, 'storeFlagShipInvoice']);
 
 
 });

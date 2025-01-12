@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Invoice;
 
+use App\Models\AdvanceMoneyReceipt;
+use App\Models\FlagshipInvoiceBRTA;
 use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Traits\CommonTrait;
+use Illuminate\Support\Facades\Log;
 use Jenssegers\Agent\Agent;
 use App\Models\LostDocument;
 use Illuminate\Http\Request;
@@ -34,31 +37,36 @@ class InvoiceController extends Controller
         $ChassisNo  = $request->ChassisNo;
         $isAdmin    = Auth::user()->grpSup;
         $MasterCode = Auth::user()->UserId;
+        $RoleId = Auth::user()->RoleId;
 
         $CurrentPage = $request->pagination['current_page'];
         $PerPage     = 20;
         $Export      = $request->Export;
 
         $DateFrom = $request->DateFrom;
-        $DateTo   = $request->DateTo;
+        $DateTo   = $request->DateTo. ' 23:59:59.000';
+        $DateTo   = date('Y-m-d H:i:s',strtotime($DateTo));
 
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
+        if ($RoleId == 'FlagshipDealer'){
+            $sql = "EXEC SP_FlagshipInvoiceBRTAList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
+        }else{
+            $sql = "EXEC SP_BikeInvoiceList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
+        }
 
-        $sql = "EXEC SP_BikeInvoiceList '$MasterCode','$DateFrom','$DateTo','$ChassisNo','$PerPage','$CurrentPage'";
-
-       // dd($sql);
-        //return $sql;
         $invoice = $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
 
         return response()->json([
             'invoice' => $invoice,
             'isAdmin' => $isAdmin,
+            'iSFlagshipDealer' => $RoleId,
         ]);
     }
 
     public function invoiceStore(InvoiceRequest $request){
+//        dd($request->all());
         try {
             DB::beginTransaction();
             $MasterCode = Auth::user()->UserId;
@@ -139,7 +147,6 @@ class InvoiceController extends Controller
             $invoice->CustomerName              = $request->CustomerName;
             $invoice->FatherName                = $request->FatherName;
             $invoice->MotherName                = $request->MotherName;
-            $invoice->MotherName                = $request->MotherName;
             $invoice->PreAddress                = $request->Address;
             $invoice->PerAddress                = !empty($request->PermanentAddress)?$request->PermanentAddress:$request->Address;
             $invoice->MobileNo                  = $request->Mobile;
@@ -192,23 +199,22 @@ class InvoiceController extends Controller
             $invoice->AffiliatorDiscount        = 0;
             $invoice->isSync                    = '';
             $invoice->CSIResult                 = 0;
+            $invoice->BookingCode                 = !empty($request->BookingCode) && $request->prePaymentTypeId === 'PB' ? $request->BookingCode : NULL;
+            $invoice->MoneyRecNo                 = !empty($request->MoneyRecNo) && $request->prePaymentTypeId === 'AM' ? $request->MoneyRecNo : NULL;
 
 
             if ($invoice->save()){
 
                 //DEALER INVOICE DETAILS
-                $product = Product::query()->where('ProductCode',$request->ProductCode)->first();
+                $product = Product::where('ProductCode',$request->ProductCode)->first();
 
                 $invoiceDetails                         = new DealarInvoiceDetails();
-                $invoiceDetails->InvoiceID              = $invoice->InvoiceID;
                 $invoiceDetails->InvoiceID              = $invoice->InvoiceID;
                 $invoiceDetails->ProductCode            = $request->ProductCode;
                 $invoiceDetails->ProductName            = $product->ProductName;
                 $invoiceDetails->Quantity               = 1;
-                $invoiceDetails->ProductName            = $product->ProductName;
                 $invoiceDetails->UnitPrice              = $product->MRP;
                 $invoiceDetails->VAT                    = 0;
-                $invoiceDetails->Discount               = $request->Discount;
                 $invoiceDetails->Discount               = $request->Discount;
                 $invoiceDetails->ChassisNo              = $ChassisNo;
                 $invoiceDetails->EngineNo               = $request->EngineNo;
@@ -228,7 +234,7 @@ class InvoiceController extends Controller
                 $invoiceDetails->MakerCountry           = $product->Origin;
                 $invoiceDetails->EngineType             = '4 Stroke';
                 $invoiceDetails->NumberofCylinders      = 'One';
-                $invoiceDetails->ImportYear             = $product->ManufacturingYear;
+                $invoiceDetails->ImportYear             = $product->ImportYear;
                 $invoiceDetails->SalesType              = $request->SalesType;
                 $invoiceDetails->CreditAmount           = $request->CreditAmount;
                 $invoiceDetails->CreditTenureMonth      = $request->Tenure;
@@ -270,6 +276,39 @@ class InvoiceController extends Controller
                     }
                 }
 
+                //DISABLE BOOKING CODE
+                if (!empty($request->BookingCode) && $request->prePaymentTypeId === 'PB') {
+                    if (DB::table('DealerBookingAllocation')->where('CustomerCode',Auth::user()->UserId)->where('BookingCode',$request->BookingCode)->first()) {
+                        DB::table('DealerBookingAllocation')->where('CustomerCode',Auth::user()->UserId)->where('BookingCode',$request->BookingCode)
+                            ->update([
+                                'Active' => 'N',
+                                'InvoiceNo' => $invoice->InvoiceNo
+                            ]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => 'error',
+                            'message'   => 'Booking code already used!'
+                        ],500);
+                    }
+                }
+
+                //DISABLE ADVANCE MONEY RECEIPT
+                if (!empty($request->MoneyRecNo) && $request->prePaymentTypeId === 'AM') {
+                    if (AdvanceMoneyReceipt::where('MoneyRecNo',$request->MoneyRecNo)->where('Active','Y')->first()) {
+                        AdvanceMoneyReceipt::where('MoneyRecNo',$request->MoneyRecNo)
+                            ->update([
+                                'Active' => 'N'
+                            ]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => 'error',
+                            'message'   => 'Advance money receipt no already used!'
+                        ],500);
+                    }
+                }
+
                 DB::commit();
                 return response()->json([
                     'status'    => 'success',
@@ -278,13 +317,30 @@ class InvoiceController extends Controller
 
             }
         }catch (\Exception $e){
-            file_put_contents('public/log/invoice_create.txt', $e->getMessage()."\n",FILE_APPEND);
+//            file_put_contents(public_path('log/invoice_create.txt'), $e->getMessage()."\n",FILE_APPEND);
+            Log::error($e->getMessage());
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage() . '-' . $e->getLine()
             ],500);
         }
+    }
+
+    public function invoiceEdit($InvoiceNo){
+        $flagshipInvoiceBRTA = FlagshipInvoiceBRTA::query()->where('InvoiceNo',$InvoiceNo)->first();
+        return response()->json([
+            'flagshipInvoiceBRTA' => $flagshipInvoiceBRTA,
+        ]);
+    }
+
+    public function invoiceUpdate(Request $request){
+        $data = $request->except('Id','InvoiceNo'); // Exclude 'Id' from the update
+        FlagshipInvoiceBRTA::query()->where('InvoiceNo', $request->InvoiceNo)->update($data);
+        return response()->json([
+            'status'    => 'success',
+            'message'   => 'Successfully Updated'
+        ]);
     }
 
     public function invoiceDelete($invoiceID){
@@ -390,26 +446,43 @@ class InvoiceController extends Controller
     }
 
     public function getSingleInvoice($invoiceId){
-        $invoice = DB::table('DealarInvoiceMaster as DIM')
-            ->select("DIM.InvoiceId","DIM.invoiceno", DB::raw("FORMAT(DIM.invoicedate,'yyyy-MM-dd') as InvoiceDate"), "DIM.invoicetime", "DIM.customercode", "DIM.customername",
-                "DIM.fathername", "DIM.mothername", "DIM.preaddress", "DIM.peraddress", "DIM.mobileno", "DIM.EMail",
-                "DIM.nid", "DID.productcode", "p.productname", "DID.quantity", "DID.unitprice",
-                "DID.chassisno", "DID.engineno", "DID.color", "DID.fuelused", "DID.horsepower", "DID.rpm",
-                "DID.cubiccapacity", "DID.discount", "DID.wheelbase", "DID.weight", "DID.tiresizefront",
-                "DID.tiresizerear", "DID.seats", "DID.nooftyre", "DID.noofaxel", "DID.classofvehicle",
-                "DID.makername", "DID.makercountry", "DID.enginetype", "DID.numberofcylinders",
-                "C.CustomerCode", "C.CustomerName", "C.Add1", "P.Standee", "DIM.DateOfBirth", "P.BodyType", "P.WeightMax", "P.ManufacturingYear","P.ManufacturingCountry",
-                "P.TireSizeFront", "P.TireSizeRear","P.ProductCode",DB::raw('isnull(YEAR(R.Inv_PODate),DID.importyear) AS importyear'),"DIM.gender","DIM.ownertype")
-            ->join('DealarInvoiceDetails as DID','DID.InvoiceID','=','DIM.InvoiceID')
-            ->leftJoin('ReceiveDetails as RD',function ($join){
-                $join->on('RD.Batchno','=','DID.ChassisNo');
-                $join->on('RD.ProductCode','=','DID.ProductCode');
-            })
-            ->leftJoin('Receive as R','RD.ReceiveNo','=','R.ReceiveNo')
-            ->join('Product as P','DID.Productcode','=','P.Productcode')
-            ->join('Customer as C','C.CustomerCode','=','DIM.MasterCode')
-            ->where('DIM.InvoiceID',$invoiceId)
-            ->first();
+        $RoleId = Auth::user()->RoleId;
+        if ($RoleId == 'FlagshipDealer'){
+            $invoice = DB::table('FlagshipInvoiceBRTA as DIM')
+                ->select("DIM.Id", "DIM.invoiceno", "DIM.CustomerCode as customercode", "DIM.CustomerName as customername",
+                    "DIM.FatherName as fathername", "DIM.MotherName as mothername", "DIM.PreAddress as preaddress", "DIM.PerAddress as peraddress", "DIM.MobileNo as mobileno",
+                    "DIM.EMail", "DIM.NID as nid", "DIM.ChassisNo as chassisno", "DIM.EngineNo as engineno", "DIM.Color as color", "DIM.FuelUsed as fuelused",
+                    "DIM.HorsePower as horsepower", "DIM.RPM as rpm", "DIM.CubicCapacity as cubiccapacity", "DIM.WheelBase as wheelbase", "DIM.Weight as weight",
+                    "DIM.TireSizeFront as tiresizefront", "DIM.TireSizeRear as tiresizerear", "DIM.Seats as seats", "DIM.NoOfTyre as nooftyre", "DIM.NoOfAxel as noofaxel",
+                    "DIM.ClassOfVehicle as classofvehicle",
+                    "DIM.MakerName as makername", "DIM.MakerCountry as makercountry", "DIM.EngineType as enginetype", "DIM.NumberOfCylinders as numberofcylinders",
+                    "DIM.Standee", "DIM.DateOfBirth",  "DIM.WeightMax", "DIM.MakerCountry as ManufacturingCountry",
+                    "DIM.TireSizeFront", "DIM.TireSizeRear", "DIM.ImportYear AS importyear", "DIM.Gender as gender", "DIM.OwnerType as ownertype")
+                ->where('InvoiceNo',$invoiceId)->first();
+        }else {
+            $invoice = DB::table('DealarInvoiceMaster as DIM')
+                ->select("DIM.InvoiceId", "DIM.invoiceno", DB::raw("FORMAT(DIM.invoicedate,'yyyy-MM-dd') as InvoiceDate"), "DIM.invoicetime",
+                    "DIM.customercode", "DIM.customername",
+                    "DIM.fathername", "DIM.mothername", "DIM.preaddress", "DIM.peraddress", "DIM.mobileno", "DIM.EMail",
+                    "DIM.nid", "DID.productcode", "p.productname", "DID.quantity", "DID.unitprice",
+                    "DID.chassisno", "DID.engineno", "DID.color", "DID.fuelused", "DID.horsepower", "DID.rpm",
+                    "DID.cubiccapacity", "DID.discount", "DID.wheelbase", "DID.weight", "DID.tiresizefront",
+                    "DID.tiresizerear", "DID.seats", "DID.nooftyre", "DID.noofaxel", "DID.classofvehicle",
+                    "DID.makername", "DID.makercountry", "DID.enginetype", "DID.numberofcylinders",
+                    "C.CustomerCode", "C.CustomerName", "C.Add1", "P.Standee", "DIM.DateOfBirth", "P.BodyType", "P.WeightMax", "P.ManufacturingYear", "P.ManufacturingCountry",
+                    "P.TireSizeFront", "P.TireSizeRear", "P.ProductCode", DB::raw('isnull(YEAR(R.Inv_PODate),DID.importyear) AS importyear'), "DIM.gender", "DIM.ownertype")
+                ->join('DealarInvoiceDetails as DID', 'DID.InvoiceID', '=', 'DIM.InvoiceID')
+                ->leftJoin('ReceiveDetails as RD', function ($join) {
+                    $join->on('RD.Batchno', '=', 'DID.ChassisNo');
+                    $join->on('RD.ProductCode', '=', 'DID.ProductCode');
+                })
+                ->leftJoin('Receive as R', 'RD.ReceiveNo', '=', 'R.ReceiveNo')
+                ->join('Product as P', 'DID.Productcode', '=', 'P.Productcode')
+                ->join('Customer as C', 'C.CustomerCode', '=', 'DIM.MasterCode')
+                ->where('DIM.InvoiceID', $invoiceId)
+                ->first();
+        }
+
         return response([
            'invoice' => $invoice
         ]);

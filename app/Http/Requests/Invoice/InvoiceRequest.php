@@ -42,7 +42,7 @@ class InvoiceRequest extends FormRequest
             'ThanaCode'=>'required',
             'NID'=>'required',
            // 'Photo'=>'required',
-            'MonthlyIncome'=>'required',
+//            'MonthlyIncome'=>'required',
             'productIntroducingMedias.*'=>'required',
             'interestInProduct'=>'required',
             'previouslyUsedBike'=>'required',

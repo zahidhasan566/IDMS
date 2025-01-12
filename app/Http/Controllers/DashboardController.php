@@ -161,7 +161,7 @@ class DashboardController extends Controller
                 FROM OrderInvoiceMaster oim 
                 INNER JOIN OrderInvoiceDetails oid ON oim.OrderNo = oid.OrderNo 
                 INNER JOIN Customer C ON C.CustomerCode = oim.MasterCode
-                INNER JOIN CustomerType CT ON CT.CustomerType = C.CustomerType
+                LEFT JOIN CustomerType CT ON CT.CustomerType = C.CustomerType
                 WHERE oim.MasterCode = '$masterCode'
                 GROUP BY oim.OrderNo, oim.orderdate ,oim.ordertime 
                 ORDER BY oim.OrderTime DESC";

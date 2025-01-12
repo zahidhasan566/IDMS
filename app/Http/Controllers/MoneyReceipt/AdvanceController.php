@@ -47,6 +47,28 @@ class AdvanceController extends Controller
             'invoices' => $invoices
         ]);
     }
+
+    public function getByMoneyReceipt($moneyRecNo)
+    {
+        $invoice = AdvanceMoneyReceipt::join('Customer as c','c.CustomerCode','AdvanceMoneyReceipt.CustomerCode')
+            ->where('MoneyRecNo',$moneyRecNo)
+            ->where('c.CustomerCode',Auth::user()->UserId)
+            ->where('AdvanceMoneyReceipt.Active','Y')
+            ->select('AdvanceMoneyReceipt.MoneyRecNo','AdvanceMoneyReceipt.CustomerCode','AdvanceMoneyReceipt.InvoiceTo as CustomerName','AdvanceMoneyReceipt.InvoicePhone as CustomerMobile','AdvanceMoneyReceipt.InvoiceAddress as CustomerAddress','AdvanceMoneyReceipt.Active')
+            ->first();
+        $invoices = [];
+        if ($invoice) {
+            $invoices = DB::table('AdvanceMoneyReceiptDetails','AMR')
+                ->join('AdvanceMoneyType as AT','AT.TypeId','AMR.AdvanceMoneyType')
+                ->where('AMR.MoneyRecNo',$invoice->MoneyRecNo)
+                ->select('AMR.*','AT.TypeName')
+                ->get();
+        }
+        return response()->json([
+            'invoice' => $invoice,
+            'invoices' => $invoices
+        ]);
+    }
     public function getAdvanceTypes()
     {
         return response()->json([
