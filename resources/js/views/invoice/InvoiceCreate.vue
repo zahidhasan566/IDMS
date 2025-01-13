@@ -1225,7 +1225,7 @@
                               </div>
                               <label class="col-lg-2 col-form-label">Swipe Rate</label>
                               <div class="col-lg-3">
-                                <input type="number" name="SwipRate"
+                                <input type="number" step="any" name="SwipRate"
                                        class="form-control" :id="`SwipRate${i}`"
                                        v-model="tender.SwipeCharge"/>
                                 <div class="error" v-if="form.errors.has('SwipRate')"
