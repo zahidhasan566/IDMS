@@ -154,9 +154,9 @@ class CommonController extends Controller
         $chassis_info = DB::table('DealarReceiveInvoiceDetails as D')
             ->select("D.ReceiveDetailsId", "D.ReceiveID", "D.ProductCode", "D.ReceivedQnty", "D.SoldQnty",
                 DB::raw("CAST(P.MRP AS DECIMAL(18, 2)) AS UnitPrice"),
-                "D.Vat","D.ChassisNo", "D.EngineNo", "D.Color", "D.FuelUsed", "D.HorsePower", "D.RPM", "D.CubicCapacity","D.WheelBase",
-                "D.Weight", "D.TireSizeFront","D.TireSizeRear","D.Seats","D.NoofTyre","D.NoofAxel","D.ClassOfVehicle","D.MakerName","D.MakerCountry",
-                "D.EngineType","D.NumberofCylinders","D.ImportYear", "P.ProductName")
+                "D.Vat","D.ChassisNo", "D.EngineNo", "P.Color", "P.FuelUsed", "P.HorsePower", "P.RPM", "P.CubicCapacity","P.WheelBase",
+                "P.Weight", "P.TireSizeFront","P.TireSizeRear","P.Seats","P.NoofTyre","P.NoofAxel","P.ClassOfVehicle","D.MakerName","D.MakerCountry",
+                "P.EngineType","P.NumberofCylinders","P.ImportYear", "P.ProductName")
             ->join('Product as P', 'D.ProductCode','=','P.ProductCode')
             ->join('DealarReceiveInvoiceMaster as M', 'D.ReceiveID','=','M.ReceiveID')
             ->where('D.ChassisNo',$chassis)
@@ -265,7 +265,7 @@ class CommonController extends Controller
     }
 
     public function previouslyUsedBike(){
-        $previouslyUsedBike = PreviouslyUsedBike::query()->get();
+        $previouslyUsedBike = PreviouslyUsedBike::get();
         return response()->json([
             'previouslyUsedBike' => $previouslyUsedBike
         ]);
@@ -279,7 +279,7 @@ class CommonController extends Controller
     }
 
     public function previousBikeUsage(){
-        $previousBikeUsage = PreviousBikeUsage::query()->get();
+        $previousBikeUsage = PreviousBikeUsage::get();
         return response()->json([
             'previousBikeUsage' => $previousBikeUsage
         ]);
@@ -384,7 +384,7 @@ class CommonController extends Controller
     }
 
     public function getAllOldBikeBrand(){
-        $brands = OldBikeBrand::query()->get();
+        $brands = OldBikeBrand::all();
         return response()->json([
             'brands' => $brands
         ]);

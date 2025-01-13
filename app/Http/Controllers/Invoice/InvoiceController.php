@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Invoice;
 
+use App\Models\AdvanceMoneyReceipt;
 use App\Models\FlagshipInvoiceBRTA;
 use Carbon\Carbon;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Traits\CommonTrait;
+use Illuminate\Support\Facades\Log;
 use Jenssegers\Agent\Agent;
 use App\Models\LostDocument;
 use Illuminate\Http\Request;
@@ -64,6 +66,7 @@ class InvoiceController extends Controller
     }
 
     public function invoiceStore(InvoiceRequest $request){
+//        dd($request->all());
         try {
             DB::beginTransaction();
             $MasterCode = Auth::user()->UserId;
@@ -144,7 +147,6 @@ class InvoiceController extends Controller
             $invoice->CustomerName              = $request->CustomerName;
             $invoice->FatherName                = $request->FatherName;
             $invoice->MotherName                = $request->MotherName;
-            $invoice->MotherName                = $request->MotherName;
             $invoice->PreAddress                = $request->Address;
             $invoice->PerAddress                = !empty($request->PermanentAddress)?$request->PermanentAddress:$request->Address;
             $invoice->MobileNo                  = $request->Mobile;
@@ -197,23 +199,22 @@ class InvoiceController extends Controller
             $invoice->AffiliatorDiscount        = 0;
             $invoice->isSync                    = '';
             $invoice->CSIResult                 = 0;
+            $invoice->BookingCode                 = !empty($request->BookingCode) && $request->prePaymentTypeId === 'PB' ? $request->BookingCode : NULL;
+            $invoice->MoneyRecNo                 = !empty($request->MoneyRecNo) && $request->prePaymentTypeId === 'AM' ? $request->MoneyRecNo : NULL;
 
 
             if ($invoice->save()){
 
                 //DEALER INVOICE DETAILS
-                $product = Product::query()->where('ProductCode',$request->ProductCode)->first();
+                $product = Product::where('ProductCode',$request->ProductCode)->first();
 
                 $invoiceDetails                         = new DealarInvoiceDetails();
-                $invoiceDetails->InvoiceID              = $invoice->InvoiceID;
                 $invoiceDetails->InvoiceID              = $invoice->InvoiceID;
                 $invoiceDetails->ProductCode            = $request->ProductCode;
                 $invoiceDetails->ProductName            = $product->ProductName;
                 $invoiceDetails->Quantity               = 1;
-                $invoiceDetails->ProductName            = $product->ProductName;
                 $invoiceDetails->UnitPrice              = $product->MRP;
                 $invoiceDetails->VAT                    = 0;
-                $invoiceDetails->Discount               = $request->Discount;
                 $invoiceDetails->Discount               = $request->Discount;
                 $invoiceDetails->ChassisNo              = $ChassisNo;
                 $invoiceDetails->EngineNo               = $request->EngineNo;
@@ -233,7 +234,7 @@ class InvoiceController extends Controller
                 $invoiceDetails->MakerCountry           = $product->Origin;
                 $invoiceDetails->EngineType             = '4 Stroke';
                 $invoiceDetails->NumberofCylinders      = 'One';
-                $invoiceDetails->ImportYear             = $product->ManufacturingYear;
+                $invoiceDetails->ImportYear             = $product->ImportYear;
                 $invoiceDetails->SalesType              = $request->SalesType;
                 $invoiceDetails->CreditAmount           = $request->CreditAmount;
                 $invoiceDetails->CreditTenureMonth      = $request->Tenure;
@@ -275,6 +276,39 @@ class InvoiceController extends Controller
                     }
                 }
 
+                //DISABLE BOOKING CODE
+                if (!empty($request->BookingCode) && $request->prePaymentTypeId === 'PB') {
+                    if (DB::table('DealerBookingAllocation')->where('CustomerCode',Auth::user()->UserId)->where('BookingCode',$request->BookingCode)->first()) {
+                        DB::table('DealerBookingAllocation')->where('CustomerCode',Auth::user()->UserId)->where('BookingCode',$request->BookingCode)
+                            ->update([
+                                'Active' => 'N',
+                                'InvoiceNo' => $invoice->InvoiceNo
+                            ]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => 'error',
+                            'message'   => 'Booking code already used!'
+                        ],500);
+                    }
+                }
+
+                //DISABLE ADVANCE MONEY RECEIPT
+                if (!empty($request->MoneyRecNo) && $request->prePaymentTypeId === 'AM') {
+                    if (AdvanceMoneyReceipt::where('MoneyRecNo',$request->MoneyRecNo)->where('Active','Y')->first()) {
+                        AdvanceMoneyReceipt::where('MoneyRecNo',$request->MoneyRecNo)
+                            ->update([
+                                'Active' => 'N'
+                            ]);
+                    } else {
+                        DB::rollBack();
+                        return response()->json([
+                            'status'    => 'error',
+                            'message'   => 'Advance money receipt no already used!'
+                        ],500);
+                    }
+                }
+
                 DB::commit();
                 return response()->json([
                     'status'    => 'success',
@@ -284,6 +318,7 @@ class InvoiceController extends Controller
             }
         }catch (\Exception $e){
 //            file_put_contents(public_path('log/invoice_create.txt'), $e->getMessage()."\n",FILE_APPEND);
+            Log::error($e->getMessage());
             DB::rollBack();
             return response()->json([
                 'status' => 'error',

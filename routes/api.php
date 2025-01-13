@@ -104,13 +104,6 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('store-parts', [SparePartsController::class,'storeSparePartsOrder']);
     });
 
-     //iHelpBD
-     Route::group(['prefix' => 'iHelpBD'],function () {
-        Route::post('send-yamaha-call', [SendCallRequestController::class,'sendYamahaCall']);
-        Route::post('send-foton-call', [SendCallRequestController::class,'sendFotonCall']);
-        Route::post('send-agrimotors-call', [SendCallRequestController::class,'sendAgrimotorsCall']);
-     });
-
     //payment
     Route::group(['prefix' => 'payment'],function () {
         Route::get('credit-payment-list', [PaymentController::class,'index']);
@@ -344,6 +337,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
     Route::group(['prefix' => 'prebook'],function () {
         Route::get('supporting-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookSupportingData']);
         Route::post('prebook-report-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookingReport']);
+        Route::get('{bookingCode}',[\App\Http\Controllers\BookingController::class,'getByCode']);
     });
 
 
