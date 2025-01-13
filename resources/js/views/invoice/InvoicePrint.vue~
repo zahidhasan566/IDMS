@@ -559,7 +559,8 @@
                           <td class="text-left">
                             <span style="text-align: left;font-weight: bold" >Name : {{invoice.productname}}</span><br>
                             <span style="font-weight: bold">E/N : {{invoice.engineno}}</span><br>
-                            <span style="font-weight: bold;color: blue">C/N : {{invoice.chassisno}}</span><br>
+                            <span style="font-weight: bold;color: #2196f3">C/N : {{invoice.chassisno}}</span><br>
+                            <span style="font-weight: bold;color: #2196f3">Color : {{invoice.color}}</span><br>
                           </td>
                           <td class="text-center">1</td>
                           <td class="text-center">{{invoice.unitprice}}</td>
