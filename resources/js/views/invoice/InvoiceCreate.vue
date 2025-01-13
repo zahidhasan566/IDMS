@@ -1523,11 +1523,11 @@ export default {
       if (isNaN(TotalPayable)) {
         TotalPayable = 0;
       }
-      let TotalAmount = Number(this.form.TotalAmount) - this.form.preLoadedMoney;
+      let TotalAmount = Number(this.form.TotalAmount);
       if (isNaN(TotalAmount)) {
         TotalAmount = 0;
       }
-      console.log(TotalPayable,TotalAmount)
+      //console.log(TotalPayable,TotalAmount)
       if (TotalPayable != TotalAmount) {
         Swal.fire({
           icon: "error",
