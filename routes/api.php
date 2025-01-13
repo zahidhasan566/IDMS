@@ -150,6 +150,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('dealer-invoice-survey-report-data',   [ReportController::class,'getDealerInvoiceSurveyReportData']);
         Route::post('service-summary',                     [ReportController::class,'getServiceSummaryReport']);
         Route::post('scrap-products',        [ReportController::class,'getScrapProductsReport']);
+        Route::post('prebook-booking-allocation',        [ReportController::class,'getPreBookAllocationReport']);
     });
     //JOB CARD
     Route::group(['prefix' => 'jobCard'],function () {

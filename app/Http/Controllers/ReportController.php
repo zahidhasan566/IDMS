@@ -74,6 +74,21 @@ class ReportController extends Controller
         $sql = " exec usp_reportProductInvoice '$dateFrom', '$dateTo', '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
+    public function getPreBookAllocationReport(Request $request){
+        $CurrentPage = $request->pagination['current_page'];
+        $PerPage = 20;
+        $Export = $request->Export;
+        $CustomerCode = $request->CustomerCode;
+        $dateFrom = $request->DateFrom;
+        $dateTo = $request->DateTo;
+        $userID = Auth::user()->UserId;
+
+        if ($Export == 'Y'){
+            $CurrentPage = '%';
+        }
+        $sql = " exec usp_reportPreBookAllocation '$dateFrom', '$dateTo', '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
+        return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
+    }
 
     public function getSparePartsSalesReport(Request $request){
         $CurrentPage = $request->pagination['current_page'];

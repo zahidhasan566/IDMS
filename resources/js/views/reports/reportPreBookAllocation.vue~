@@ -223,7 +223,7 @@ export default {
               const link = document.createElement('a');
               const url = URL.createObjectURL(blob);
               link.href = url;
-              link.setAttribute('download', 'booking_allocation_data.csv');
+              link.setAttribute('download', 'bike_sales_data.csv');
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);

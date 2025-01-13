@@ -674,7 +674,7 @@ const routes = [
                 component: AdvancePrint
             },
             {
-                path: baseurl + 'prebook/allocation',
+                path: baseurl + 'money-receipt/:moneyRecNo',
                 name: 'ReportPreBookAllocation',
                 component: ReportPreBookAllocation
             },
