@@ -24,7 +24,7 @@
                   <td>{{ row.ChassisNo }}</td>
                   <td>{{ row.EngineNo }}</td>
                   <td>{{ Number(row.Quantity) }}</td>
-                  <td>{{ numberWithCommas(Number(row.UnitPrice)) }}</td>
+                  <td>{{ numberWithCommas(Number(row.UnitPrice) + Number(row)) }}</td>
                 </tr>
               </table>
             </div>
