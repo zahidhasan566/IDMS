@@ -102,15 +102,15 @@
                             No
                         </span>
                     </td>
-                    <td class="bold">FI Status</td>
-                    <td colspan="1" style="text-align: center">
-                           <span v-if="fiStatus==='Y'">
-                            Yes
-                        </span>
-                        <span v-else>
-                            No
-                        </span>
-                    </td>
+<!--                    <td class="bold">FI Status</td>-->
+<!--                    <td colspan="1" style="text-align: center">-->
+<!--                           <span v-if="fiStatus==='Y'">-->
+<!--                            Yes-->
+<!--                        </span>-->
+<!--                        <span v-else>-->
+<!--                            No-->
+<!--                        </span>-->
+<!--                    </td>-->
                     <td class="bold">Bay No</td>
                     <td style="text-align: center">
                         {{ bayName }}

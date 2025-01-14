@@ -168,9 +168,9 @@
                     </td>
                     <td rowspan="5" style="text-align: center">
                         <img style="margin-top: 10px;" width="150" height="auto"
-                             :src="`${baseUrl+'public/assets/images/ref1.jpeg'}`">
+                             :src="`${baseUrl+'assets/images/ref1.jpeg'}`">
                         <img style="margin-top: 10px; margin-bottom: 10px;" width="150" height="auto"
-                             :src="`${baseUrl+'public/assets/images/ref2.jpeg'}`">
+                             :src="`${baseUrl+'assets/images/ref2.jpeg'}`">
                     </td>
                 </tr>
                 <tr>
