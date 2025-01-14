@@ -86,11 +86,14 @@ class JobCardController extends Controller
         $userId = Auth::user()->UserId;
         $jobCardNo = DB::select("exec usp_doLoadJobCardNoNew '$userId' ");
         $jobCardNo = $jobCardNo ? $jobCardNo[0]->JobCardNo : '';
+
+        $roleId = Auth::user()->RoleId;
+
         $allBay = TblBaySetup::select(
             'BayCode',
             'BayName',
             DB::raw("CONCAT(BayCode,'-',BayName) AS Details")
-        )->where('ServiceCenterCode', $userId)->where('Active', 'Y')->get();
+        )->get();
         $allTechnician = TblTechnicianSetup::select(
             'TblTechnicianSetup.DefaultBay',
             'TblBaySetup.BayName',
@@ -98,15 +101,16 @@ class JobCardController extends Controller
             'TblTechnicianSetup.TechnicianName',
             DB::raw("CONCAT(TblBaySetup.BayCode,'-',TblBaySetup.BayName) AS BayDetails"),
             DB::raw("CONCAT(TechnicianCode,'-',TechnicianName) AS Details")
-        )
-            ->leftjoin("TblBaySetup", function ($join) use ($userId) {
-                $join->on("TblBaySetup.BayCode", "=", "TblTechnicianSetup.DefaultBay")
-                    //->on("TblBaySetup.ServiceCenterCode", "=", "TblTechnicianSetup.ServiceCenterCode")
-                    ->where('TblBaySetup.ServiceCenterCode', $userId)
-                    ->where('TblTechnicianSetup.Active', 'Y');
-            })
-            ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
+            )->leftjoin("TblBaySetup","TblBaySetup.BayCode","TblTechnicianSetup.DefaultBay")
             ->get();
+        if($roleId !='FlagshipDealer'){
+            $allBay->where('ServiceCenterCode', $userId)->where('Active', 'Y');
+            $allTechnician->leftjoin("TblBaySetup", function ($join) use ($userId) {
+
+            })
+                ->where('TblTechnicianSetup.ServiceCenterCode', $userId);
+        }
+
 
 
         $parentJobType = TblJobType::select('Id', 'JobTypeName', 'ParentId', 'Active')->where('Active', 'Y')
@@ -150,9 +154,25 @@ class JobCardController extends Controller
     {
         $userId = Auth::user()->UserId;
         $docheck = '%';
+        $roleId = Auth::user()->RoleId;
         if (!empty($chassisNo)) {
             try {
-                $bikeList = DB::select("exec usp_doLoadCustomerDetails '$chassisNo','$docheck'");
+                if($roleId ==='FlagshipDealer'){
+                    $bikeList = DB::select("
+                                                 select fi.EngineNo as engineno,
+                                                 fi.ChassisNo as chassisno,
+                                                 fi.CustomerName as customername,   
+                                                 fi.ProductName as productname   
+                                                from FlagshipInvoiceBRTA fi
+                                                where fi.ChassisNo like  '$chassisNo' + '%'
+                    ");
+                }
+                else{
+                    $bikeList = DB::select("exec usp_doLoadCustomerDetails '$chassisNo','$docheck'");
+                }
+
+
+
                 $onGoingStatusCheck = TblJobCard::select('TblJobCard.JobStatus','TblJobCard.ServiceCenterCode','Customer.CustomerName')
                                     ->join('Customer','Customer.CustomerCode','TblJobCard.ServiceCenterCode')
                                     ->where('ChassisNo', $chassisNo)
@@ -296,7 +316,7 @@ class JobCardController extends Controller
             $tblJobCard->JobDate = $request->jobDate;
             $tblJobCard->JobDateTime = Carbon::now();
             $tblJobCard->CustomerName = $request->customerName;
-            $tblJobCard->PurchaseDate = $request->purchaseDate;
+            $tblJobCard->PurchaseDate = '2025-01-12';
             $tblJobCard->MobileNo = $request->mobileNo;
             $tblJobCard->ChassisNo = $request->chassisNo ? $request->chassisNo['chassisno'] : '';
             $tblJobCard->RegistrationNo = $request->registrationNo;
