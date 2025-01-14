@@ -464,7 +464,7 @@ class InvoiceController extends Controller
                 ->select("DIM.InvoiceId", "DIM.invoiceno", DB::raw("FORMAT(DIM.invoicedate,'yyyy-MM-dd') as InvoiceDate"), "DIM.invoicetime",
                     "DIM.customercode", "DIM.customername",
                     "DIM.fathername", "DIM.mothername", "DIM.preaddress", "DIM.peraddress", "DIM.mobileno", "DIM.EMail",
-                    "DIM.nid", "DID.productcode", "p.productname", "DID.quantity", "DID.unitprice",
+                    "DIM.nid", "DID.productcode", "p.productname", "DID.quantity", "P.MRP as unitprice",
                     "DID.chassisno", "DID.engineno", "DID.color", "DID.fuelused", "DID.horsepower", "DID.rpm",
                     "DID.cubiccapacity", "DID.discount", "DID.wheelbase", "DID.weight", "DID.tiresizefront",
                     "DID.tiresizerear", "DID.seats", "DID.nooftyre", "DID.noofaxel", "DID.classofvehicle",
