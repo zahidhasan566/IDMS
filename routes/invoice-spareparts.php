@@ -16,6 +16,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
     Route::post('invoice-spare-parts/scrap-products-return', [InvoiceSparePartsController::class, 'returnScrapedInvoice']);
     Route::get('invoice-spare-parts/print/{invoiceId}', [InvoiceSparePartsController::class, 'sparePartsInvoicePrint']);
 
+
     //Scrap
     Route::get('invoice-spare-parts/search-product/{product}', [\App\Http\Controllers\Invoice\ScrapController::class,'searchProduct']);
     Route::post('invoice-spare-parts/scrap-product-add', [\App\Http\Controllers\Invoice\ScrapController::class,'addScrapProduct']);

@@ -6,7 +6,7 @@
 
       </div>
         <div class="col-md-8" v-if="me.RoleId==='FlagshipDealer'" style="text-align: end">
-            <router-link class="btn btn-warning"  :to="{path: `${baseUrl}`+'stock-allocation-flagship'}">Add Spare Parts Stock</router-link>
+            <router-link class="btn btn-warning"  :to="{path: `${baseUrl}`+'stock-allocation-flagship'}">Add Stock</router-link>
         </div>
     </div>
     <advanced-datatable :options="tableOptions" :customers="customers">

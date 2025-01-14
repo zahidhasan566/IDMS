@@ -219,7 +219,7 @@ class StockController extends Controller
                         DealerStock::where('MasterCode', 'FlagshipDealer')
                             ->where('ProductCode', $singleData['Product_Code'])->update([
                                 'AdjustmentQuantity' => intval($existingDealerStock->AdjustmentQuantity) + intval($singleData['Adjustment_Stock']),
-                                'CurrentStock' => !empty($singleData['Adjustment_Stock'])? (intval($existingDealerStock->CurrentStock) - intval($singleData['Adjustment_Stock'])) : intval($existingDealerStock->CurrentStock)+intval($singleData['Current_Stock'])
+                                'CurrentStock' => intval($existingDealerStock->CurrentStock) - intval($singleData['Adjustment_Stock'])
                             ]);
                     }
                     else{
