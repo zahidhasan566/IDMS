@@ -8,7 +8,7 @@
                         :disabled="exportShow" @click="exportReportCSV">Export to Excel </button>
             </div>
             <div class="col-md-6" v-if="me.RoleId==='admin'" style="text-align: end">
-                <router-link  style="width: 150px" class="btn btn-warning"  :to="{path: `${baseurl}`+'prebook-allocation'}">Add Allocation</router-link>
+                <router-link  style="width: 120px;padding: 3px" class="btn btn-warning"  :to="{path: `${baseurl}`+'prebook-allocation'}">Add Allocation</router-link>
             </div>
         </div>
 
