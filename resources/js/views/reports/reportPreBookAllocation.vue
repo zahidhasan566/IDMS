@@ -1,8 +1,17 @@
 <template>
   <div class="container-fluid">
     <breadcrumb :options="['Pre Book Allocation']">
-            <button type="button" class="btn btn-success btn-sm" 
-            :disabled="exportShow" @click="exportReportCSV">Export to Excel </button>
+        <div class="row no-gutters">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-success btn-sm"
+                        style="width: 110px"
+                        :disabled="exportShow" @click="exportReportCSV">Export to Excel </button>
+            </div>
+            <div class="col-md-6" v-if="me.RoleId==='admin'" style="text-align: end">
+                <router-link  style="width: 150px" class="btn btn-warning"  :to="{path: `${baseurl}`+'prebook-allocation'}">Add Allocation</router-link>
+            </div>
+        </div>
+
     </breadcrumb>
 
     <div class="row">
@@ -147,10 +156,16 @@ export default {
       isLoading: false,
       errors: [],
       exportShow: false,
+      baseurl: baseurl
     }
   },
   created() {
     //
+  },
+  computed: {
+      me() {
+          return this.$store.state.me
+      }
   },
   mounted() {
     this.getSupportingData();

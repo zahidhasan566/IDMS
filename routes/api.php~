@@ -341,8 +341,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::get('supporting-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookSupportingData']);
         Route::post('prebook-report-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookingReport']);
         Route::get('prebook-allocation-demo-excel', [\App\Http\Controllers\BookingController::class,'getDemoExcelFile']);
-        Route::post('store-prebook-allocation-data', [\App\Http\Controllers\BookingController::class,'storePreBookAllocationData']);
         Route::get('{bookingCode}',[\App\Http\Controllers\BookingController::class,'getByCode']);
+        Route::post('store-prebook-allocation-data', [\App\Http\Controllers\BookingController::class,'storePreBookAllocationData']);
     });
 
 

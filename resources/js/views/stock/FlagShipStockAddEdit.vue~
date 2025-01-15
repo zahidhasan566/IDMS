@@ -72,9 +72,10 @@
             </div>
 
         </div>
-        <!--           <div v-else>-->
-        <!--               <h4>No Data Found</h4>-->
-        <!--           </div>-->
+        <div>
+            <loader v-if="PreLoader" object="#ff9633" color1="#ffffff" color2="#17fd3d" size="5" speed="2"
+                    bg="#343a40" objectbg="#999793" opacity="80" name="circular"></loader>
+        </div>
     </div>
 </template>
 
@@ -119,7 +120,8 @@ export default {
             buttonShow: false,
             masterCode: '',
             actionType: '',
-            buttonText:''
+            buttonText:'',
+            PreLoader: false,
         }
     },
     created() {
@@ -200,11 +202,13 @@ export default {
                 });
         },
         onSubmit() {
+            this.PreLoader = true;
             var submitUrl = 'api/stock/store-flagship-spare-parts';
             if(this.errors.length === 0){
                 $("#submitSparePartsStock").hide();
                 this.form.post(baseurl + submitUrl, this.config()).then(response => {
                     if(response){
+                        this.PreLoader = false;
                         this.successNoti(response.data.message);
                         this.form.ExcelData = []
                         if (this.actionType === 'edit') {
@@ -217,6 +221,7 @@ export default {
 
                     }
                 }).catch(e => {
+                    this.PreLoader = false;
                     this.errorNoti(e);
                 });
             }

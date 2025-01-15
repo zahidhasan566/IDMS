@@ -1,8 +1,17 @@
 <template>
   <div class="container-fluid">
     <breadcrumb :options="['Pre Book Allocation']">
-            <button type="button" class="btn btn-success btn-sm" 
-            :disabled="exportShow" @click="exportReportCSV">Export to Excel </button>
+        <div class="row no-gutters">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-success btn-sm"
+                        style="width: 110px"
+                        :disabled="exportShow" @click="exportReportCSV">Export to Excel </button>
+            </div>
+            <div class="col-md-6" v-if="me.RoleId==='admin'" style="text-align: end">
+                <router-link     style="width: 150px" class="btn btn-warning"  :to="{path: `${baseUrl}`+'prebook-allocation'}">Add Allocation</router-link>
+            </div>
+        </div>
+
     </breadcrumb>
 
     <div class="row">
@@ -147,10 +156,16 @@ export default {
       isLoading: false,
       errors: [],
       exportShow: false,
+        baseurl: baseurl
     }
   },
   created() {
     //
+  },
+  computed: {
+      me() {
+          return this.$store.state.me
+      }
   },
   mounted() {
     this.getSupportingData();
@@ -223,7 +238,7 @@ export default {
               const link = document.createElement('a');
               const url = URL.createObjectURL(blob);
               link.href = url;
-              link.setAttribute('download', 'bike_sales_data.csv');
+              link.setAttribute('download', 'booking_allocation_data.csv');
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);

@@ -1,14 +1,14 @@
 <template>
     <div class="container-fluid">
         <breadcrumb :options="{title}">
-            <router-link class="btn btn-primary" :to="{name:'Stock'}">Back</router-link>
+            <router-link class="btn btn-primary" :to="{name:'ReportPreBookAllocation'}">Back</router-link>
         </breadcrumb>
         <div class="row" v-if="actionType==='add'">
             <div class="col-12 col-md-6">
                 <ValidationProvider name="Invoice Adjustment File" mode="eager" rules="required"
                                     v-slot="{ errors }">
 
-                    <label style="font-weight:bold" for="inputExcelFile">* Stock File (Excel) <span
+                    <label style="font-weight:bold" for="inputExcelFile">* PreBook Allocation File (Excel) <span
                             class="error">*</span></label>
                     <input type="file" ref="inputFile" @change="readExcelFile($event)" class="btn btn-info btn-sm">
                     <span class="error-message"> {{ errors[0] }}</span>
@@ -16,7 +16,7 @@
                 </ValidationProvider>
             </div>
             <div class="col-md-3">
-                <label style="font-weight:bold" for="downloadExcelFile">Sample Spare Parts Stock  File: <span
+                <label style="font-weight:bold" for="downloadExcelFile">Sample Prebook Allocation File: <span
                         class="error">*</span></label>
                 <a href="#" style="float: right;padding: 6px;margin-right: 5px" @click="downloadDemoExcel"
                    class="btn btn-success btn-sm">Download Sample</a>
@@ -38,24 +38,16 @@
                         <thead class="thead-dark">
                         <tr>
                             <th>SL</th>
-                            <th>Product Code</th>
-                            <th>Part No</th>
-                            <th>Product Name</th>
-                            <th>Current Stock</th>
-                            <th>Real Count</th>
-                            <th>Adjustment Stock</th>
+                            <th>Booking Code</th>
+                            <th>Dealer Code</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="(excelData, i) in form.ExcelData" :key="i" v-if="form.ExcelData.length>0">
                             <td scope="row">{{ ++i }}</td>
-                            <td>{{ excelData.Product_Code }}</td>
-                            <td>{{ excelData.Part_No }}</td>
-                            <td>{{ excelData.Product_Name }}</td>
-                            <td><input type="text" class="form-control" :readOnly="actionType==='edit'" v-model="excelData.Current_Stock"></td>
-                            <td><input type="text" class="form-control" :readOnly="actionType==='edit'" v-model="excelData.Real_Count"></td>
-                            <td><input type="text" class="form-control" :readOnly="actionType==='edit'" v-model="excelData.Adjustment_Stock"></td>
+                            <td><input type="text" class="form-control" :readOnly="actionType==='edit'" v-model="excelData.Booking_Code"></td>
+                            <td><input type="text" class="form-control" :readOnly="actionType==='edit'" v-model="excelData.Dealer_Code"></td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm"
                                         @click="removeRow(i)"><i
@@ -66,7 +58,7 @@
                     </table>
                 </div>
                 <div class="col-md-12" style="padding-top: 15px;text-align:end">
-                    <button type="button" id="submitSparePartsStock" style="padding:6px" class="btn btn-success btn-sm" @click="onSubmit">{{buttonText}}
+                    <button type="button" id="submitPreBookAllocation" style="padding:6px" class="btn btn-success btn-sm" @click="onSubmit">{{buttonText}}
                     </button>
                 </div>
             </div>
@@ -100,17 +92,11 @@ export default {
             form: new Form({
                 // ExcelData: [],
                 ExcelData: [{
-                    Product_Code: '',
-                    Part_No: '',
-                    Product_Name: '',
-                    Unit_Price: 0,
-                    Current_Stock: 0,
-                    Real_Count: 0,
-                    Adjustment_Stock: 0,
+                    Booking_Code: '',
+                    Dealer_Code: '',
                     importStatus:false,
                 }],
                 masterCode:'',
-                adjustmentInvoiceNo:''
 
             }),
             loadTempData: [],
@@ -127,9 +113,28 @@ export default {
     created() {
     },
     mounted() {
-        this.title= 'Add Spare Parts Stock'
+        this.title= 'Add PreBook Allocation'
         this.actionType = 'add'
         this.buttonText = 'Submit'
+    },
+    computed: {
+        formattedDealerCode: {
+            get() {
+                // Ensure Dealer_Code starts with '00'
+                if (!this.excelData.Dealer_Code.startsWith("00")) {
+                    return "00" + this.excelData.Dealer_Code;
+                }
+                return this.excelData.Dealer_Code;
+            },
+            set(value) {
+                // Always update Dealer_Code without adding extra '00'
+                if (value.startsWith("00")) {
+                    this.excelData.Dealer_Code = value;
+                } else {
+                    this.excelData.Dealer_Code = "00" + value;
+                }
+            },
+        },
     },
     methods: {
         decodeConvert(val){
@@ -147,26 +152,8 @@ export default {
             }
         },
         checkFieldValue(){
-            let tempProductCode = this.form.ExcelData[0]['Product_Code']
-            let tempAdjustmentStock = this.form.ExcelData[0]['Adjustment_Stock']
-            let tempPartNo = this.form.ExcelData[0]['Part_No']
-            let tempCurrentStock = this.form.ExcelData[0]['Current_Stock']
-            let tempRealCount = this.form.ExcelData[0]['Real_Count']
-            let tempUnitPrice = this.form.ExcelData[0]['Unit_Price']
-            // console.log(this.form.ExcelData)
-            if(this.form.masterCode===''){
-                this.errors.push('Master Code Needed')
-                this.$toaster.error('Master Code Needed');
-            }
-
-                // else if(tempProductCode==='' || tempAdjustmentStock==='' || tempProductCode==='' || tempPartNo===''
-                // && tempCurrentStock===''  || tempRealCount==='' || tempUnitPrice===''){
-                //     this.$toaster.error('At Least One Product Needed');
-                //     this.errors.push(1)
-            // }
-            else{
-                this.errors=[]
-            }
+            let tempBooking_Code = this.form.ExcelData[0]['Booking_Code']
+            let tempDealer_Code = this.form.ExcelData[0]['Dealer_Code']
         },
         removeRow(i) {
             this.form.ExcelData.splice(i-1, 1)
@@ -179,19 +166,33 @@ export default {
             var reader = new FileReader();
             reader.onload = (e) => {
                 var data = new Uint8Array(e.target.result);
-                var workbook = XLSX.read(data, {type: 'array'});
-                let sheetName = workbook.SheetNames[0]
+                var workbook = XLSX.read(data, { type: 'array' });
+                let sheetName = workbook.SheetNames[0];
                 let worksheet = workbook.Sheets[sheetName];
-                this.form.ExcelData = XLSX.utils.sheet_to_json(worksheet);
-                this.form.ExcelData.importStatus = true
+
+                // Read and preprocess Excel data
+                let rawData = XLSX.utils.sheet_to_json(worksheet);
+
+                // Preprocess data to ensure Dealer_Code starts with "00"
+                this.form.ExcelData = rawData.map(row => {
+                    if (row.Dealer_Code && !row.Dealer_Code.toString().startsWith("00")) {
+                        row.Dealer_Code = "00" + row.Dealer_Code.toString();
+                    }
+                    return row;
+                });
+
+                // Set import status
+                this.form.ExcelData.importStatus = true;
             };
             reader.readAsArrayBuffer(f);
         },
         downloadDemoExcel() {
-            axios.get(baseurl + "api/stock/stock-export-demo-excel", this.config()).then((res) => {
+            axios.get(baseurl + "api/prebook/prebook-allocation-demo-excel", this.config()).then((res) => {
+                console.log(res.data)
+
                 const downloadAnchor = document.createElement("a");
                 downloadAnchor.setAttribute("href", res.data);
-                downloadAnchor.setAttribute("download", "stock_file_upload_format.xls");
+                downloadAnchor.setAttribute("download", "prebook_allocation_file_upload.xls");
                 document.body.appendChild(downloadAnchor);
                 downloadAnchor.click();
                 //remove anchor download
@@ -203,16 +204,16 @@ export default {
         },
         onSubmit() {
             this.PreLoader = true;
-            var submitUrl = 'api/stock/store-flagship-spare-parts';
+            var submitUrl = 'api/prebook/store-prebook-allocation-data';
             if(this.errors.length === 0){
-                $("#submitSparePartsStock").hide();
+                $("#submitPreBookAllocation").hide();
                 this.form.post(baseurl + submitUrl, this.config()).then(response => {
                     if(response){
                         this.PreLoader = false;
                         this.successNoti(response.data.message);
                         this.form.ExcelData = []
                         if (this.actionType === 'edit') {
-                            this.$router.push({name: 'Stock',})
+                            this.$router.push({name: 'ReportPreBookAllocation',})
                         }
                         else{
                             this.$router.go(this.$router.currentRoute)

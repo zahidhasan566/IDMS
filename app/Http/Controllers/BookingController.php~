@@ -43,7 +43,7 @@ class BookingController extends Controller
             foreach ($importData as $singleData) {
                 if ($singleData['Booking_Code'] && $singleData['Dealer_Code']) {
                     $dealerBookingAllocation =  new DealerBookingAllocation();
-                    $dealerBookingAllocation->BookingCode = intval($singleData['Booking_Code']);
+                    $dealerBookingAllocation->BookingCode = $singleData['Booking_Code'];
                     $dealerBookingAllocation->CustomerCode = $singleData['Dealer_Code'];
                     $dealerBookingAllocation->Active = 'Y';
                     $dealerBookingAllocation->DelerveryStatus = 'N';

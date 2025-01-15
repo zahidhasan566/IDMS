@@ -10,6 +10,7 @@ import ProductIndex from "../views/product/ProductIndex.vue";
 import EditApproved from "../components/dashboard/pendingOrderEditApproved.vue";
 import PostDeliveryPrint from "../views/post-delivery/PostDeliveryPrint.vue";
 import ReportPreBookAllocation from "../views/reports/reportPreBookAllocation.vue";
+import FlagShipStockAddEdit from "../views/stock/FlagShipStockAddEdit.vue";
 
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
@@ -678,6 +679,7 @@ const routes = [
                 name: 'ReportPreBookAllocation',
                 component: ReportPreBookAllocation
             },
+            { path: baseurl + 'stock-allocation-flagship', name: 'FlagShipStockAddEdit', component: FlagShipStockAddEdit },
 
         ],
         beforeEnter(to, from, next) {
