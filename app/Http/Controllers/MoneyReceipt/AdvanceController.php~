@@ -90,7 +90,7 @@ class AdvanceController extends Controller
             'frameNo' => 'max:50',
             'types' => 'required|array',
         ]);
-        if (Auth::user()->RoleId !== 'customer' && Auth::user()->RoleId !== 'FlagshipDealer') {
+        if (Auth::user()->RoleId !== 'customer' || Auth::user()->RoleId !== 'FlagshipDealer') {
             return response()->json([
                 'message' => 'This module is for customers.'
             ],400);

@@ -514,7 +514,7 @@ export default {
       })
     },
     readExcelFile(e) {
-        console.log(e.target.files)
+        console.log(e)
       var files = e.target.files, f = files[0];
       var reader = new FileReader();
       reader.onload = (e) => {

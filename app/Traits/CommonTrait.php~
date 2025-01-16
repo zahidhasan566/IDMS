@@ -237,6 +237,7 @@ trait CommonTrait
             ->where('Product.UnitPrice','>','0')
 //            ->where('Product.SMSOrder','Y')
             ->get()->toArray();
+        dd($allParts);
         return $allParts;
     }
 
