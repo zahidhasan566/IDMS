@@ -541,7 +541,6 @@ export default {
     created() {
       axios.get(baseurl + `api/invoice-edit/${this.$route.params.InvoiceNo}`, this.config()).then((response)=>{
         this.form.fill(response.data.flagshipInvoiceBRTA);
-        this.districtWiseThana()
       });
     },
     computed: {
