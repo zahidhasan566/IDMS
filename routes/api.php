@@ -153,6 +153,7 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('service-summary',                     [ReportController::class,'getServiceSummaryReport']);
         Route::post('scrap-products',        [ReportController::class,'getScrapProductsReport']);
         Route::post('prebook-booking-allocation',        [ReportController::class,'getPreBookAllocationReport']);
+        Route::post('flagship-bike-sales',        [ReportController::class,'getFlagshipBikeSalesReport']);
     });
     //JOB CARD
     Route::group(['prefix' => 'jobCard'],function () {
