@@ -13,6 +13,7 @@ import ReportPreBookAllocation from "../views/reports/reportPreBookAllocation.vu
 import FlagShipStockAddEdit from "../views/stock/FlagShipStockAddEdit.vue";
 import PreBookAllocationAddEdit from "../views/prebook/PreBookAllocationAddEdit.vue";
 import ReportFlagshipBikeSales from "../views/reports/reportFlagshipBikeSales.vue";
+import PrintInvoice from "../views/invoice/PrintInvoice.vue"
 
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
@@ -684,6 +685,11 @@ const routes = [
             { path: baseurl + 'stock-allocation-flagship', name: 'FlagShipStockAddEdit', component: FlagShipStockAddEdit },
             { path: baseurl + 'prebook-allocation', name: 'PreBookAllocationAddEdit', component: PreBookAllocationAddEdit },
             { path: baseurl + 'report/flagship-bike-sales', name: 'ReportFlagshipBikeSales', component: ReportFlagshipBikeSales },
+            {
+                path: baseurl+'invoice/print-invoice',
+                name:'PrintInvoice',
+                component: PrintInvoice
+            },
 
         ],
         beforeEnter(to, from, next) {
