@@ -104,9 +104,12 @@ class JobCardController extends Controller
             )->leftjoin("TblBaySetup","TblBaySetup.BayCode","TblTechnicianSetup.DefaultBay");
         if($roleId !='FlagshipDealer'){
             $allBay->where('ServiceCenterCode', $userId)->where('Active', 'Y');
-            $allTechnician->where('TblTechnicianSetup.ServiceCenterCode', $userId);
+            $allTechnician->leftjoin("TblBaySetup", "TblBaySetup.BayCode", "TblTechnicianSetup.DefaultBay")
+                ->where('TblTechnicianSetup.ServiceCenterCode', $userId)->get();
         }
-        $allTechnician = $allTechnician->get();
+        else{
+            $allTechnician = $allTechnician->get();
+        }
 
 
 
