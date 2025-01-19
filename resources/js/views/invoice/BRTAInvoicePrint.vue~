@@ -308,7 +308,7 @@
           <div style="width: 48%">
             <p style="font-size: 20px">1. NAME : {{invoice.customername}}</p>
             <p style="font-size: 20px">2. FATHER/HUSBAND : {{invoice.fathername}}</p>
-            <p style="font-size: 20px">3. MOTHER : {{invoice.mothername}}</p>
+            <p style="font-size: 20px">3.MOTHER : {{invoice.mothername}}</p>
             <p style="font-size: 20px">4. ADDRESS : {{invoice.preaddress}}</p>
             <p style="font-size: 20px">5. SEX : <span style="text-transform: uppercase;">{{invoice.gender}}</span></p>
             <p style="font-size: 20px">6. PHONE NO : {{invoice.mobileno}}</p>
