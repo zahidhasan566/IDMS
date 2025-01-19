@@ -12,6 +12,7 @@
                   class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm">
                 <tr class="thead-dark">
                   <th>Serial</th>
+                  <th>Product Code</th>
                   <th>Model</th>
                   <th>Chassis No.</th>
                   <th>Engine No.</th>
@@ -22,6 +23,8 @@
                 </tr>
                 <tr v-for="(row,i) in details" :key="i">
                   <td>{{ i + 1 }}</td>
+                  <td>{{ row.ProductCode }}</td>
+                  <td>{{ row.ProductName }}</td>
                   <td>{{ row.ProductName }}</td>
                   <td>{{ row.ChassisNo }}</td>
                   <td>{{ row.EngineNo }}</td>

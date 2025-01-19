@@ -25,7 +25,6 @@
                   <td>{{ i + 1 }}</td>
                   <td>{{ row.ProductCode }}</td>
                   <td>{{ row.ProductName }}</td>
-                  <td>{{ row.ProductName }}</td>
                   <td>{{ row.ChassisNo }}</td>
                   <td>{{ row.EngineNo }}</td>
                   <td>{{ Number(row.Quantity) }}</td>
