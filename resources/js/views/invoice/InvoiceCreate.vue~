@@ -1541,11 +1541,11 @@ export default {
         });
         this.PreLoader = false;
       }
-      else if (this.tempSubmitStatus === false) {
+      else if (!this.form.BookingCode && !this.form.MoneyRecNo && this.tempSubmitStatus === false) {
           Swal.fire({
               icon: "error",
               title: "Oops...",
-              text: "Must Provide Valid PreBooking Code or Money Receipt Number",
+              text: "Must provide PreBooking Code or Money Receipt Number",
           });
           this.PreLoader = false;
       }

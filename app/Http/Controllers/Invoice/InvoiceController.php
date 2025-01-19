@@ -66,7 +66,6 @@ class InvoiceController extends Controller
     }
 
     public function invoiceStore(InvoiceRequest $request){
-//        dd($request->all());
         try {
             DB::beginTransaction();
             $MasterCode = Auth::user()->UserId;
