@@ -94,6 +94,7 @@ class JobCardController extends Controller
             'BayName',
             DB::raw("CONCAT(BayCode,'-',BayName) AS Details")
         );
+
         $allTechnician = TblTechnicianSetup::select(
             'TblTechnicianSetup.DefaultBay',
             'TblBaySetup.BayName',
@@ -106,6 +107,7 @@ class JobCardController extends Controller
             $allBay->where('ServiceCenterCode', $userId)->where('Active', 'Y');
             $allTechnician->where('TblTechnicianSetup.ServiceCenterCode', $userId);
         }
+        $allBay = $allBay->get();
         $allTechnician = $allTechnician->get();
 
 
