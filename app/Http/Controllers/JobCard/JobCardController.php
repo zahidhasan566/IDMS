@@ -102,7 +102,12 @@ class JobCardController extends Controller
             'TblTechnicianSetup.TechnicianName',
             DB::raw("CONCAT(TblBaySetup.BayCode,'-',TblBaySetup.BayName) AS BayDetails"),
             DB::raw("CONCAT(TechnicianCode,'-',TechnicianName) AS Details")
-            )->leftjoin("TblBaySetup","TblBaySetup.BayCode","TblTechnicianSetup.DefaultBay");
+
+
+        )->leftjoin('tblBaySetup',function ($q) use($userId) {
+            $q->on('tblBaySetup.BayCode','TblTechnicianSetup.DefaultBay');
+            $q->where('tblBaySetup.ServiceCenterCode',$userId);
+        });
         if($roleId !='FlagshipDealer'){
             $allBay->where('ServiceCenterCode', $userId)->where('Active', 'Y');
             $allTechnician->where('TblTechnicianSetup.ServiceCenterCode', $userId);
