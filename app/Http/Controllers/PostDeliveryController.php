@@ -16,16 +16,24 @@ class PostDeliveryController extends Controller
     {
         $take = $request->take;
         $query = DeliveryMaster::query();
-        if (!empty($request->serach)) {
+        if (!empty($request->search)) {
             $query->where(function ($q) use ($request) {
                 $q->where('CustomerName','like','%'.$request->search.'%');
                 $q->orWhere('CustomerMobile','like','%'.$request->search.'%');
                 $q->orWhere('FrameNo','like','%'.$request->search.'%');
             });
         }
-        return $query->orderBy('InquiryId')
-            ->select('InquiryId','CustomerName','CustomerMobile','FrameNo','PrintCount')
-            ->paginate($take);
+        if ($request->type === 'export') {
+            return response()->json([
+                'data' =>$query->orderBy('InquiryId')
+                    ->select('InquiryId','CustomerName','CustomerMobile','FrameNo','PrintCount')
+                    ->get(),
+            ]);
+        } else {
+            return $query->orderBy('InquiryId')
+                ->select('InquiryId','CustomerName','CustomerMobile','FrameNo','PrintCount')
+                ->paginate($take);
+        }
     }
 
     public function create()
