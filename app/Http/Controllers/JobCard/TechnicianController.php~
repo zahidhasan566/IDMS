@@ -112,7 +112,6 @@ class TechnicianController extends Controller
         ]);
     }
     public function store(Request $request){
-        dd($request->defaultBay['BayCode']);
 
         $validator = Validator::make($request->all(), [
             'technicianName' => 'required',

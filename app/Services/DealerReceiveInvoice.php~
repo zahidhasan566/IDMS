@@ -118,6 +118,7 @@ class DealerReceiveInvoice
                 $q->on('r.ReceiveNo','rd.ReceiveNo');
             })->where('rd.BatchNo',$row->BatchNo)->select(DB::raw("YEAR(ReceiveDate) as ImportYear"))->first();
 
+            dd($importYear);
 
             return DealarReceiveInvoiceDetails::create([
                 'ReceiveID' => $receiveInvoiceMaster->ReceiveID,
@@ -127,7 +128,7 @@ class DealerReceiveInvoice
                 'Vat' => $row->SalesVat,
                 'ChassisNo' => $row->BatchNo,
                 'EngineNo' => $row->EngineNo,
-                'Color' => $row->Color ?$row->Color : '',
+                'Color' => $row->Color,
                 'FuelUsed' => $row->FuelUsed,
                 'HorsePower' => $row->HorsePower,
                 'RPM' => $row->RPM,

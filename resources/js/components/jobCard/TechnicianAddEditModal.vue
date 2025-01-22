@@ -358,8 +358,8 @@ export default {
             });
         },
         checkBayList(e) {
+            console.log(this.dealerCode)
             let serviceCenterCode = this.actionType === 'edit' ? this.dealerCode : e.target.value
-            console.log(serviceCenterCode,'se');
             let instance = this;
             this.axiosGet('jobCard/technician-check-bay-data/' + serviceCenterCode, function (response) {
                 instance.allBay = response.allBay;

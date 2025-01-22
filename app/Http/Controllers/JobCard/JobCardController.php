@@ -161,21 +161,7 @@ class JobCardController extends Controller
         $roleId = Auth::user()->RoleId;
         if (!empty($chassisNo)) {
             try {
-                if($roleId ==='FlagshipDealer'){
-                    $bikeList = DB::select("
-                                                 select fi.EngineNo as engineno,
-                                                 fi.ChassisNo as chassisno,
-                                                 fi.CustomerName as customername,   
-                                                 fi.ProductName as productname   
-                                                from FlagshipInvoiceBRTA fi
-                                                where fi.ChassisNo like  '$chassisNo' + '%'
-                    ");
-                }
-                else{
-                    $bikeList = DB::select("exec usp_doLoadCustomerDetails '$chassisNo','$docheck'");
-                }
-
-
+                $bikeList = DB::select("exec usp_doLoadCustomerDetails '$chassisNo','$docheck'");
 
                 $onGoingStatusCheck = TblJobCard::select('TblJobCard.JobStatus','TblJobCard.ServiceCenterCode','Customer.CustomerName')
                                     ->join('Customer','Customer.CustomerCode','TblJobCard.ServiceCenterCode')
@@ -484,6 +470,7 @@ class JobCardController extends Controller
     public function jobClose(Request $request)
     {
         try {
+            $roleId = Auth::user()->RoleId;
             $jobCardNo = $request->jobCardNo;
 //            $invoiceNo = $this->generateJobCardInvoiceNo();
             $userId = Auth::user()->UserId;
@@ -493,7 +480,7 @@ class JobCardController extends Controller
 
             $checkJobCard = DealarInvoiceMaster::where('FatherName',$jobCardNo)->first();
 //            file_put_contents('public/log/jobCard/jobCard_close-' .$jobCardNo. '.txt', json_encode($request->all()) . "\n", FILE_APPEND);
-            if(empty($checkJobCard)){
+            if(empty($checkJobCard) && $roleId !=='FlagshipDealer'){
                 //Dealer Invoice Master
                 $dealerInvoiceMaster = new  DealarInvoiceMaster();
                 $dealerInvoiceMaster->MasterCode = $userId;

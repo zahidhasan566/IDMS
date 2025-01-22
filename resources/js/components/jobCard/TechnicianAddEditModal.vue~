@@ -324,7 +324,7 @@ export default {
                             'BayCode': response.existingTechnicianInfo.DefaultBay,
                             'BayName': response.existingTechnicianInfo.BayName,
                         };
-                        //instance.checkBayList(instance.dealerCode);
+                        instance.checkBayList(instance.dealerCode);
                     }
                 }, function (error) {
 
@@ -358,8 +358,8 @@ export default {
             });
         },
         checkBayList(e) {
+            console.log(thi)
             let serviceCenterCode = this.actionType === 'edit' ? this.dealerCode : e.target.value
-            console.log(serviceCenterCode,'se');
             let instance = this;
             this.axiosGet('jobCard/technician-check-bay-data/' + serviceCenterCode, function (response) {
                 instance.allBay = response.allBay;
