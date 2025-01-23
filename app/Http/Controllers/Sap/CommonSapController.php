@@ -160,6 +160,8 @@ class CommonSapController extends Controller
                 if (!empty($singleCustomer['CustomerCode']) && !empty($singleCustomer['CustomerName'])  && !empty($singleCustomer['Email'])
                     && !empty($singleCustomer['Mobile'])) {
                     //Check Already Exist Or Not
+
+
                     $existCustomerCheck = Customer::where('CustomerCode', $singleCustomer['CustomerCode'])->first();
                     if ($existCustomerCheck) {
 //                        file_put_contents(public_path('log/sap/sap_customer_file_already_exist-') . $dt . '.txt', json_encode($singleCustomer) . "\n", FILE_APPEND);
@@ -342,7 +344,7 @@ class CommonSapController extends Controller
     }
 
     public function updateSapCustomer($existCustomerCheck,$singleCustomer){
-    
+
         $existCustomerCheck->Title = $singleCustomer['Title'];
         $existCustomerCheck->CustomerCode = $singleCustomer['CustomerCode'];
         $existCustomerCheck->CustomerName = $singleCustomer['CustomerName'];

@@ -419,7 +419,6 @@ class ReportController extends Controller
             $CurrentPage = '%';
         }
         $sql = " exec usp_doLoadServiceSummaryReportUpdate '$dateFrom', '$dateTo', '$CustomerCode','$userID','$PerPage','$CurrentPage' ";
-        //return $sql;
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 

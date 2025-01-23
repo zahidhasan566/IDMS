@@ -33,6 +33,8 @@ class UserCustomerController extends Controller
                  WHEN u.UserType ='SEZ' THEN 'Zonal Service Engineer'
                  WHEN u.UserType ='TO' THEN 'Territory Officer'
                  WHEN u.UserType ='TM' THEN 'Territory Manager'
+                 WHEN u.UserType ='SEZ' THEN 'Zonal Service Engineer'
+                 WHEN u.UserType ='SEZ' THEN 'Zonal Service Engineer'
                  WHEN u.UserType ='RSM' THEN 'Regional Sales Manager'
                  ELSE 'None' END  as UserType"),
                         'u.RegionName',
@@ -46,7 +48,7 @@ class UserCustomerController extends Controller
                 $q->Orwhere('c.CustomerCode', 'like', '%' . $search . '%');
             });
         if ($roleId !== 'admin') {
-            $user->where('CustomerCode', $userId);
+            $user->where('u.CustomerCode', $userId);
         }
         if ($request->type === 'export') {
             return response()->json([

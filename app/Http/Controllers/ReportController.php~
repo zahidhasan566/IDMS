@@ -101,7 +101,7 @@ class ReportController extends Controller
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
-        $sql = " exec usp_reportPreBookAllocation '$dateFrom', '$dateTo', '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
+        $sql = " exec usp_reportFlagshipBikeSales '$dateFrom', '$dateTo', '','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 
@@ -418,8 +418,7 @@ class ReportController extends Controller
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
-        $sql = " exec usp_doLoadServiceSummaryReportUpdate '$dateFrom', '$dateTo', '$CustomerCode','$userID','$PerPage','$CurrentPage' ";
-        //return $sql;
+        $sql = " exec usp_doLoadServiceSummaryReportUpdate '$dateFrom', '$dateTo', '','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 

@@ -33,6 +33,8 @@ class UserCustomerController extends Controller
                  WHEN u.UserType ='SEZ' THEN 'Zonal Service Engineer'
                  WHEN u.UserType ='TO' THEN 'Territory Officer'
                  WHEN u.UserType ='TM' THEN 'Territory Manager'
+                 WHEN u.UserType ='HOS' THEN 'Head Of Sales'
+                 WHEN u.UserType ='HOSE' THEN 'Head Of Service Engineer'
                  WHEN u.UserType ='RSM' THEN 'Regional Sales Manager'
                  ELSE 'None' END  as UserType"),
                         'u.RegionName',
