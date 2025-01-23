@@ -404,5 +404,10 @@ class CommonSapController extends Controller
         $existCustomerCheck->OwnerType = '';
         $existCustomerCheck->SubBusinessCode = '';
         $existCustomerCheck->save();
+
+
+        $user = User::where('UserId', $singleCustomer['CustomerCode'])->first();
+        $user->UserName = $singleCustomer['CustomerName'];
+        $user->save();
     }
 }
