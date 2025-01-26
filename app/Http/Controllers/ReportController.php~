@@ -64,6 +64,7 @@ class ReportController extends Controller
         $PerPage = 20;
         $Export = $request->Export;
         $CustomerCode = $request->CustomerCode;
+        $CustomerCode = $request->BookingCode;
         $dateFrom = $request->DateFrom;
         $dateTo = $request->DateTo;
         $userID = Auth::user()->UserId;
@@ -418,7 +419,7 @@ class ReportController extends Controller
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
-        $sql = " exec usp_doLoadServiceSummaryReportUpdate '$dateFrom', '$dateTo', '','$userID','$PerPage','$CurrentPage' ";
+        $sql = " exec usp_doLoadServiceSummaryReportUpdate '$dateFrom', '$dateTo', '$CustomerCode','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 

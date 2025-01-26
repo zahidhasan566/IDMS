@@ -242,23 +242,23 @@ class CommonSapController extends Controller
                         $customerCode= $singleCustomer['CustomerCode'];
                         $password = '123456@';
 
-//                        $user = new User();
-//                        $user->UserId = $singleCustomer['CustomerCode'];
-//                        $user->UserName = $singleCustomer['CustomerName'];
-//                        $user->Designation = 'Dealer';
-//                        $password = DB::select("SELECT dbo.ufn_PasswordEncode(?) as EncodedPassword", [$password])[0]->EncodedPassword;
-//                        $password = str_replace('?','',$password);
-//                        $user->Password = $password;
-//                        $user->RoleId = 'customer';
-//                        $user->Active = 0;
-//                        $user->save();
-//
-//
-//                        $customerMapping = new CustomerMapping();
-//                        $customerMapping->CustomerMasterCode = $singleCustomer['CustomerCode'];
-//                        $customerMapping->CustomerCode = $singleCustomer['CustomerCode'];
-//                        $customerMapping->Business = 'C';
-//                        $customerMapping->save();
+                        $user = new User();
+                        $user->UserId = $singleCustomer['CustomerCode'];
+                        $user->UserName = $singleCustomer['CustomerName'];
+                        $user->Designation = 'Dealer';
+                        $password = DB::select("SELECT dbo.ufn_PasswordEncode(?) as EncodedPassword", [$password])[0]->EncodedPassword;
+                        $password = str_replace('?','',$password);
+                        $user->Password = $password;
+                        $user->RoleId = 'customer';
+                        $user->Active = 0;
+                        $user->save();
+
+
+                        $customerMapping = new CustomerMapping();
+                        $customerMapping->CustomerMasterCode = $singleCustomer['CustomerCode'];
+                        $customerMapping->CustomerCode = $singleCustomer['CustomerCode'];
+                        $customerMapping->Business = 'C';
+                        $customerMapping->save();
                         DB::commit();
 
                     }

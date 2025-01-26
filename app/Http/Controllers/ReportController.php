@@ -64,6 +64,7 @@ class ReportController extends Controller
         $PerPage = 20;
         $Export = $request->Export;
         $CustomerCode = $request->CustomerCode;
+        $BookingCode = $request->BookingCode;
         $dateFrom = $request->DateFrom;
         $dateTo = $request->DateTo;
         $userID = Auth::user()->UserId;
@@ -71,7 +72,7 @@ class ReportController extends Controller
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
-        $sql = " exec usp_reportProductInvoice '$dateFrom', '$dateTo', '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
+        $sql = " exec usp_reportProductInvoice '$dateFrom', '$dateTo', '$CustomerCode','$BookingCode','','C','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
     public function getPreBookAllocationReport(Request $request){

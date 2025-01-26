@@ -51,7 +51,7 @@
                       <div class="col-md-2">
                           <ValidationProvider name="BookingCode" mode="eager" v-slot="{ errors }" rules="">
                               <div class="form-group">
-                                  <label>Booking Code</label>
+                                  <label>Booking Code<span class="error">*</span></label>
                                   <input class="form-control" type="text" value="" v-model="form.BookingCode" placeholder="Enter Booking Code">
                                   <span class="error-message"> {{ errors[0] }}</span>
                               </div>
