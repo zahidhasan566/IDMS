@@ -160,6 +160,7 @@ class PaymentController extends Controller
                 DB::beginTransaction();
                 $moneyReceiptNo = $this->getMoneyReceiptNo($depotCode,$business);
                 $moneyReceiptNo = $moneyReceiptNo[0]->MoneyReceiptNo;
+                dd($depotCode);
                 $checkno = $request->chequeNo != null ?$request->chequeNo : '';
 
                 if ($request->has('chequeImage')) {
