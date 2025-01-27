@@ -32,6 +32,7 @@ export default {
     mixins: [Common],
     data() {
         return {
+            return {
                 tableOptions: {
                     source: 'inquiry/follow-up-list',
                     search: true,

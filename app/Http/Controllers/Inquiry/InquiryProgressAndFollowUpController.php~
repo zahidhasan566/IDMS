@@ -251,8 +251,7 @@ class InquiryProgressAndFollowUpController extends Controller
                 $inquiryStatus->VisitResultId=$request->visitType;
                 $inquiryStatus->ProductCode=$request->product? $request->product['id']:'';
                 $inquiryStatus->ExpectedDelivery=$request->expectedDelivery;
-               $inquiryStatus->AlreadyFollowUp=($checkInquiry->AlreadyFollowUp===null?0:$checkInquiry->AlreadyFollowUp)+1;
-                $inquiryStatus->DeliveryPriority=$request->inquiryLevel;
+//                $inquiryStatus->DeliveryPriority=$request
                 $inquiryStatus->NextDelivery=$request->nextVisit;
                 $inquiryStatus->CompetitorCompanyId=$request->competitorCompanies;
                 $inquiryStatus->BikeModel=$request->bikeModel;
