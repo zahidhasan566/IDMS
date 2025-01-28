@@ -3,7 +3,11 @@
     <div class="row" style="padding:8px 0px;">
       <div class="col-md-4">
         <button type="button" class="btn btn-success btn-sm" @click="exportData">Export to Excel</button>
+
       </div>
+        <div class="col-md-8" v-if="me.RoleId==='FlagshipDealer'" style="text-align: end">
+            <router-link class="btn btn-warning"  :to="{path: `${baseUrl}`+'stock-allocation-flagship'}">Add Spare Parts Stock</router-link>
+        </div>
     </div>
     <advanced-datatable :options="tableOptions" :customers="customers">
         <template slot="Product Code" slot-scope="row">
@@ -90,7 +94,8 @@ export default {
       tagLoading:false,
       customers:[],
       receiveHistoryModal:false,
-      receiveHistory:[]
+      receiveHistory:[],
+      baseUrl: baseurl
     }
   },
   mounted() {
@@ -99,6 +104,11 @@ export default {
     })
     this.getData()
   },
+    computed: {
+        me() {
+            return this.$store.state.me
+        }
+    },
   destroyed() {
     bus.$off('export-data')
   },

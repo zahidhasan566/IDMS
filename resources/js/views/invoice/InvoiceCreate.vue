@@ -18,13 +18,13 @@
                     <div class="col-md-4" v-if="radioType === 'book'">
                       <div class="row form-divider m-b-15">
                         <div class="form-divider-title">
-                          <p style="width: 160px">Pre-book</p>
+                          <p style="width: 160px">Pre-book <span style="color: red">*</span></p>
                         </div>
                         <div class="col-12 col-md-12">
                           <ValidationProvider name="Booking Code" mode="eager" rules=""
                                               v-slot="{ errors }">
                             <div class="form-group">
-                              <label>Booking Code</label>
+                              <label>Booking Code </label>
                               <input type="text" class="form-control"
                                      name="BookingCode" v-model="form.BookingCode">
                               <div class="error" v-if="form.errors.has('BookingCode')"
@@ -1225,7 +1225,7 @@
                               </div>
                               <label class="col-lg-2 col-form-label">Swipe Rate</label>
                               <div class="col-lg-3">
-                                <input type="number" name="SwipRate"
+                                <input type="number" step="any" name="SwipRate"
                                        class="form-control" :id="`SwipRate${i}`"
                                        v-model="tender.SwipeCharge"/>
                                 <div class="error" v-if="form.errors.has('SwipRate')"
@@ -1398,6 +1398,7 @@ export default {
       IsExchangeMediumEnable: false,
       PreLoader: false,
       radioType: 'book',
+      tempSubmitStatus: false,
     }
   },
   created() {
@@ -1435,6 +1436,7 @@ export default {
             this.form.CustomerName = response.data.CustomerName
             this.form.Mobile = response.data.CustomerMobile
             this.form.Address = response.data.CustomerAddress
+            this.tempSubmitStatus = true
           } else {
             this.form.preLoadedMoney = 0
             this.form.prePaymentType = 'None'
@@ -1443,6 +1445,7 @@ export default {
             this.form.Mobile = ''
             this.form.Address = ''
             this.errorNoti('Invalid booking code!')
+            this.tempSubmitStatus = false
           }
         },(error) => {
           this.form.preLoadedMoney = 0
@@ -1472,6 +1475,7 @@ export default {
             this.form.CustomerName = response.invoice.CustomerName
             this.form.Mobile = response.invoice.CustomerMobile
             this.form.Address = response.invoice.CustomerAddress
+              this.tempSubmitStatus = true
           } else {
             this.form.preLoadedMoney = 0
             this.form.prePaymentType = 'None'
@@ -1479,6 +1483,7 @@ export default {
             this.form.CustomerName = ''
             this.form.Mobile = ''
             this.form.Address = ''
+              this.tempSubmitStatus = false
             this.errorNoti('Invalid money receipt no!')
           }
         },(error) => {
@@ -1523,11 +1528,11 @@ export default {
       if (isNaN(TotalPayable)) {
         TotalPayable = 0;
       }
-      let TotalAmount = Number(this.form.TotalAmount) - this.form.preLoadedMoney;
+      let TotalAmount = Number(this.form.TotalAmount);
       if (isNaN(TotalAmount)) {
         TotalAmount = 0;
       }
-      console.log(TotalPayable,TotalAmount)
+      //console.log(TotalPayable,TotalAmount)
       if (TotalPayable != TotalAmount) {
         Swal.fire({
           icon: "error",
@@ -1535,7 +1540,17 @@ export default {
           text: "Total Amount and Total Payable Amount Are Not Same",
         });
         this.PreLoader = false;
-      } else {
+      }
+      else if (this.tempSubmitStatus === false) {
+          Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Must Provide Valid PreBooking Code or Money Receipt Number",
+          });
+          this.PreLoader = false;
+      }
+      else {
+          console.log( this.tempSubmitStatus)
         this.form.post(baseurl + "api/invoice-create", this.config()).then(response => {
           if (response.data.status === 'success') {
             this.$toaster.success(response.data.message);

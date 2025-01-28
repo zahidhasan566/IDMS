@@ -29,19 +29,73 @@ class InquiryProgressAndFollowUpController extends Controller
 {
     use CommonTrait,CodeGeneration;
     public function index(Request $request){
-        $userId = Auth::user()->UserId;
-        $export = $request->Export;
+        $take = $request->take;
+        $search = $request->search;
+        $startDate = $request->startDate;
+        $endDate = $request->endDate;
+        $userId  = Auth::user()->UserId;
+        $roleId = Auth::user()->RoleId;
+        $currentDate=  Carbon::now()->format('Y-m-d');
 
-        $currentPage = $request->pagination['current_page'] ?? 1;
-        $perPage = 20;
+        $subQuery = InquiryStatus::select('InquiryId', DB::raw('MAX((EntryDate)) as latest_timestamp'))
+            ->where('InquiryStatus.EntryBy', $userId)->groupBy('InquiryStatus.InquiryId');
 
-        if ($export == 'Y'){
-            $currentPage = '%';
+        $followUpList =  InquiryStatus::select(
+            'InquiryStatus.InquiryStatusId',
+            'InquiryStatus.InquiryId',
+            'InquiryStatus.AlreadyFollowUp',
+            'InquiryStatus.VisitResultId',
+            DB::raw("CASE WHEN convert(date,InquiryStatus.NextDelivery,112) = convert(date,GETDATE(),112) THEN 'Today Call' ELSE 'Missed Call' End As InquiryStatus") ,
+            DB::raw("CASE WHEN InquiryStatus.NextDelivery IS NULL THEN '' ELSE CONVERT(VARCHAR(11), InquiryStatus.NextDelivery, 106) END  NextVisit"),
+            DB::raw("CASE WHEN InquiryStatus.ExpectedDelivery IS NULL THEN '' ELSE CONVERT(VARCHAR(11), InquiryStatus.ExpectedDelivery, 106) END ExpectedDelivery"),
+            'Product.ProductName',
+            'InquiryMaster.CustomerName',
+            'InquiryMaster.ContactNo',
+            'InquiryMaster.ConvenientTimeToCall',
+            'InquiryMaster.Add1 as Address',
+            'InquiryMaster.Age',
+            'InquiryMaster.Gender',
+            'InquiryOccupation.OccupationName',
+            'InquiryMaster.Current2Wheeler',
+            'InquiryCustomerCategory.CustomerCategoryName as Customer Category',
+            'InquiryMaster.InquiryRemark',
+            DB::raw('convert(date,InquiryMaster.EntryDate) as EntryDate'),
+            DB::raw("concat(InquiryMaster.EntryBy,'-',Customer.CustomerName ) as EntryBy"),
+        )
+            ->join('InquiryMaster','InquiryMaster.InquiryId','InquiryStatus.InquiryId')
+            ->leftjoin('InquiryOccupation','InquiryOccupation.OccupationId','InquiryMaster.OccupationId')
+            ->leftjoin('InquiryCustomerCategory','InquiryCustomerCategory.CustomerCategoryId','InquiryMaster.CustomerCategoryId')
+            ->leftjoin('InquiryMainUser','InquiryMainUser.InquiryMainUserId','InquiryMaster.InquiryMainUserId')
+            ->leftjoin('Product','Product.ProductCode','InquiryStatus.ProductCode')
+            ->leftjoin('Customer','Customer.CustomerCode','InquiryMaster.EntryBy')
+            ->where(function ($q) use ($search) {
+                $q->where('InquiryStatus.InquiryId', '=', $search);
+                $q->Orwhere('InquiryMaster.CustomerName', 'like', '%' . $search . '%');
+            })
+            ->lock('WITH(NOLOCK)')
+            ->orderBy( 'InquiryStatus.InquiryStatusId','desc');
+
+        If(!empty($startDate) && empty($endDate)){
+            $followUpList->where('InquiryStatus.NextDelivery', '=', $startDate);
+        }
+        If(empty($startDate) && !empty($endDate)){
+            $followUpList->where('InquiryStatus.NextDelivery', '=', $endDate);
         }
 
-        $sql = " exec usp_doLoadInquiryFollowUpAndProgressCard '$userId', '$perPage' ,'$currentPage' ";
+        if(!empty($startDate) && !empty($endDate)) {
+            $followUpList->whereBetween('InquiryStatus.NextDelivery',[$startDate,$endDate]);
+        }
 
-        return $this->getReportData($sql, $perPage, $currentPage, $export);
+        if ($roleId !== 'admin') {
+            $followUpList->where('InquiryMaster.EntryBy', $userId);
+        }
+        if ($request->type === 'export') {
+            return response()->json([
+                'data' => $followUpList->get(),
+            ]);
+        } else {
+            return $followUpList->paginate($take);
+        }
     }
 
     public function getSupportingData(){
@@ -197,7 +251,8 @@ class InquiryProgressAndFollowUpController extends Controller
                 $inquiryStatus->VisitResultId=$request->visitType;
                 $inquiryStatus->ProductCode=$request->product? $request->product['id']:'';
                 $inquiryStatus->ExpectedDelivery=$request->expectedDelivery;
-//                $inquiryStatus->DeliveryPriority=$request
+               $inquiryStatus->AlreadyFollowUp=($checkInquiry->AlreadyFollowUp===null?0:$checkInquiry->AlreadyFollowUp)+1;
+                $inquiryStatus->DeliveryPriority=$request->inquiryLevel;
                 $inquiryStatus->NextDelivery=$request->nextVisit;
                 $inquiryStatus->CompetitorCompanyId=$request->competitorCompanies;
                 $inquiryStatus->BikeModel=$request->bikeModel;

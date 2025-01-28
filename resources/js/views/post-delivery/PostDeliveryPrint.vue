@@ -29,12 +29,13 @@
           </div>
           <div class="row r-info">
             <div class="col-md-2">
+              <p>Dealer Code</p>
               <p>Customer Name</p>
               <p>Customer Mobile</p>
               <p>Chassis</p>
             </div>
             <div class="col-md-4">
-              <p></p>
+              <p>: {{me.UserId}}</p>
               <p>: {{master.CustomerName}}</p>
               <p>: {{master.CustomerMobile}}</p>
               <p>: {{master.FrameNo}}</p>

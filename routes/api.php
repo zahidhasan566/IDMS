@@ -123,6 +123,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('allocation', [StockController::class,'allocationList']);
         Route::get('get-all-stock-product/{productCode}', [StockController::class,'getAllStockProduct']);
         Route::post('get-spare-parts-receive-history', [StockController::class,'getSparePartsHistory']);
+        Route::get('stock-export-demo-excel', [StockController::class,'getDemoExcelFile']);
+        Route::post('store-flagship-spare-parts', [StockController::class,'storeFlagshipSpareParts']);
 
     });
 
@@ -150,6 +152,8 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('dealer-invoice-survey-report-data',   [ReportController::class,'getDealerInvoiceSurveyReportData']);
         Route::post('service-summary',                     [ReportController::class,'getServiceSummaryReport']);
         Route::post('scrap-products',        [ReportController::class,'getScrapProductsReport']);
+        Route::post('prebook-booking-allocation',        [ReportController::class,'getPreBookAllocationReport']);
+        Route::post('flagship-bike-sales',        [ReportController::class,'getFlagshipBikeSalesReport']);
     });
     //JOB CARD
     Route::group(['prefix' => 'jobCard'],function () {
@@ -337,8 +341,11 @@ Route::group(['middleware' => ['jwt:api']], function () {
     Route::group(['prefix' => 'prebook'],function () {
         Route::get('supporting-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookSupportingData']);
         Route::post('prebook-report-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookingReport']);
+        Route::get('prebook-allocation-demo-excel', [\App\Http\Controllers\BookingController::class,'getDemoExcelFile']);
+        Route::post('store-prebook-allocation-data', [\App\Http\Controllers\BookingController::class,'storePreBookAllocationData']);
         Route::get('{bookingCode}',[\App\Http\Controllers\BookingController::class,'getByCode']);
     });
+
 
 
 });

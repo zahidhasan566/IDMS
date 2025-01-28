@@ -32,22 +32,26 @@ export default {
     mixins: [Common],
     data() {
         return {
-            tableOptions: {
-                source: 'inquiry/follow-up-list',
-                search: true,
-                slots: [16],
-                hideColumn: ['PageNo','SL','VisitResultId'],
-                slotsName: ['action'],
-                sortable: [4],
-                pages: [20, 50, 100],
-                addHeader: ['Action']
-            },
-            loading: false,
-            cpLoading: false,
-            tagLoading:false,
-            // baseUrl: Object.freeze(baseurl)
-            baseUrl: baseurl
-        }
+                tableOptions: {
+                    source: 'inquiry/follow-up-list',
+                    search: true,
+                    slots: [19],
+                    hideColumn: ['VisitResultId'],
+                    slotsName: ['action'],
+                    filterOption: true,
+                    showFilter: ['startDate','endDate'],
+                    colSize: ['col-md-2'],
+                    sortable: [19],
+                    pages: [20, 50, 100],
+                    addHeader: ['Action']
+                },
+                loading: false,
+                cpLoading: false,
+                tagLoading:false,
+                baseUrl: baseurl,
+                startDate:'',
+                endDate:'',
+            }
     },
     mounted() {
         bus.$off('changeStatus',function () {

@@ -19,8 +19,9 @@ class AdvanceController extends Controller
     {
         $take = $request->take;
         $search = $request->search;
+        $roleId = Auth::user()->RoleId;
         $query = AdvanceMoneyReceipt::join('Customer', 'Customer.CustomerCode', 'AdvanceMoneyReceipt.CustomerCode');
-        if (Auth::user()->RoleId === 'customer') {
+        if (Auth::user()->RoleId === 'customer' || Auth::user()->RoleId === 'FlagshipDealer') {
             $query->where('AdvanceMoneyReceipt.CustomerCode',Auth::user()->UserId);
         }
         if ($search !== '') {
@@ -89,7 +90,7 @@ class AdvanceController extends Controller
             'frameNo' => 'max:50',
             'types' => 'required|array',
         ]);
-        if (Auth::user()->RoleId !== 'customer') {
+        if (Auth::user()->RoleId !== 'customer' && Auth::user()->RoleId !== 'FlagshipDealer') {
             return response()->json([
                 'message' => 'This module is for customers.'
             ],400);

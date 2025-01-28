@@ -194,7 +194,7 @@ class TechnicianController extends Controller
         )
             ->leftjoin('tblBaySetup',function ($q) use($userId) {
                 $q->on('tblBaySetup.BayCode','TblTechnicianSetup.DefaultBay');
-                $q->where('tblBaySetup.ServiceCenterCode',$userId);
+                $q->on('tblBaySetup.ServiceCenterCode','TblTechnicianSetup.ServiceCenterCode');
             })
             ->leftjoin('Territory','Territory.TTYCode','TblTechnicianSetup.Territory')
           ->where('TblTechnicianSetup.TechnicianCode', $technicianCode)

@@ -308,17 +308,18 @@
           <div style="width: 48%">
             <p style="font-size: 20px">1. NAME : {{invoice.customername}}</p>
             <p style="font-size: 20px">2. FATHER/HUSBAND : {{invoice.fathername}}</p>
-            <p style="font-size: 20px">3. ADDRESS : {{invoice.preaddress}}</p>
-            <p style="font-size: 20px">4. SEX : <span style="text-transform: uppercase;">{{invoice.gender}}</span></p>
-            <p style="font-size: 20px">5. PHONE NO : {{invoice.mobileno}}</p>
-            <p style="font-size: 20px">6. NATIONALITY : BANGLADESHI</p>
-            <p style="font-size: 20px">7. DATE OF BIRTH : {{invoice.DateOfBirth}}</p>
-            <p style="font-size: 20px">8. GUARDIAN'S NAME : </p>
-            <p style="font-size: 20px">9. CHASSIS NO. : <span style="font-weight: bold">{{invoice.chassisno}}</span></p>
-            <p style="font-size: 20px">10. ENGINE NO. : <span style="font-weight: bold">{{invoice.engineno}}</span></p>
-            <p style="font-size: 20px">11. YEAR OF MFG : </p>
-            <p style="font-size: 20px">12. REGN. NO. (IF ANY) : </p>
-            <p style="font-size: 20px">13. P.O./BANK : </p>
+            <p style="font-size: 20px">3. MOTHER : {{invoice.mothername}}</p>
+            <p style="font-size: 20px">4. ADDRESS : {{invoice.preaddress}}</p>
+            <p style="font-size: 20px">5. SEX : <span style="text-transform: uppercase;">{{invoice.gender}}</span></p>
+            <p style="font-size: 20px">6. PHONE NO : {{invoice.mobileno}}</p>
+            <p style="font-size: 20px">7. NATIONALITY : BANGLADESHI</p>
+            <p style="font-size: 20px">8. DATE OF BIRTH : {{invoice.DateOfBirth}}</p>
+            <p style="font-size: 20px">9. GUARDIAN'S NAME : </p>
+            <p style="font-size: 20px">10. CHASSIS NO. : <span style="font-weight: bold">{{invoice.chassisno}}</span></p>
+            <p style="font-size: 20px">11. ENGINE NO. : <span style="font-weight: bold">{{invoice.engineno}}</span></p>
+            <p style="font-size: 20px">12. YEAR OF MFG : </p>
+            <p style="font-size: 20px">13. REGN. NO. (IF ANY) : </p>
+            <p style="font-size: 20px">14. P.O./BANK : </p>
           </div>
           <div style="width: 48%" class="owner">
             <p style="text-align: center;

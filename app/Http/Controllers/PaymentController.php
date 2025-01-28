@@ -134,8 +134,8 @@ class PaymentController extends Controller
 
         $customer = Customer::where('CustomerCode',$request->customer['CustomerCode'])->first();
 
-        $depotCode = $customer->DepotCode;
-        $business = $customer->Business;
+        $depotCode = !empty($customer->bankCode['DepotCode'])?$customer->bankCode['DepotCode']:'H';
+        $business = $request->businessCode;
         $SalesType =$customer->PaymentMode;
         $CustomerCode = $request->customer['CustomerCode'];
         $CustomerMasterCode = $request->customer['CustomerCode'];

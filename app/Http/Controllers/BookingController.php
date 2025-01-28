@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DealerBookingAllocation;
+use App\Models\DealerStock;
+use App\Models\FlagshipStockAdjustmentMaster;
 use App\Models\PreBookingRe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -23,6 +28,42 @@ class BookingController extends Controller
             return response()->json([
                 'data' => null
             ]);
+        }
+    }
+    public function getDemoExcelFile()
+    {
+        $excel_url = url('/') . '/assets/file/prebook_allocation_file_upload_format.xls';
+        return $excel_url;
+    }
+
+    public function storePreBookAllocationData(Request $request){
+        $importData = $request->ExcelData;
+        DB::beginTransaction();
+        try {
+            foreach ($importData as $singleData) {
+                if ($singleData['Booking_Code'] && $singleData['Dealer_Code']) {
+                    $dealerBookingAllocation =  new DealerBookingAllocation();
+                    $dealerBookingAllocation->BookingCode = intval($singleData['Booking_Code']);
+                    $dealerBookingAllocation->CustomerCode = $singleData['Dealer_Code'];
+                    $dealerBookingAllocation->Active = 'Y';
+                    $dealerBookingAllocation->DelerveryStatus = 'N';
+                    $dealerBookingAllocation->save();
+                }
+
+            }
+            Db::commit();
+
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Allocation Added Successfully'
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!' . $exception->getMessage()
+            ], 500);
         }
     }
 }

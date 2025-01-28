@@ -86,11 +86,15 @@ class JobCardController extends Controller
         $userId = Auth::user()->UserId;
         $jobCardNo = DB::select("exec usp_doLoadJobCardNoNew '$userId' ");
         $jobCardNo = $jobCardNo ? $jobCardNo[0]->JobCardNo : '';
+
+        $roleId = Auth::user()->RoleId;
+
         $allBay = TblBaySetup::select(
             'BayCode',
             'BayName',
             DB::raw("CONCAT(BayCode,'-',BayName) AS Details")
-        )->where('ServiceCenterCode', $userId)->where('Active', 'Y')->get();
+        );
+
         $allTechnician = TblTechnicianSetup::select(
             'TblTechnicianSetup.DefaultBay',
             'TblBaySetup.BayName',
@@ -98,15 +102,19 @@ class JobCardController extends Controller
             'TblTechnicianSetup.TechnicianName',
             DB::raw("CONCAT(TblBaySetup.BayCode,'-',TblBaySetup.BayName) AS BayDetails"),
             DB::raw("CONCAT(TechnicianCode,'-',TechnicianName) AS Details")
-        )
-            ->leftjoin("TblBaySetup", function ($join) use ($userId) {
-                $join->on("TblBaySetup.BayCode", "=", "TblTechnicianSetup.DefaultBay")
-                    //->on("TblBaySetup.ServiceCenterCode", "=", "TblTechnicianSetup.ServiceCenterCode")
-                    ->where('TblBaySetup.ServiceCenterCode', $userId)
-                    ->where('TblTechnicianSetup.Active', 'Y');
-            })
-            ->where('TblTechnicianSetup.ServiceCenterCode', $userId)
-            ->get();
+
+
+        )->leftjoin('tblBaySetup',function ($q) use($userId) {
+            $q->on('tblBaySetup.BayCode','TblTechnicianSetup.DefaultBay');
+            $q->where('tblBaySetup.ServiceCenterCode',$userId);
+        });
+        if($roleId !='FlagshipDealer'){
+            $allBay->where('ServiceCenterCode', $userId)->where('Active', 'Y');
+            $allTechnician->where('TblTechnicianSetup.ServiceCenterCode', $userId);
+        }
+        $allBay = $allBay->get();
+        $allTechnician = $allTechnician->get();
+
 
 
         $parentJobType = TblJobType::select('Id', 'JobTypeName', 'ParentId', 'Active')->where('Active', 'Y')
@@ -150,9 +158,11 @@ class JobCardController extends Controller
     {
         $userId = Auth::user()->UserId;
         $docheck = '%';
+        $roleId = Auth::user()->RoleId;
         if (!empty($chassisNo)) {
             try {
                 $bikeList = DB::select("exec usp_doLoadCustomerDetails '$chassisNo','$docheck'");
+
                 $onGoingStatusCheck = TblJobCard::select('TblJobCard.JobStatus','TblJobCard.ServiceCenterCode','Customer.CustomerName')
                                     ->join('Customer','Customer.CustomerCode','TblJobCard.ServiceCenterCode')
                                     ->where('ChassisNo', $chassisNo)
@@ -296,7 +306,7 @@ class JobCardController extends Controller
             $tblJobCard->JobDate = $request->jobDate;
             $tblJobCard->JobDateTime = Carbon::now();
             $tblJobCard->CustomerName = $request->customerName;
-            $tblJobCard->PurchaseDate = $request->purchaseDate;
+            $tblJobCard->PurchaseDate = '2025-01-12';
             $tblJobCard->MobileNo = $request->mobileNo;
             $tblJobCard->ChassisNo = $request->chassisNo ? $request->chassisNo['chassisno'] : '';
             $tblJobCard->RegistrationNo = $request->registrationNo;
@@ -460,6 +470,7 @@ class JobCardController extends Controller
     public function jobClose(Request $request)
     {
         try {
+            $roleId = Auth::user()->RoleId;
             $jobCardNo = $request->jobCardNo;
 //            $invoiceNo = $this->generateJobCardInvoiceNo();
             $userId = Auth::user()->UserId;
@@ -469,7 +480,7 @@ class JobCardController extends Controller
 
             $checkJobCard = DealarInvoiceMaster::where('FatherName',$jobCardNo)->first();
 //            file_put_contents('public/log/jobCard/jobCard_close-' .$jobCardNo. '.txt', json_encode($request->all()) . "\n", FILE_APPEND);
-            if(empty($checkJobCard)){
+            if(empty($checkJobCard) && $roleId !=='FlagshipDealer'){
                 //Dealer Invoice Master
                 $dealerInvoiceMaster = new  DealarInvoiceMaster();
                 $dealerInvoiceMaster->MasterCode = $userId;

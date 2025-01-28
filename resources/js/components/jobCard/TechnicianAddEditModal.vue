@@ -239,6 +239,7 @@ import {bus} from "../../app";
 import {Common} from "../../mixins/common";
 import {mapGetters} from "vuex";
 import moment from "moment";
+import DatePicker from 'vue2-datepicker';
 
 export default {
     mixins: [Common],
@@ -304,13 +305,12 @@ export default {
                             'TTYCode': response.existingTechnicianInfo.Territory,
                             'TTYName': response.existingTechnicianInfo.TTYName,
                         };
-                        response.existingTechnicianInfo.Territory;
                         instance.networkCategory = response.existingTechnicianInfo.NetworkCategory;
                         instance.dealerCategory = response.existingTechnicianInfo.DealerCategory;
-                        instance.birthDate = response.existingTechnicianInfo.DateOfBirth;
+                        instance.birthDate =  response.existingTechnicianInfo.DateOfBirth !==null ? response.existingTechnicianInfo.DateOfBirth : '';
                         instance.technicianCode = response.existingTechnicianInfo.TechnicianCode;
                         instance.staffId = response.existingTechnicianInfo.TechnicianEmpCode;
-                        instance.joiningDate = response.existingTechnicianInfo.JoiningDate;
+                        instance.joiningDate = response.existingTechnicianInfo.JoiningDate !==null ? response.existingTechnicianInfo.JoiningDate : '';
                         instance.educationalQualification = response.existingTechnicianInfo.EducationalQualification;
                         instance.designation = response.existingTechnicianInfo.Designation;
                         instance.active = response.existingTechnicianInfo.Active;
@@ -324,6 +324,7 @@ export default {
                             'BayCode': response.existingTechnicianInfo.DefaultBay,
                             'BayName': response.existingTechnicianInfo.BayName,
                         };
+                        instance.checkBayList(instance.dealerCode);
                     }
                 }, function (error) {
 
@@ -357,7 +358,8 @@ export default {
             });
         },
         checkBayList(e) {
-            let serviceCenterCode = e.target.value
+            console.log(this.dealerCode)
+            let serviceCenterCode = this.actionType === 'edit' ? this.dealerCode : e.target.value
             let instance = this;
             this.axiosGet('jobCard/technician-check-bay-data/' + serviceCenterCode, function (response) {
                 instance.allBay = response.allBay;

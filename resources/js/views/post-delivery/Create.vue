@@ -15,6 +15,11 @@
                         <p style="width: 160px">Customer</p>
                       </div>
                       <div class="col-12">
+                          <div class="form-group">
+                              <label for="chassis">Dealer Code</label>
+                             <span style="padding-left: 25px;color: red">{{me.UserId}}</span>
+                          </div>
+
                         <ValidationProvider name="Customer Name" mode="eager" rules="required" v-slot="{ errors }">
                           <div class="form-group">
                             <label for="customerName">Customer Name<span style="color: red">*</span></label>
@@ -100,6 +105,7 @@ import DatePicker from 'vue2-datepicker';
 import 'vue2-datepicker/index.css';
 import "vue-select/dist/vue-select.css";
 import Dropdown from 'vue-simple-search-dropdown';
+import PostDeliveryPrint from "./PostDeliveryPrint.vue";
 export default {
   name: "Invoice",
   mixins: [Common],
@@ -121,6 +127,11 @@ export default {
     document.title = 'Create Post Delivery Checklist | DMS';
     this.getData();
   },
+    computed: {
+        me() {
+            return this.$store.state.me
+        }
+    },
   methods: {
     getData() {
       this.axiosGet('post-delivery/create', (response) => {
@@ -137,7 +148,8 @@ export default {
         chassisNo: this.chassisNo,
         fields: this.fields
       },(response) => {
-        this.successNoti(response.message)
+          console.log(response)
+        this.$router.push({name: 'PostDeliveryPrint', params: {inquiryId: response.inquiryId}})
         this.clearForm()
         this.$store.commit('submitButtonLoadingStatus', false);
       },(error) => {

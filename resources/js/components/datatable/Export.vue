@@ -30,7 +30,6 @@ export default {
       this.exportExcelData = data;
       this.columnHeader = columns;
       this.excelFileName = fileName;
-      console.log(this.exportExcelData)
       this.excelExport();
     });
   },

@@ -12,19 +12,29 @@
                   class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm">
                 <tr class="thead-dark">
                   <th>Serial</th>
+                  <th>Product Code</th>
                   <th>Model</th>
                   <th>Chassis No.</th>
                   <th>Engine No.</th>
                   <th>Quantity</th>
                   <th>Unit Price</th>
+                  <th>VAT</th>
+                  <th>Total</th>
                 </tr>
                 <tr v-for="(row,i) in details" :key="i">
                   <td>{{ i + 1 }}</td>
+                  <td>{{ row.ProductCode }}</td>
                   <td>{{ row.ProductName }}</td>
                   <td>{{ row.ChassisNo }}</td>
                   <td>{{ row.EngineNo }}</td>
                   <td>{{ Number(row.Quantity) }}</td>
+<<<<<<< HEAD
                   <td>{{ numberWithCommas(Number(row.UnitPrice) + Number(row)) }}</td>
+=======
+                  <td>{{ numberWithCommas(Number(row.UnitPrice)) }}</td>
+                  <td>{{ row.UnitPrice * 0.15 }}</td>
+                  <td>{{ (parseFloat(row.UnitPrice) + parseFloat(row.UnitPrice * 0.15)).toFixed(2)}}</td>
+>>>>>>> 54caa9b17333a48166301ee53f06a80d3b66b043
                 </tr>
               </table>
             </div>

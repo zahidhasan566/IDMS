@@ -235,7 +235,8 @@ trait CommonTrait
             ->where('Product.Active','Y')
             ->where('Product.MRP','>','0')
             ->where('Product.UnitPrice','>','0')
-            ->where('Product.SMSOrder','Y')->get()->toArray();
+//            ->where('Product.SMSOrder','Y')
+            ->get()->toArray();
         return $allParts;
     }
 

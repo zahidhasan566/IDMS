@@ -64,6 +64,7 @@ class ReportController extends Controller
         $PerPage = 20;
         $Export = $request->Export;
         $CustomerCode = $request->CustomerCode;
+        $BookingCode = $request->BookingCode;
         $dateFrom = $request->DateFrom;
         $dateTo = $request->DateTo;
         $userID = Auth::user()->UserId;
@@ -71,7 +72,37 @@ class ReportController extends Controller
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
-        $sql = " exec usp_reportProductInvoice '$dateFrom', '$dateTo', '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
+        $sql = " exec usp_reportProductInvoice '$dateFrom', '$dateTo', '$CustomerCode','$BookingCode','','C','$userID','$PerPage','$CurrentPage' ";
+        return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
+    }
+    public function getPreBookAllocationReport(Request $request){
+        $CurrentPage = $request->pagination['current_page'];
+        $PerPage = 20;
+        $Export = $request->Export;
+        $CustomerCode = $request->CustomerCode;
+        $dateFrom = $request->DateFrom;
+        $dateTo = $request->DateTo;
+        $userID = Auth::user()->UserId;
+
+        if ($Export == 'Y'){
+            $CurrentPage = '%';
+        }
+        $sql = " exec usp_reportPreBookAllocation '$dateFrom', '$dateTo', '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
+        return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
+    }
+    public function getFlagshipBikeSalesReport(Request $request){
+        $CurrentPage = $request->pagination['current_page'];
+        $PerPage = 20;
+        $Export = $request->Export;
+        $CustomerCode = $request->CustomerCode;
+        $dateFrom = $request->DateFrom;
+        $dateTo = $request->DateTo;
+        $userID = Auth::user()->UserId;
+
+        if ($Export == 'Y'){
+            $CurrentPage = '%';
+        }
+        $sql = " exec usp_reportFlagshipBikeSales '$dateFrom', '$dateTo', '','$userID','$PerPage','$CurrentPage' ";
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 
@@ -389,7 +420,6 @@ class ReportController extends Controller
             $CurrentPage = '%';
         }
         $sql = " exec usp_doLoadServiceSummaryReportUpdate '$dateFrom', '$dateTo', '$CustomerCode','$userID','$PerPage','$CurrentPage' ";
-        //return $sql;
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 

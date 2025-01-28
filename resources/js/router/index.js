@@ -9,6 +9,11 @@ import AdjustmentsAdjusted from "../views/reports/general/Adjusted";
 import ProductIndex from "../views/product/ProductIndex.vue";
 import EditApproved from "../components/dashboard/pendingOrderEditApproved.vue";
 import PostDeliveryPrint from "../views/post-delivery/PostDeliveryPrint.vue";
+import ReportPreBookAllocation from "../views/reports/reportPreBookAllocation.vue";
+import FlagShipStockAddEdit from "../views/stock/FlagShipStockAddEdit.vue";
+import PreBookAllocationAddEdit from "../views/prebook/PreBookAllocationAddEdit.vue";
+import ReportFlagshipBikeSales from "../views/reports/reportFlagshipBikeSales.vue";
+import PrintInvoice from "../views/invoice/PrintInvoice.vue"
 
 //JOB CARD
 import BayIndex from "../views/jobcard/BayIndex.vue";
@@ -671,7 +676,21 @@ const routes = [
                 path: baseurl + 'money-receipt/:moneyRecNo',
                 name: 'AdvancePrint',
                 component: AdvancePrint
-            }
+            },
+            {
+                path: baseurl + 'prebook/allocation',
+                name: 'ReportPreBookAllocation',
+                component: ReportPreBookAllocation
+            },
+            { path: baseurl + 'stock-allocation-flagship', name: 'FlagShipStockAddEdit', component: FlagShipStockAddEdit },
+            { path: baseurl + 'prebook-allocation', name: 'PreBookAllocationAddEdit', component: PreBookAllocationAddEdit },
+            { path: baseurl + 'report/flagship-bike-sales', name: 'ReportFlagshipBikeSales', component: ReportFlagshipBikeSales },
+            {
+                path: baseurl+'invoice/print-invoice',
+                name:'PrintInvoice',
+                component: PrintInvoice
+            },
+
         ],
         beforeEnter(to, from, next) {
             checkToken(to, from, next);

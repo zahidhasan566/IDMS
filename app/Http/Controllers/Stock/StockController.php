@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Stock;
 
 use App\Http\Controllers\Controller;
 use App\Models\DealarReceiveInvoiceDetails;
+use App\Models\DealerStock;
+use App\Models\FlagshipStockAdjustmentMaster;
 use App\Models\Logistics\DealerDocument;
+use App\Models\SpareParts\DealerStockAdjustmentDetails;
+use App\Models\SpareParts\DealerStockAdjustmentMaster;
 use App\Traits\CommonTrait;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -182,5 +187,78 @@ class StockController extends Controller
         return response()->json([
             'receiveHistory' => $receiveHistory,
         ],200);
+    }
+
+    public function getDemoExcelFile()
+    {
+        $excel_url = url('/') . '/assets/file/stock_file_upload_format.xls';
+        return $excel_url;
+    }
+
+    public function storeFlagshipSpareParts(Request $request){
+        $importData = $request->ExcelData;
+        try {
+
+            DB::beginTransaction();
+            //Adjustment master
+            $dealerAdjustmentMaster = new  FlagshipStockAdjustmentMaster();
+            $dealerAdjustmentMaster->AdjustmentDate = Carbon::now()->format('Y-m-d');
+            $dealerAdjustmentMaster->MasterCode = 'FlagshipDealer';
+            $dealerAdjustmentMaster->EntryDate = Carbon::now();
+            $dealerAdjustmentMaster->EntryBy = Auth::user()->UserId;
+            $dealerAdjustmentMaster->IPAddress = $request->ip();
+            $dealerAdjustmentMaster->save();
+
+            foreach ($importData as $singleData) {
+                if ($singleData['Product_Code'] && $singleData['Current_Stock']) {
+                    //Dealer Stock table
+                    $existingDealerStock = DealerStock::where('MasterCode', 'FlagshipDealer')
+                        ->where('ProductCode', $singleData['Product_Code'])->first();
+
+                    if ($existingDealerStock) {
+                        DealerStock::where('MasterCode', 'FlagshipDealer')
+                            ->where('ProductCode', $singleData['Product_Code'])->update([
+                                'AdjustmentQuantity' => intval($existingDealerStock->AdjustmentQuantity) + intval($singleData['Adjustment_Stock']),
+                                'CurrentStock' => !empty($singleData['Adjustment_Stock'])? (intval($existingDealerStock->CurrentStock) - intval($singleData['Adjustment_Stock'])) : intval($existingDealerStock->CurrentStock)+intval($singleData['Current_Stock'])
+                            ]);
+                    }
+                    else{
+                        $newDealerStock = new DealerStock();
+                        $newDealerStock->MasterCode= 'FlagshipDealer';
+                        $newDealerStock->ProductCode= $singleData['Product_Code'];
+                        $newDealerStock->ReceiveQuantity= 0;
+                        $newDealerStock->SalesQuantity= 0;
+                        $newDealerStock->ReturnQuantity= 0;
+                        if(!empty($singleData['Adjustment_Stock'])){
+                            $newDealerStock->AdjustmentQuantity= intval($singleData['Adjustment_Stock']);
+                            $newDealerStock->CurrentStock= intval($singleData['Adjustment_Stock'])<0 ? -1*intval($singleData['Adjustment_Stock']):0;
+                        }
+                        else{
+                            $newDealerStock->AdjustmentQuantity =0;
+                            $newDealerStock->CurrentStock= $singleData['Current_Stock'];
+                        }
+
+
+                        $newDealerStock->save();
+
+                    }
+
+                }
+
+            }
+            Db::commit();
+
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Stock Added Successfully'
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong!' . $exception->getMessage()
+            ], 500);
+        }
     }
 }

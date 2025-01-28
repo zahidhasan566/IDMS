@@ -48,6 +48,15 @@
                           </div>
                           </ValidationProvider>
                       </div>
+                      <div class="col-md-2">
+                          <ValidationProvider name="BookingCode" mode="eager" v-slot="{ errors }" rules="">
+                              <div class="form-group">
+                                  <label>Booking Code</label>
+                                  <input class="form-control" type="text" value="" v-model="form.BookingCode" placeholder="Enter Booking Code">
+                                  <span class="error-message"> {{ errors[0] }}</span>
+                              </div>
+                          </ValidationProvider>
+                      </div>
                       
                     <div class="col-md-2" style="margin-top: 30px">
                       <button type="submit" class="btn btn-success"><i class="mdi mdi-filter"></i>Filter</button>
@@ -133,6 +142,7 @@ export default {
         DateFrom : moment().format('yyyy-MM-DD'),
         DateTo : moment().format('yyyy-MM-DD'),
         CustomerCode:'',
+        BookingCode:'',
         JobStatus:'',
         JobType:'',
         Query :'',

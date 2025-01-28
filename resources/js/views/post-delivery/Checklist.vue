@@ -47,10 +47,16 @@ export default {
       this.changeStatus()
     })
   },
+    computed: {
+        me() {
+            return this.$store.state.me
+        }
+    },
   methods: {
     printInvoice(inquiryId) {
       this.$router.push({name: 'PostDeliveryPrint',params: {inquiryId:inquiryId}})
     },
+
     changeStatus() {
       this.loading = false
     },

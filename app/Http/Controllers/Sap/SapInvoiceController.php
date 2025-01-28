@@ -196,6 +196,11 @@ class SapInvoiceController extends Controller
                 $invoice->ProductCode = $singleCustomer['ProductCode'] ?? null;
                 $invoice->ProductName = $singleCustomer['ProductName'] ?? null;
 
+
+                //CREATE SCHEDULE
+                $ChassisNo= $singleCustomer['ChassisNo'];
+                DB::statement("EXEC usp_FreeServiceScheduleInsert '$ChassisNo' ");
+
                 $invoice->save();
                 DB::commit();
 

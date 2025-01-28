@@ -7,6 +7,7 @@ use App\Models\DeliveryMaster;
 use App\Models\PostDelivery;
 use App\Services\PostDeliveryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PostDeliveryController extends Controller
@@ -15,16 +16,24 @@ class PostDeliveryController extends Controller
     {
         $take = $request->take;
         $query = DeliveryMaster::query();
-        if (!empty($request->serach)) {
+        if (!empty($request->search)) {
             $query->where(function ($q) use ($request) {
                 $q->where('CustomerName','like','%'.$request->search.'%');
                 $q->orWhere('CustomerMobile','like','%'.$request->search.'%');
                 $q->orWhere('FrameNo','like','%'.$request->search.'%');
             });
         }
-        return $query->orderBy('InquiryId')
-            ->select('InquiryId','CustomerName','CustomerMobile','FrameNo','PrintCount')
-            ->paginate($take);
+        if ($request->type === 'export') {
+            return response()->json([
+                'data' =>$query->orderBy('InquiryId')
+                    ->select('InquiryId','CustomerName','CustomerMobile','FrameNo','PrintCount')
+                    ->get(),
+            ]);
+        } else {
+            return $query->orderBy('InquiryId')
+                ->select('InquiryId','CustomerName','CustomerMobile','FrameNo','PrintCount')
+                ->paginate($take);
+        }
     }
 
     public function create()
@@ -58,11 +67,13 @@ class PostDeliveryController extends Controller
                     'message' => 'Checklist already created with this chassis number'
                 ],409);
             }
+            $userID = Auth::user()->UserId;
             //INSERTION MASTER DATA
             $master = DeliveryMaster::create([
                 'CustomerName' => $request->customerName,
                 'CustomerMobile' => $request->customerMobile,
-                'FrameNo' => $request->chassisNo
+                'FrameNo' => $request->chassisNo,
+                'DealerCode' => $userID
             ]);
             //INSERTION DETAILS DATA
             if (count($request->fields)) {
@@ -84,7 +95,8 @@ class PostDeliveryController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Checklist created successfully.'
+                'message' => 'Checklist created successfully.',
+                'inquiryId' => $master->InquiryId
             ]);
         } catch (\Exception $exception) {
             DB::rollBack();

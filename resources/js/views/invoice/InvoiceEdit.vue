@@ -272,6 +272,28 @@
                                                                 </div>
                                                             </div>
                                                         </ValidationProvider>
+                                                        <ValidationProvider name="DistrictCode" mode="eager"
+                                                                            rules="required" v-slot="{ errors }">
+                                                            <div class="form-group row" style="padding-bottom: 10px">
+                                                                <label class="col-lg-4 col-form-label text-right">District<span
+                                                                        style="color: red">*</span></label>
+                                                                <div class="col-lg-8">
+                                                                    <select name="DistrictCode" class="form-control"
+                                                                            v-model="form.DistrictCode"
+                                                                            style="margin: 0"
+                                                                            @change="districtWiseThana">
+                                                                        <option :value="district.DistrictCode"
+                                                                                v-for="(district , index) in districts"
+                                                                                :key="index">{{ district.DistrictName }}
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="error"
+                                                                         v-if="form.errors.has('District')"
+                                                                         v-html="form.errors.get('District')"/>
+                                                                    <span class="error-message"> {{ errors[0] }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </ValidationProvider>
                                                         <ValidationProvider name="FatherName" mode="eager" rules="required" v-slot="{ errors }">
                                                             <div class="form-group row" style="padding-bottom: 10px">
                                                                 <label class="col-lg-4 col-form-label text-right">Father/Husband Name<span style="color: red">*</span></label>
@@ -340,6 +362,26 @@
                                                                 <div class="col-lg-5 text-left">
                                                                     <input name="MotherName" type="text" class="form-control" v-model="form.MotherName"/>
                                                                     <div class="error" v-if="form.errors.has('MotherName')" v-html="form.errors.get('MotherName')"/>
+                                                                    <span class="error-message"> {{ errors[0] }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </ValidationProvider>
+                                                        <ValidationProvider name="ThanaCode" mode="eager"
+                                                                            rules="required" v-slot="{ errors }">
+                                                            <div class="form-group row" style="padding-bottom: 10px">
+                                                                <label class="col-lg-7 col-form-label text-right">Upazilla/Thana<span
+                                                                        style="color: red">*</span></label>
+                                                                <div class="col-lg-5 text-left">
+                                                                    <select name="ThanaCode" class="form-control"
+                                                                            v-model="form.UpazillaCode " style="margin: 0">
+                                                                        <option :value="thana.UpazillaCode"
+                                                                                v-for="(thana , index) in thanas"
+                                                                                :key="index">{{ thana.UpazillaName }}
+                                                                        </option>
+                                                                    </select>
+                                                                    <div class="error"
+                                                                         v-if="form.errors.has('ThanaCode')"
+                                                                         v-html="form.errors.get('ThanaCode')"/>
                                                                     <span class="error-message"> {{ errors[0] }}</span>
                                                                 </div>
                                                             </div>
@@ -443,6 +485,8 @@ export default {
             'AB+',
             'AB-'
           ], // List of blood groups
+            districts: [],
+            thanas: [],
             form: new Form({
               Id: '',
               InvoiceNo: '',
@@ -462,6 +506,8 @@ export default {
               NID: '',
               DateOfBirth: '',
               Gender: '',
+              DistrictCode: '',
+              UpazillaCode: '',
               OwnerType: '',
               ChassisNo: '',
               EngineNo: '',
@@ -495,6 +541,7 @@ export default {
     created() {
       axios.get(baseurl + `api/invoice-edit/${this.$route.params.InvoiceNo}`, this.config()).then((response)=>{
         this.form.fill(response.data.flagshipInvoiceBRTA);
+        this.districtWiseThana()
       });
     },
     computed: {
@@ -502,8 +549,23 @@ export default {
     },
     mounted() {
         document.title = 'Invoice Edit | DMS';
+        this.getAllDistrict();
     },
     methods: {
+        getAllDistrict() {
+            axios.get(baseurl + 'api/get-all-district', this.config()).then((response) => {
+                this.districts = response.data.districts;
+            }).catch((error) => {
+
+            })
+        },
+        districtWiseThana() {
+            axios.get(baseurl + 'api/district-wise-thana?DistrictCode=' + this.form.DistrictCode, this.config()).then((response) => {
+                this.thanas = response.data.thanas
+            }).catch((error) => {
+
+            })
+        },
         onSubmit() {
             this.form.post(baseurl + "api/invoice-update", this.config()).then(response => {
                 if (response.data.status === 'success') {
