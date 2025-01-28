@@ -62,7 +62,7 @@
         </div>
         <div style="display: flex;justify-content:space-between;">
           <div style="width: 99%">
-            <p style="margin: 0;font-size: 18px">7. Owner's Address (One only) : <span style="font-weight: bold">{{invoice.peraddress}}</span></p>
+            <p style="margin: 0;font-size: 18px">7. Owner's Address (One only) : <span style="font-weight: bold">{{invoice.preaddress}}</span></p>
           </div>
         </div>
         <div style="display: flex;justify-content:space-between;">
