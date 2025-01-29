@@ -480,7 +480,7 @@ class JobCardController extends Controller
 
             $checkJobCard = DealarInvoiceMaster::where('FatherName',$jobCardNo)->first();
 //            file_put_contents('public/log/jobCard/jobCard_close-' .$jobCardNo. '.txt', json_encode($request->all()) . "\n", FILE_APPEND);
-            if(empty($checkJobCard) && $roleId !=='FlagshipDealer'){
+            if(empty($checkJobCard)){
                 //Dealer Invoice Master
                 $dealerInvoiceMaster = new  DealarInvoiceMaster();
                 $dealerInvoiceMaster->MasterCode = $userId;
