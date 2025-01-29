@@ -28,13 +28,9 @@
                   <td>{{ row.ChassisNo }}</td>
                   <td>{{ row.EngineNo }}</td>
                   <td>{{ Number(row.Quantity) }}</td>
-<<<<<<< HEAD
-                  <td>{{ numberWithCommas(Number(row.UnitPrice) + Number(row)) }}</td>
-=======
                   <td>{{ numberWithCommas(Number(row.UnitPrice)) }}</td>
                   <td>{{ row.UnitPrice * 0.15 }}</td>
                   <td>{{ (parseFloat(row.UnitPrice) + parseFloat(row.UnitPrice * 0.15)).toFixed(2)}}</td>
->>>>>>> 54caa9b17333a48166301ee53f06a80d3b66b043
                 </tr>
               </table>
             </div>
