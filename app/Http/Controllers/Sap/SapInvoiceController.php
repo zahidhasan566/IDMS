@@ -43,7 +43,7 @@ class SapInvoiceController extends Controller
                 $customer->InvoicePeriod = $singleCustomer['InvoicePeriod'];
                 $customer->InvoiceDate = $singleCustomer['InvoiceDate'];
                 $customer->Business = $singleCustomer['Business'];
-                $customer->OrderNo = $singleCustomer['OrderNo'];
+                $customer->OrderNo = !empty($singleCustomer['OrderNo'])?$singleCustomer['OrderNo']:'';
                 $customer->OrderDate = $singleCustomer['OrderDate'];
                 $customer->DeliveryDate = $singleCustomer['DeliveryDate'];
                 $customer->CustomerCode = $singleCustomer['CustomerCode'];
