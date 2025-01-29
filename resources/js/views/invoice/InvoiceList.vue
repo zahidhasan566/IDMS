@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <breadcrumb :options="['Invoice List']">
-      <router-link :to="{name: 'InvoiceCreate'}" v-if="me.RoleId==='Customer'" class="btn btn-primary btn-sm">Add Invoice</router-link>
+      <router-link :to="{name: 'InvoiceCreate'}" v-if="me.RoleId==='customer'" class="btn btn-primary btn-sm">Add Invoice</router-link>
       <button type="button" class="btn btn-success btn-sm" @click="exportInvoice">Export</button>
     </breadcrumb>
     <div class="row">
