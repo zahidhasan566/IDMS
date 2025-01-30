@@ -1372,12 +1372,13 @@ export default {
 
         },
         checkChassisNo(val,bi='') {
+          console.log("ok")
             let instance = this;
             instance.chassisNo = val;
             this.allchassisNo = []
             if (val.length > 0) {
                 this.axiosGet('jobCard/check-chassis-no/' + instance.chassisNo, function (response) {
-                  console.log(respopnse)
+                  console.log(response)
                     let onGoingStatusCheck = (response.onGoingStatusCheck === null) ? '' : response.onGoingStatusCheck.JobStatus
                     console.log(onGoingStatusCheck, 'onGoingStatusCheck')
 
