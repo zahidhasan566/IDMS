@@ -76,6 +76,9 @@
                         <router-link :to="`invoice-print/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-primary btn-sm small" v-if="iSFlagshipDealer !== 'FlagshipDealer'">
                           <i class="mdi mdi-printer"></i>
                         </router-link>
+                        <router-link :to="`flagship-invoice-print/${item.InvoiceNo}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-primary btn-sm small" v-if="iSFlagshipDealer === 'FlagshipDealer'">
+                          <i class="mdi mdi-printer"></i>
+                        </router-link>
                         <router-link :to="`invoice-show/${item.InvoiceID}`" style="height: 18px;padding: 0px 3px 18px 3px;" class="btn btn-info btn-sm" v-if="iSFlagshipDealer !== 'FlagshipDealer'">
                           <i class="mdi mdi-eye"></i>
                         </router-link>

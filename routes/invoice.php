@@ -14,4 +14,5 @@ Route::group(['middleware' => ['jwt:api']], function () {
     Route::post('invoice/get-chassis-no-info',[PrintInvoiceController::class,'getChassisNoInfo']);
     Route::post('invoice/store-print-invoice',[PrintInvoiceController::class,'storeInvoicePrint']);
     Route::get('get-single-invoice/{InvoiceId}', [InvoiceController::class, 'getSingleInvoice']);
+    Route::get('flagship-invoice-print-data/{InvoiceId}', [InvoiceController::class, 'getSingleInvoice']);
 });

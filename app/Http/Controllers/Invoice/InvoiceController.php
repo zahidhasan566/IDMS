@@ -453,7 +453,7 @@ class InvoiceController extends Controller
                     "DIM.EMail", "DIM.NID as nid", "DIM.ChassisNo as chassisno", "DIM.EngineNo as engineno", "DIM.Color as color", "DIM.FuelUsed as fuelused",
                     "DIM.HorsePower as horsepower", "DIM.RPM as rpm", "DIM.CubicCapacity as cubiccapacity", "DIM.WheelBase as wheelbase", "DIM.Weight as weight",
                     "DIM.TireSizeFront as tiresizefront", "DIM.TireSizeRear as tiresizerear", "DIM.Seats as seats", "DIM.NoOfTyre as nooftyre", "DIM.NoOfAxel as noofaxel",
-                    "DIM.ClassOfVehicle as classofvehicle",
+                    "DIM.ClassOfVehicle as classofvehicle","DIM.CreatedAt",
                     "DIM.MakerName as makername", "DIM.MakerCountry as makercountry", "DIM.EngineType as enginetype", "DIM.NumberOfCylinders as numberofcylinders",
                     "DIM.Standee", "DIM.DateOfBirth",  "DIM.WeightMax", "DIM.MakerCountry as ManufacturingCountry",
                     "DIM.TireSizeFront", "DIM.TireSizeRear", "DIM.ImportYear AS importyear", "DIM.Gender as gender", "DIM.OwnerType as ownertype")

@@ -231,7 +231,7 @@
                                 <label class="col-lg-4 col-form-label text-right">Customer
                                   Name<span style="color: red">*</span></label>
                                 <div class="col-lg-8">
-                                  <input name="CustomerName" type="text"
+                                  <input name="CustomerName" type="text" readonly
                                          class="form-control"
                                          v-model="form.CustomerName"/>
                                   <div class="error"

@@ -159,6 +159,7 @@ import CreatePostDeliveryChecklist from "../views/post-delivery/Create.vue"
 
 import MoneyReceiptAdvance from "../views/money-receipt/advance.vue"
 import AdvancePrint from "../views/money-receipt/AdvancePrint.vue"
+import flagshipInvoicePrint from "../views/invoice/FlagshipInvoicePrint.vue";
 
 
 
@@ -318,6 +319,7 @@ const routes = [
             { path: baseurl + 'invoice-list', name: 'InvoiceList', component: InvoiceList },
             { path: baseurl + 'invoice-create', name: 'InvoiceCreate', component: InvoiceCreate },
             { path: baseurl + 'invoice-print/:InvoiceId', name: 'InvoicePrint', component: InvoicePrint },
+            { path: baseurl + 'flagship-invoice-print/:InvoiceNo', name: 'flagshipInvoicePrint', component: flagshipInvoicePrint },
             { path: baseurl + 'invoice-show/:InvoiceId', name: 'InvoiceShow', component: InvoiceShow },
             { path: baseurl + 'invoice-edit/:InvoiceNo', name: 'InvoiceEdit', component: InvoiceEdit },
             { path: baseurl + 'brta-invoice-print/:InvoiceId', name: 'BRTAInvoicePrint', component: BRTAInvoicePrint },
