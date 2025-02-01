@@ -547,8 +547,8 @@
                         <tr style="color: black!important;background: white;font-size: 18px">
                           <th class="text-center">SN</th>
                           <th class="text-center">Description</th>
-                          <th class="text-center">Unit Price</th>
                           <th class="text-center">QTY</th>
+                          <th class="text-center">Unit Price</th>
                           <th class="text-center">Remarks</th>
                         </tr>
                         </thead>
