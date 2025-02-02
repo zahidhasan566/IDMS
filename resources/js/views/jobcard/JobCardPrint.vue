@@ -73,8 +73,11 @@
                     <td style="text-align: center">{{ mileage }}</td>
                     <td class="bold">Job Start Time <br>জব শুরুর সময়</td>
                     <td style="text-align: center">
-                        <span>
+                        <span v-if="startTime!==null">
                               {{ moment(startTime).format('YYYY-MM-DD hh:mm A') }}
+                        </span>
+                        <span v-else>
+                             Not Started
                         </span>
                     </td>
                 </tr>

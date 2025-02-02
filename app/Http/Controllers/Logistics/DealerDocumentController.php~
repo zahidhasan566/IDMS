@@ -45,8 +45,10 @@ class DealerDocumentController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all(), $request->file('files'));
+    
         try {
-            if ($request->file('files')) {
+            if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     $filename = $file->getClientOriginalName();
                     $filePath = public_path('uploads/dealerdocument/');

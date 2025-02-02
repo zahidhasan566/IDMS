@@ -94,12 +94,12 @@ export default {
 
           let formData = new FormData();
           this.files.forEach((file) => {
-              formData.append("files[]", file);  // Ensure "files[]" matches Laravel backend
+              formData.append("files", file);
           });
 
-          // Debugging: Log FormData before sending
+          // Debugging - Check if files are appended
           for (let pair of formData.entries()) {
-              console.log(pair[0], pair[1]);  // Should log "files[]" and the file objects
+              console.log(pair[0], pair[1]); // Should log "files" and the file objects
           }
 
           axios
@@ -107,12 +107,13 @@ export default {
               .then((response) => {
                   this.successNoti(response.data.message);
                   this.$store.commit("submitButtonLoadingStatus", false);
+
+                  // Reset form and files
                   this.$refs.form_1.reset();
                   this.files = [];
                   this.$refs.fileInput.value = "";
               })
               .catch((error) => {
-                  console.error(error.response.data); // Show backend error response
                   this.errorNoti(error);
                   this.$store.commit("submitButtonLoadingStatus", false);
               });
