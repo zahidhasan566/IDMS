@@ -688,7 +688,7 @@ class JobCardController extends Controller
                 'JobEndTime' => null,
                 'LocalMechanicsCode' => !empty($request->reference['MechanicsCode']) ? $request->reference['MechanicsCode'] : '',
                 'IUser' => $userId,
-                'IDate' => Carbon::now(),
+                'EDate' => Carbon::now(),
 //                'YTD_File' => $request->ydTFile ? FileBase64Service::fileUpload($request->ydTFile, 'jobCardYdt', public_path('uploads/JobCardYdt/')) : $jobFile->YTD_File,
 //                'YTD_status' => $request->ytdStatus,
                 'FI_Status' => '',
