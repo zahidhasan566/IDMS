@@ -17,12 +17,12 @@ class BookingController extends Controller
     public function getByCode($bookingCode)
     {
         try {
-            $existCheck = DealarInvoiceMaster::query()->where('BookingCode',$bookingCode)->exists();
-            if ($existCheck){
-                return response()->json([
-                    'data' => null
-                ]);
-            }
+//            $existCheck = DealarInvoiceMaster::query()->where('BookingCode',$bookingCode)->exists();
+//            if ($existCheck){
+//                return response()->json([
+//                    'data' => null
+//                ]);
+//            }
             $booking = PreBookingRe::join('DealerBookingAllocation as DBA','DBA.BookingCode','PreBookingRe.BookingCode')
                 ->where('PreBookingRe.BookingCode',$bookingCode)
                 ->where('DBA.Active','Y')
