@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DealerBookingAllocation;
 use App\Models\DealerStock;
 use App\Models\FlagshipStockAdjustmentMaster;
+use App\Models\JobCard\DealarInvoiceMaster;
 use App\Models\PreBookingRe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -16,6 +17,12 @@ class BookingController extends Controller
     public function getByCode($bookingCode)
     {
         try {
+            $existCheck = DealarInvoiceMaster::query()->where('BookingCode',$bookingCode)->exists();
+            if ($existCheck){
+                return response()->json([
+                    'data' => null
+                ]);
+            }
             $booking = PreBookingRe::join('DealerBookingAllocation as DBA','DBA.BookingCode','PreBookingRe.BookingCode')
                 ->where('PreBookingRe.BookingCode',$bookingCode)
                 ->where('DBA.Active','Y')
@@ -30,6 +37,7 @@ class BookingController extends Controller
             ]);
         }
     }
+
     public function getDemoExcelFile()
     {
         $excel_url = url('/') . '/assets/file/prebook_allocation_file_upload_format.xls';
