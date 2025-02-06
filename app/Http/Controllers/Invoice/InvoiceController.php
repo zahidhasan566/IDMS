@@ -448,7 +448,7 @@ class InvoiceController extends Controller
         $RoleId = Auth::user()->RoleId;
         if ($RoleId == 'FlagshipDealer'){
             $invoice = DB::table('FlagshipInvoiceBRTA as DIM')
-                ->select("DIM.Id", "DIM.invoiceno", "DIM.CustomerCode as customercode", "DIM.CustomerName as customername",
+                ->select("DIM.Id", "DIM.invoiceno","DIM.PreBookingCode", "DIM.CustomerCode as customercode", "DIM.CustomerName as customername",
                     "DIM.FatherName as fathername", "DIM.MotherName as mothername", "DIM.PreAddress as preaddress", "DIM.PerAddress as peraddress", "DIM.MobileNo as mobileno",
                     "DIM.EMail", "DIM.NID as nid", "DIM.ChassisNo as chassisno", "DIM.EngineNo as engineno", "DIM.Color as color", "DIM.FuelUsed as fuelused",
                     "DIM.HorsePower as horsepower", "DIM.RPM as rpm", "DIM.CubicCapacity as cubiccapacity", "DIM.WheelBase as wheelbase", "DIM.Weight as weight",
