@@ -157,7 +157,7 @@ class DashboardController extends Controller
 
     public function getAllMyOrders(Request $request){
         $masterCode = Auth::user()->UserId;
-        $sql ="SELECT top 10 oim.orderno as OrderNo, oim.orderdate as OrderDate, oim.ordertime as OrderTime , Convert(INT,sum((UnitPrice+VAT)*Quantity)) as Total
+        $sql ="SELECT  oim.orderno as OrderNo, oim.orderdate as OrderDate, oim.ordertime as OrderTime , Convert(INT,sum((UnitPrice+VAT)*Quantity)) as Total
                 FROM OrderInvoiceMaster oim 
                 INNER JOIN OrderInvoiceDetails oid ON oim.OrderNo = oid.OrderNo 
                 INNER JOIN Customer C ON C.CustomerCode = oim.MasterCode
