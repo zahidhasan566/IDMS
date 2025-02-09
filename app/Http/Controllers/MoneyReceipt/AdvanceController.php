@@ -4,6 +4,7 @@ namespace App\Http\Controllers\MoneyReceipt;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdvanceMoneyReceipt;
+use App\Models\JobCard\DealarInvoiceMaster;
 use App\Traits\CodeGeneration;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -51,6 +52,13 @@ class AdvanceController extends Controller
 
     public function getByMoneyReceipt($moneyRecNo)
     {
+//        $existCheck = DealarInvoiceMaster::query()->where('MoneyRecNo',$moneyRecNo)->exists();
+//        if ($existCheck){
+//            return response()->json([
+//                'invoice' => [],
+//                'invoices' => []
+//            ]);
+//        }
         $invoice = AdvanceMoneyReceipt::join('Customer as c','c.CustomerCode','AdvanceMoneyReceipt.CustomerCode')
             ->where('MoneyRecNo',$moneyRecNo)
             ->where('c.CustomerCode',Auth::user()->UserId)

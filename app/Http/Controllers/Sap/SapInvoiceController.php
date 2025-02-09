@@ -157,6 +157,7 @@ class SapInvoiceController extends Controller
                 $invoice->FlagshipCode = $singleCustomer['FlagshipCode'] ?? null;
                 $invoice->MasterCode =   $singleCustomer['FlagshipCode'] ?? null;
                 $invoice->CustomerCode = $singleCustomer['FlagshipCode'] ?? null;
+                $invoice->PreBookingCode = $singleCustomer['PreBookingCode'] ?? null;
                 $invoice->CustomerName = $singleCustomer['CustomerName'];
                 $invoice->FatherName = $singleCustomer['FatherName'] ?? null;
                 $invoice->MotherName = $singleCustomer['MotherName'] ?? null;

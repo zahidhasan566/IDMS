@@ -314,7 +314,7 @@
             <p style="font-size: 20px">6. PHONE NO : {{invoice.mobileno}}</p>
             <p style="font-size: 20px">7. NATIONALITY : BANGLADESHI</p>
             <p style="font-size: 20px">8. DATE OF BIRTH : {{invoice.DateOfBirth}}</p>
-            <p style="font-size: 20px">9. MOTHER NAME : {{invoice.mothername}}</p>
+            <p style="font-size: 20px">9. MOTHER NAME : </p>
             <p style="font-size: 20px">10. CHASSIS NO. : <span style="font-weight: bold">{{invoice.chassisno}}</span></p>
             <p style="font-size: 20px">11. ENGINE NO. : <span style="font-weight: bold">{{invoice.engineno}}</span></p>
             <p style="font-size: 20px">12. YEAR OF MFG : </p>

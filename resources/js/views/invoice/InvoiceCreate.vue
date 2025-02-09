@@ -21,14 +21,11 @@
                           <p style="width: 160px">Pre-book <span style="color: red">*</span></p>
                         </div>
                         <div class="col-12 col-md-12">
-                          <ValidationProvider name="Booking Code" mode="eager" rules=""
-                                              v-slot="{ errors }">
+                          <ValidationProvider name="Booking Code" mode="eager" rules="" v-slot="{ errors }">
                             <div class="form-group">
                               <label>Booking Code </label>
-                              <input type="text" class="form-control"
-                                     name="BookingCode" v-model="form.BookingCode">
-                              <div class="error" v-if="form.errors.has('BookingCode')"
-                                   v-html="form.errors.get('BookingCode')"/>
+                              <input type="text" class="form-control" name="BookingCode" v-model="form.BookingCode">
+                              <div class="error" v-if="form.errors.has('BookingCode')" v-html="form.errors.get('BookingCode')"/>
                               <span class="error-message"> {{ errors[0] }}</span>
                             </div>
                           </ValidationProvider>
@@ -1429,6 +1426,7 @@ export default {
     gerRecordsByBookingCode() {
       if (this.form.BookingCode) {
         this.axiosGet('prebook/'+this.form.BookingCode,(response) => {
+          console.log(response)
           if (response.data) {
             this.form.prePaymentType = 'Pre-booking'
             this.form.prePaymentTypeId = 'PB'
@@ -1475,7 +1473,7 @@ export default {
             this.form.CustomerName = response.invoice.CustomerName
             this.form.Mobile = response.invoice.CustomerMobile
             this.form.Address = response.invoice.CustomerAddress
-              this.tempSubmitStatus = true
+            this.tempSubmitStatus = true
           } else {
             this.form.preLoadedMoney = 0
             this.form.prePaymentType = 'None'
