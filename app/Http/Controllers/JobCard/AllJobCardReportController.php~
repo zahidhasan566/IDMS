@@ -41,7 +41,9 @@ class AllJobCardReportController extends Controller
             $CurrentPage = '%';
         }
 
-        $sql = "exec usp_doLoadJobCardReport2 '$dateFrom','$dateTo','$CustomerCode','$JobStatus','$JobType','$userId',$PerPage,'$CurrentPage','N'";
+        $sql = "exec usp_doLoadJobCardReport2 '$dateFrom','$dateTo','$CustomerCode','$JobStatus','$JobType','$userId',$PerPage,'$CurrentPage'";
+
+        dd($sql);
 
         $conn = DB::connection('sqlsrvread');
         $pdo = $conn->getPdo()->prepare($sql);

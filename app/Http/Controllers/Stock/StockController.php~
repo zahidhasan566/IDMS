@@ -70,10 +70,12 @@ class StockController extends Controller
             }
     }
     public function bikeIndex(Request $request){
+        dd('dfd');
         $userId = Auth::user()->UserId;
         $productCode = 'C';
         $customer = $request->customer ? $request->customer : $userId ;
         $list = DB::select("exec usp_reportProductStock '$customer','','$productCode','$userId','20','%'");
+
 
         if ($request->type === 'export') {
             return response()->json([
@@ -219,7 +221,7 @@ class StockController extends Controller
                         DealerStock::where('MasterCode', 'FlagshipDealer')
                             ->where('ProductCode', $singleData['Product_Code'])->update([
                                 'AdjustmentQuantity' => intval($existingDealerStock->AdjustmentQuantity) + intval($singleData['Adjustment_Stock']),
-                                'CurrentStock' => intval($existingDealerStock->CurrentStock) - intval($singleData['Adjustment_Stock'])
+                                'CurrentStock' => !empty($singleData['Adjustment_Stock'])? (intval($existingDealerStock->CurrentStock) - intval($singleData['Adjustment_Stock'])) : intval($existingDealerStock->CurrentStock)+intval($singleData['Current_Stock'])
                             ]);
                     }
                     else{

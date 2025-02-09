@@ -223,8 +223,11 @@ class ReportController extends Controller
         if ($Export == 'Y'){
             $CurrentPage = '%';
         }
+        $roleId = Auth::user()->RoleId;
+        if($roleId == 'customer'){
+            $CustomerCode = Auth::user()->UserId;
+        }
         $sql = " exec usp_reportProductStock  '$CustomerCode','','C','$userID','$PerPage','$CurrentPage' ";
-
         return $this->getReportData($sql, $PerPage, $CurrentPage, $Export);
     }
 
