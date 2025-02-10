@@ -1,0 +1,540 @@
+<template>
+    <div class="container-fluid">
+      <breadcrumb :options="['Claim Warranty Report']">
+         <button type="button" class="btn btn-success btn-sm" :disabled="exportShow" @click="exportReport">Export to Excel </button>
+      </breadcrumb>
+  
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card">
+            <div class="datatable" v-if="!isLoading">
+              <div class="card-body">
+                <ValidationObserver v-slot="{ handleSubmit }">
+                  <form @submit.prevent="handleSubmit(filterAllReport)" @keydown.enter="$event.preventDefault()">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <ValidationProvider name="DateFrom" mode="eager" v-slot="{ errors }" rules="required">
+                          <div class="form-group">
+                            <label>Date From<span class="error">*</span></label>
+                              <date-picker v-model="form.DateFrom" valueType="format"></date-picker>
+                              <div class="error" v-if="form.errors.has('DateFrom')" v-html="form.errors.get('DateFrom')" />
+                            <span class="error-message"> {{ errors[0] }}</span>
+                          </div>
+                        </ValidationProvider>
+                      </div>
+                        <div class="col-md-2">
+                            <ValidationProvider name="DateTo" mode="eager" v-slot="{ errors }" rules="required">
+                                <div class="form-group">
+                                    <label>Date To<span class="error">*</span></label>
+                                    <date-picker v-model="form.DateTo" valueType="format"></date-picker>
+                                    <div class="error" v-if="form.errors.has('DateTo')" v-html="form.errors.get('DateTo')" />
+                                    <span class="error-message"> {{ errors[0] }}</span>
+                                </div>
+                            </ValidationProvider>
+                        </div>
+                      <div class="col-md-1">
+                        <ValidationProvider name="ApproveType" mode="eager" v-slot="{ errors }" >
+                          <div class="form-group">
+                            <label>Approve Type <span class="error">*</span></label>
+                            <select data-required="true"  name="paymentMode" class="form-control" v-model="form.ApproveType">
+                              <option value="">Select</option>
+                              <option value="0">Pending</option>
+                              <option value="1">Approved</option>
+                              <option value="2">Cancel</option>
+                            </select>
+                            <div class="error" v-if="form.errors.has('ApproveType')" v-html="form.errors.get('ApproveType')" />
+                            <span class="error-message"> {{ errors[0] }}</span>
+                          </div>
+                        </ValidationProvider>
+                      </div>
+                        <div class="col-md-2">
+                            <ValidationProvider name="Customer" mode="eager" v-slot="{ errors }">
+                            <div class="form-group">
+                                <label>Customer <span class="error">*</span></label>
+                                <select name="jobStatus" class="form-control" v-model="form.CustomerCode" style="margin: 0">
+                                  <option :value="null" v-if="user == 'admin'" selected>All</option>
+                                    <option :value="singleCustomer.CustomerCode" v-for="(singleCustomer , index) in customer" :key="index">{{ singleCustomer.CustomerCode }} - {{ singleCustomer.CustomerName }}</option>
+                                </select>
+                                <div class="error" v-if="form.errors.has('CustomerCode')" v-html="form.errors.get('CustomerCode')" />
+                                <span class="error-message"> {{ errors[0] }}</span>
+                            </div>
+                            </ValidationProvider>
+                        </div>
+                        <div class="col-md-2">
+                            <ValidationProvider name="region" mode="eager" v-slot="{ errors }" >
+                            <div class="form-group">
+                                <label>Region <span class="error">*</span></label>
+                                <select name="region" class="form-control" v-model="form.RegionName" style="margin: 0">
+                                  <option :value="null" selected>None</option>
+                                    <option :value="singleCustomer.RegionName" v-for="(singleCustomer , index) in region" :key="index">{{ singleCustomer.RegionName }} - {{ singleCustomer.RegionName }}</option>
+                                </select>
+                                <div class="error" v-if="form.errors.has('RegionName')" v-html="form.errors.get('RegionName')" />
+                                <span class="error-message"> {{ errors[0] }}</span>
+                            </div>
+                            </ValidationProvider>
+                        </div>
+                        <div class="col-md-2">
+                          <ValidationProvider name="ChassisNo" mode="eager" v-slot="{ errors }" rules="">
+                            <div class="form-group">
+                              <label>Chassis No/JobCard No</label>
+                              <input class="form-control" type="text" value="" v-model="form.ChassisNo" placeholder="Enter Chassis or Jobcard No">
+                              <span class="error-message"> {{ errors[0] }}</span>
+                            </div>
+                          </ValidationProvider>
+                        </div>
+                      <div class="col-md-1" style="margin-top: 30px">
+                        <button type="submit" class="btn btn-success"><i class="mdi mdi-filter"></i>Filter</button>
+                      </div>
+                    </div>
+                  </form>
+                </ValidationObserver>
+                <div v-if="contents.length > 0">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-striped dt-responsive nowrap dataTable no-footer dtr-inline table-sm small">
+                      <thead class="thead-dark">
+                      <tr>
+                        <th>Print</th>
+                        <th>Sl</th>
+                        <th>Region</th>
+                        <th>Service Type </th>
+                        <th>Warranty Id</th>
+                        <th>Job Card No</th>
+                        <th>Warranty Date(By Dealer)</th>
+                        <th>Occurrence Date (By Customer)</th>
+                        <th>Dealer Code</th>
+                        <th>Dealer Name</th>
+                        <th>Customer Name</th>
+                        <th>Bike Model</th>
+                        <th>Chassis No</th>
+                        <th>Date of sold</th>
+                        <th>Mileage</th>
+                        <th>Problem Details</th>
+                        <th>Part no</th>
+                        <th>Parts Name</th>
+                        <th>Parts Cost</th>
+                        <th>Approved Status</th>
+                        <th>Parts Receiving Status</th>
+                        <th>Parts Receiving Time</th>
+                        <th>Warranty Judgement by Service</th>
+                        <th>Warranty Judgement by Service Approve Time</th>
+                        <th>Factory QA</th>
+                        <th>Factory QA Approve Time</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr v-for="(item, index) in contents" >
+                        <td>
+                          <router-link :to="`${mainOrigin}approval/warranty-print/${item.Warranty_Id}`" target="_blank" style="height: 18px;padding: 0px 3px 18px 3px;" ta class="btn btn-info btn-sm">
+                            <i class="mdi mdi-printer"></i> Print
+                          </router-link>
+                        </td>
+                        <td>{{ item.SL }}</td>
+                        <td>{{ item.Region }}</td>
+                        <td>{{ item.Service_Type }}</td>
+                        <td>{{ item.Warranty_Id }}</td>
+                        <td>{{ item.Job_Card_No }}</td>
+                        <td>{{ item.Warranty_Date_By_Dealer }}</td>
+                        <td>{{ item.OccuranceDate_By_Customer }}</td>
+                        <td>{{ item.Dealer_Code }}</td>
+                        <td>{{ item.Dealar_Name }}</td>
+                        <td>{{ item.Customer_Name }}</td>
+                        <td>{{ item.Bike_Model }}</td>
+                        <td>{{ item.Chassis_No }}</td>
+                        <td>{{ moment(item.Invoice_Date).format('DD-MM-yyyy') }}</td>
+                        <td>{{ item.Mileage }}</td>
+                        <td>{{ item.Problem_Details }}</td>
+                        <td>{{ item.Part_No }}</td>
+                        <td>{{ item.Product_Name }}</td>
+                        <td>{{ item.Total_Cost }}</td>
+                        <td>{{ item.Approved_Status }}</td>
+                        <td>
+                          <button class="btn btn-primary" v-if="partsUserExists && (item.Parts_Receiving_Status === 'Not Received' && item.Approved_Status === 'Approved')" @click="changePartsReceivingStatus(item)">Receive</button>
+                          <span v-if="item.Parts_Receiving_Status === 'Received'">{{ item.Parts_Receiving_Status }}</span>
+                        </td>
+
+                        <td>{{ item.Parts_Receiving_Time }}</td>
+
+                        <td>
+                          <button class="btn btn-primary"
+                                  v-if="warrantyJudgeUserExists && (item.Warranty_Judgement_By_Service === 'Not Approved' && item.Parts_Receiving_Status === 'Received')"
+                                  @click="changeWarrantyJudgementStatus(item)">Approve</button>
+                          <button class="btn btn-danger"
+                                  v-if="warrantyJudgeUserExists && (item.Warranty_Judgement_By_Service === 'Not Approved' && item.Parts_Receiving_Status === 'Received')"
+                                  @click="changeWarrantyJudgementRejectStatus(item)">Reject</button>
+                          <span v-if="item.Warranty_Judgement_By_Service === 'Approved'">{{ item.Warranty_Judgement_By_Service }}</span>
+                          <span style="color:red;" v-if="item.Warranty_Judgement_By_Service === 'Rejected'">{{ item.Warranty_Judgement_By_Service }}</span>
+                        </td>
+
+                        <td>{{ item.Warranty_Judgement_Time }}</td>
+
+                        <td>
+                          <button class="btn btn-primary"
+                                  v-if="factoryQAUserExists && (item.Factory_QA === 'Not Approved' && item.Parts_Receiving_Status === 'Received') && (item.Warranty_Judgement_By_Service === 'Approved' && item.Warranty_Judgement_By_Service === 'Rejected')"
+                                  @click="changeFactoryQAStatus(item)">Approve</button>
+                          <button class="btn btn-danger"
+                                  v-if="factoryQAUserExists && (item.Factory_QA === 'Not Approved' && item.Parts_Receiving_Status === 'Received') && (item.Warranty_Judgement_By_Service === 'Approved' && item.Warranty_Judgement_By_Service === 'Rejected')"
+                                  @click="changeFactoryQARejectStatus(item)">Reject</button>
+                          <span v-if="item.Factory_QA === 'Approved'">{{ item.Factory_QA }}</span>
+                          <span style="color:red;" v-if="item.Factory_QA === 'Rejected'">{{ item.Factory_QA }}</span>
+                        </td>
+
+                        <td>{{ item.Factory_QA_Time }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <div class="data-count">
+                        Show {{ form.pagination.from }} to {{ form.pagination.to }} of {{ form.pagination.total }} rows
+                      </div>
+                    </div>
+                    <div class="col-8">
+                      <report-pagination
+                          v-if="form.pagination.last_page > 1"
+                          :pagination="form.pagination"
+                          :offset="5"
+                          @paginate="form.Query === '' ? filterAllReport() : filterAllReport()"
+                      ></report-pagination>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-else>
+              <skeleton-loader :row="14"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <data-export/>
+    </div>
+  </template>
+  
+  <script>
+  import {baseurl} from '../../base_url'
+  import {Common} from "../../mixins/common";
+  import XLSX from "xlsx";
+  import {bus} from "../../app";
+  import moment from "moment";
+  import DatePicker from 'vue2-datepicker';
+  import 'vue2-datepicker/index.css';
+  export default {
+    name: "Report",
+    mixins: [Common],
+    components: { DatePicker },
+    data() {
+      return {
+        businesses: [],
+        sample_for: [],
+        headers: [],
+        contents: [],
+        Depots: [],
+        customer:[],
+        region:[],
+        jobTypes:[],
+        jobStatus:[],
+        ReportName: '',
+        user: '',
+        loaderTag:false,
+        form: new Form({
+          DateFrom : moment().format('yyyy-MM-DD'),
+          DateTo : moment().format('yyyy-MM-DD'),
+          CustomerCode:'',
+          JobStatus:'',
+          ApproveType:'',
+          RegionName:'',
+          ChassisNo:'',
+          JobType:'',
+          Query :'',
+          Export :'',
+          pagination: {
+            current_page: 1,
+            from: 1,
+            to: 1,
+            total: 1,
+          },
+        }),
+        userAccess: {},
+        isLoading: false,
+        errors: [],
+        exportShow: false,
+        factoryQAUserExists: '',
+        partsUserExists: '',
+        warrantyJudgeUserExists: '',
+      }
+    },
+    created() {
+      //
+    },
+    mounted() {
+      this.getSupportingData();
+      this.getUserAccess();
+      this.filterAllReport();
+      this.getData();
+    },
+    methods: {
+      filterAllReport(){
+        this.isLoading = true
+        this.form.Export = '';
+        this.form.post(baseurl + "api/reports/claim-warranty", this.config()).then(response => {
+          //console.log(this.userAccess.factoryQAUserExists)
+         this.factoryQAUserExists = this.userAccess.factoryQAUserExists
+         this.partsUserExists = this.userAccess.partsUserExists
+         this.warrantyJudgeUserExists = this.userAccess.warrantyJudgeUserExists
+          if (response.data.data.length > 0){
+            this.headers = Object.keys(response.data.data[0])
+            this.contents = response.data.data
+            this.exportShow = false;
+            this.isLoading = false
+          }else {
+            this.contents = []
+            this.exportShow = true;
+            this.isLoading = false
+          }  
+          this.form.pagination.current_page = response.data.paginationData[0].current_page;
+          this.form.pagination.from = response.data.paginationData[0].from;
+          this.form.pagination.to = response.data.paginationData[0].to;
+          this.form.pagination.total = response.data.paginationData[0].total;
+          this.form.pagination.last_page = response.data.paginationData[0].last_page;  
+          if (response.data.report.SearchEnable === '1'){
+            this.SearchEnable = true;
+          }
+        }).catch(e => {
+          //
+        });
+      },
+      getUserAccess(){
+        axios.get(baseurl + 'api/get-user-access', this.config() ).then((response)=>{
+          this.userAccess = response.data;
+        }).catch((error)=>{
+
+        })
+      },
+      changePartsReceivingStatus(item){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to Receive this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Receive it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let DCWarrantyId = item.Warranty_Id;
+            let ProductCode = item.Product_Code;
+            axios.get(baseurl + 'api/change-parts-receiving-status?DCWarrantyId=' +DCWarrantyId
+                +"&ProductCode=" + ProductCode
+                , this.config() ).then((response)=>{
+              console.log(response)
+            }).catch((error)=>{
+
+            })
+          }
+        })
+      },
+      changeWarrantyJudgementStatus(item){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to Receive this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Receive it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let DCWarrantyId = item.Warranty_Id;
+            let ProductCode = item.Product_Code;
+            axios.get(baseurl + 'api/change-warranty-judgement-status?DCWarrantyId=' +DCWarrantyId
+                +"&ProductCode=" + ProductCode
+                , this.config() ).then((response)=>{
+              console.log(response)
+            }).catch((error)=>{
+
+            })
+          }
+        })
+      },
+      changeWarrantyJudgementRejectStatus(item){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to Receive this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Receive it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let DCWarrantyId = item.Warranty_Id;
+            let ProductCode = item.Product_Code;
+            axios.get(baseurl + 'api/change-warranty-judgement-reject-status?DCWarrantyId=' +DCWarrantyId
+                +"&ProductCode=" + ProductCode
+                , this.config() ).then((response)=>{
+              console.log(response)
+            }).catch((error)=>{
+
+            })
+          }
+        })
+      },
+      changeFactoryQAStatus(item){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to Receive this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Receive it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let DCWarrantyId = item.Warranty_Id;
+            let ProductCode = item.Product_Code;
+            axios.get(baseurl + 'api/change-factory-qa-status?DCWarrantyId=' +DCWarrantyId
+                +"&ProductCode=" + ProductCode
+                , this.config() ).then((response)=>{
+              console.log(response)
+            }).catch((error)=>{
+
+            })
+          }
+        })
+      },
+      changeFactoryQARejectStatus(item){
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to Receive this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, Receive it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let DCWarrantyId = item.Warranty_Id;
+            let ProductCode = item.Product_Code;
+            axios.get(baseurl + 'api/change-factory-qa-reject-status?DCWarrantyId=' +DCWarrantyId
+                +"&ProductCode=" + ProductCode
+                , this.config() ).then((response)=>{
+              console.log(response)
+            }).catch((error)=>{
+
+            })
+          }
+        })
+      },
+      exportReport(){
+        this.form.Export = 'Y';
+        this.exportShow = true;
+        this.form.post(baseurl + "api/reports/claim-warranty", this.config()).then(response => {
+          let dataSets = response.data.data;
+          if (dataSets.length > 0) {
+            let columns = Object.keys(dataSets[0]);
+            columns = columns.filter((item) => item !== 'row_num');
+            let rex = /([A-Z])([A-Z])([a-z])|([a-z])([A-Z])/g;
+            columns = columns.map((item) => {
+              let title = item.replace(rex, '$1$4 $2$3$5')
+              return {title, key: item}
+            });
+              //this.generateExport(dataSets, columns, 'Job Card Report')
+            bus.$emit('data-table-import', dataSets, columns, 'Claim Warranty Report')
+            this.exportShow = false;
+          }
+        }).catch(e => {
+          //
+        });
+      },
+      getSupportingData() {
+        let instance = this;
+        this.axiosGet('reports/supporting-data', function (response) {
+            instance.customer = response.customer
+            if(response.user.length===1){
+                instance.form.CustomerCode =  response.user[0].value
+            }
+        }, function (error) {
+        });
+        this.axiosGet('reports/region-data', function (response) {
+            instance.region = response.region
+            if(response.user.length===1){
+                instance.form.RegionCode =  response.user[0].RegionName
+            }
+        }, function (error) {
+        });
+      },
+      getData() {
+        this.axiosGet('app-supporting-data', (response) => {
+          this.user = response.user.UserId;
+        }, (error) => {
+          this.errorNoti(error)
+        })
+      },
+      isInt(value) {
+        return !isNaN(parseInt(value * 1))
+      },
+      config() {
+        let token = localStorage.getItem('token');
+        return {
+          headers: {Authorization: `Bearer ${token}`}
+        };
+      },
+    }
+  }
+  </script>
+  
+  <style scoped>
+  #ceilingModal .form-control {
+    font-size: 10px;
+    height: 25px;
+  }
+  #ceilingModal label {
+    font-size: 11px!important;
+  }
+  .form-divider {
+    padding: 6px 0px 5px 5px;
+    border: 1px solid #4d87f64f;
+    border-radius: 13px;
+    margin: 0 auto;
+  }
+  #invoice2 .auto-complete2 {
+    position: relative;
+    display: block;
+  }
+  #invoice2 .auto-complete2 ul {
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 0 0px;
+    position: absolute;
+    width: 100%;
+    border: 1px solid #0000000d;
+    background: #ffffff;
+    max-height: 200px;
+    overflow-y: scroll;
+    z-index: 999;
+  }
+  #invoice2 .auto-complete2 ul li{
+    border-bottom: 1px solid #b7b7b7;
+    background: #cbc4c4;
+    padding: 5px;
+    cursor: pointer;
+  }
+  #invoice2 .auto-complete2 ul li a{
+    color: #000000;
+  }
+  #invoice2 .auto-complete2 ul li:hover{
+    background: #fff3cd;
+  }
+  #invoice2 :focus{
+    background: #fff3cd;
+  }
+  th,
+  td {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+  }
+  th {
+    background: #000000;
+  }
+  </style>
