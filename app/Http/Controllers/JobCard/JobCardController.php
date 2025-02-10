@@ -306,7 +306,7 @@ class JobCardController extends Controller
             $tblJobCard->JobDate = $request->jobDate;
             $tblJobCard->JobDateTime = Carbon::now();
             $tblJobCard->CustomerName = $request->customerName;
-            $tblJobCard->PurchaseDate = '2025-01-12';
+            $tblJobCard->PurchaseDate = !empty($request->purchaseDate)? $request->purchaseDate : '2025-01-12';
             $tblJobCard->MobileNo = $request->mobileNo;
             $tblJobCard->ChassisNo = $request->chassisNo ? $request->chassisNo['chassisno'] : '';
             $tblJobCard->RegistrationNo = $request->registrationNo;
