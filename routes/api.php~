@@ -91,7 +91,15 @@ Route::group(['middleware' => ['jwt:api']], function () {
         //Bike Order
         Route::get('bike-list', [BikeController::class,'index']);
         Route::post('store-bike', [BikeController::class,'storeBikeOrder']);
+<<<<<<< HEAD
         Route::get('search-product', [CommonController::class,'searchProduct']);
+=======
+<<<<<<< HEAD
+        Route::get('search-product', [CommonController::class,'bikeList']);
+=======
+        Route::get('search-product', [CommonController::class,'searchProduct']);
+>>>>>>> 41b8bcae5d759407556b9ef0457cb1bd37e2ad13
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
         Route::get('get-bike-by-product-code', [CommonController::class,'getBikeByProductCode']);
 
     //Spare Parts
@@ -104,6 +112,19 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('store-parts', [SparePartsController::class,'storeSparePartsOrder']);
     });
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+     //iHelpBD
+     Route::group(['prefix' => 'iHelpBD'],function () {
+        Route::post('send-yamaha-call', [SendCallRequestController::class,'sendYamahaCall']);
+        Route::post('send-foton-call', [SendCallRequestController::class,'sendFotonCall']);
+        Route::post('send-agrimotors-call', [SendCallRequestController::class,'sendAgrimotorsCall']);
+     });
+
+=======
+>>>>>>> 41b8bcae5d759407556b9ef0457cb1bd37e2ad13
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
     //payment
     Route::group(['prefix' => 'payment'],function () {
         Route::get('credit-payment-list', [PaymentController::class,'index']);
@@ -123,8 +144,16 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('allocation', [StockController::class,'allocationList']);
         Route::get('get-all-stock-product/{productCode}', [StockController::class,'getAllStockProduct']);
         Route::post('get-spare-parts-receive-history', [StockController::class,'getSparePartsHistory']);
+<<<<<<< HEAD
         Route::get('stock-export-demo-excel', [StockController::class,'getDemoExcelFile']);
         Route::post('store-flagship-spare-parts', [StockController::class,'storeFlagshipSpareParts']);
+=======
+<<<<<<< HEAD
+=======
+        Route::get('stock-export-demo-excel', [StockController::class,'getDemoExcelFile']);
+        Route::post('store-flagship-spare-parts', [StockController::class,'storeFlagshipSpareParts']);
+>>>>>>> 41b8bcae5d759407556b9ef0457cb1bd37e2ad13
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
 
     });
 
@@ -152,7 +181,14 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('dealer-invoice-survey-report-data',   [ReportController::class,'getDealerInvoiceSurveyReportData']);
         Route::post('service-summary',                     [ReportController::class,'getServiceSummaryReport']);
         Route::post('scrap-products',        [ReportController::class,'getScrapProductsReport']);
+<<<<<<< HEAD
         Route::post('prebook-booking-allocation',        [ReportController::class,'getPreBookAllocationReport']);
+=======
+<<<<<<< HEAD
+=======
+        Route::post('prebook-booking-allocation',        [ReportController::class,'getPreBookAllocationReport']);
+>>>>>>> 41b8bcae5d759407556b9ef0457cb1bd37e2ad13
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
     });
     //JOB CARD
     Route::group(['prefix' => 'jobCard'],function () {
@@ -274,7 +310,14 @@ Route::group(['middleware' => ['jwt:api']], function () {
         Route::post('update-follow-up', [\App\Http\Controllers\Inquiry\InquiryProgressAndFollowUpController::class,'updateFollowUp']);
         Route::get('load-supportingData', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'supportingData']);
         Route::post('conversion-summary-report', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'report']);
+<<<<<<< HEAD
         Route::get('get/print-data/{inquiryId}', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'existingInquiry']);
+=======
+<<<<<<< HEAD
+=======
+        Route::get('get/print-data/{inquiryId}', [\App\Http\Controllers\Inquiry\InquiryFollowUpReportController::class, 'existingInquiry']);
+>>>>>>> 41b8bcae5d759407556b9ef0457cb1bd37e2ad13
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
     });
     //Inquiry
     Route::group(['prefix' => 'test-ride'],function () {
@@ -340,6 +383,14 @@ Route::group(['middleware' => ['jwt:api']], function () {
     Route::group(['prefix' => 'prebook'],function () {
         Route::get('supporting-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookSupportingData']);
         Route::post('prebook-report-data',   [\App\Http\Controllers\Sap\PrebookingController::class,'getPreBookingReport']);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    });
+
+
+=======
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
         Route::get('prebook-allocation-demo-excel', [\App\Http\Controllers\BookingController::class,'getDemoExcelFile']);
         Route::post('store-prebook-allocation-data', [\App\Http\Controllers\BookingController::class,'storePreBookAllocationData']);
         Route::get('{bookingCode}',[\App\Http\Controllers\BookingController::class,'getByCode']);
@@ -347,6 +398,10 @@ Route::group(['middleware' => ['jwt:api']], function () {
 
 
 
+<<<<<<< HEAD
+=======
+>>>>>>> 41b8bcae5d759407556b9ef0457cb1bd37e2ad13
+>>>>>>> 915335c182ab3e1a15e46dec0e105a57b2dace95
 });
 
 
